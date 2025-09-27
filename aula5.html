@@ -1,394 +1,246 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Aula: Modelo Relacional (Unificado)</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root { --accent:#0ea5e9; }
-    body { font-family: 'Inter', sans-serif; }
-    .slide { display:none; animation: fade .35s ease; }
-    .slide.active { display:block; }
-    @keyframes fade { from{opacity:.0; transform: translateY(8px)} to{opacity:1; transform:none} }
-    .kbd { border:1px solid #e5e7eb; border-bottom-width:3px; padding:.15rem .45rem; border-radius:.375rem; background:#fff }
-    .caption { font-size:.85rem; color:#6b7280; text-align:center; margin-top:.5rem }
-    .code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background:#f8fafc; border:1px solid #e5e7eb; padding:.6rem .8rem; border-radius:.5rem; }
-    .hint { background:#eff6ff; border-left:4px solid #3b82f6; padding: .75rem 1rem; border-radius:.5rem; }
-    .rule { background:#f0fdf4; border-left:4px solid #22c55e; padding:.75rem 1rem; border-radius:.5rem; }
-    .warn { background:#fef2f2; border-left:4px solid #ef4444; padding:.75rem 1rem; border-radius:.5rem; }
-    .grid-2 { display:grid; grid-template-columns: 1fr; gap:1rem }
-    img { width: auto; max-height: 500px; object-fit: cover; margin: 0 auto; }
-    @media (min-width: 900px){ .grid-2 { grid-template-columns: 1fr 1fr } }
-  </style>
-  <link rel="stylesheet" href="css/dark-mode.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação: Modelagem de Banco de Dados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Evita scroll da página inteira */
+        }
+        .slide-content {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .slide-content.active {
+            opacity: 1;
+        }
+    </style>
 </head>
-<body data-theme="dark" class="bg-gray-100 min-h-screen">
-  <div class="max-w-6xl mx-auto p-4 md:p-8">
-    <!-- Header & Controls -->
-    <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-      <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Modelo Relacional — Aula 5 - BD S4 Infor</h1>
-        <p class="text-gray-600">Professor Zé Olinda. Criado a partir do Cap. 4 (Angelloti)</p>
-      </div>
-      <div class="flex items-center gap-2">
-        <button id="btnPrev" class="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed">Anterior</button>
-        <span id="counter" class="px-3 py-2 bg-white border rounded-lg text-gray-700">Slide 1 / 28</span>
-        <button id="btnNext" class="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700">Próximo</button>
-        <button id="btnTOC" class="px-4 py-2 border rounded-lg bg-white hover:bg-gray-50">Sumário</button>
-      </div>
-    </header>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
 
-    <!-- Slides Container -->
-    <main id="deck" class="bg-white rounded-xl shadow-xl p-6 md:p-10 min-h-[560px] relative overflow-hidden">
-      <!-- SLIDE 1 -->
-      <section class="slide active">
-        <h2 class="text-3xl font-bold mb-2">Modelo Relacional</h2>
-        <p class="text-gray-700 mb-4">Nesta aula, vamos entender como o modelo relacional organiza dados em tabelas e como transformamos um diagrama ER em um esquema relacional implementável.</p>
-        <div class="hint">
-          <p><strong>Referência principal:</strong> Cap. 4 – Introdução ao Modelo Relacional (Angelloti). Conceitos de relação, tupla, atributo e domínio; chaves; integridade; conversão ER→Relacional.</p>
+    <main class="w-full mx-auto p-4 md:p-8">
+        <div id="presentation-container" class="bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col" style="height: 100vh;">
+            <!-- Slide Content Area -->
+            <div id="slide" class="flex-1 w-full h-full p-12 flex items-center justify-center slide-content">
+                <!-- O conteúdo do slide será injetado aqui pelo JavaScript -->
+            </div>
+            
+            <!-- Navigation -->
+            <div class="bg-gray-50 border-t border-gray-200 p-4 flex items-center justify-between">
+                <button id="prevBtn" class="bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    Anterior
+                </button>
+                <div id="slide-counter" class="text-sm font-medium text-gray-600"></div>
+                <button id="nextBtn" class="bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-colors">
+                    Próximo
+                </button>
+            </div>
         </div>
-      </section>
-
-      <!-- SLIDE 2 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">O que é o Modelo Relacional?</h2>
-        <p class="text-gray-700 mb-4">É um <strong>modelo lógico</strong> que representa dados como uma coleção de <em>tabelas</em> (relações). Cada linha é um registro (tupla) e cada coluna é um atributo associado a um domínio de valores permitido.</p>
-        <div class="code">
-          tbAluno(<u>matricula_aluno</u>: inteiro, nome_aluno: caracter(100), data_nascimento_aluno: data)
-        </div>
-        <p class="caption">Exemplo de descrição de tabela e chave primária sublinhada — ver seção “Introdução ao Modelo Relacional”.</p>
-      </section>
-
-      <!-- SLIDE 3 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Terminologia Essencial</h2>
-        <ul class="list-disc pl-6 text-gray-700 space-y-2">
-          <li><strong>Tabela</strong> ≡ relação</li>
-          <li><strong>Linha</strong> ≡ tupla/registro</li>
-          <li><strong>Coluna</strong> ≡ atributo/campo</li>
-          <li><strong>Domínio</strong> ≡ tipo de dados permitido</li>
-        </ul>
-      </section>
-
-      <!-- SLIDE 4 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Exemplo: tbAluno e tbTurma</h2>
-        <div class="grid-1">
-          <div>
-            <img src="img/fig-4-1.png" alt="Figura 4.1: tbAluno (exemplo de tuplas)" class="rounded-lg shadow">
-            <p class="caption">Figura 4.1 — Registros em <code>tbAluno</code>.</p>
-          </div>
-          <div>
-            <img src="img/fig-4-2.png" alt="Figura 4.2: tbTurma (exemplo de tuplas)" class="rounded-lg shadow">
-            <p class="caption">Figura 4.2 — Registros em <code>tbTurma</code>.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- SLIDE 5 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Chave Primária (PK)</h2>
-        <p class="text-gray-700 mb-4">Identifica de forma <strong>única</strong> cada tupla da tabela. Não pode repetir, não pode ser nula. Base para ligações consistentes.</p>
-        <div class="rule">
-          <p><strong>Boa prática:</strong> escolha a menor combinação de atributos que identifique univocamente cada registro.</p>
-        </div>
-      </section>
-
-      <!-- SLIDE 6 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Chave Estrangeira (FK)</h2>
-        <p class="text-gray-700 mb-4">Um atributo que referencia a <strong>PK</strong> de outra tabela (ou da mesma, em caso recursivo). Deve ter mesmo tipo/tamanho da primária correspondente.</p>
-        <div class="code">
-          tbAluno(..., <strong>codigo_turma</strong>: inteiro)<br>
-          <em>codigo_turma referencia tbTurma</em>
-        </div>
-        <p class="caption">Notação indicando que <code>codigo_turma</code> é FK para a PK de <code>tbTurma</code>.</p>
-      </section>
-
-      <!-- SLIDE 7 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Integridade Referencial</h2>
-        <p class="text-gray-700 mb-3">Garante que valores de FK existam como PK correspondentes, ou então sejam nulos (quando previsto). Evita “registros órfãos”.</p>
-        <div class="warn">
-          <p><strong>Exemplo:</strong> Não cadastrar Maria na turma <code>6</code> se não existe <code>codigo_turma = 6</code> em <code>tbTurma</code>.</p>
-        </div>
-      </section>
-
-      <!-- SLIDE 8 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">FK Recursiva</h2>
-        <p class="text-gray-700 mb-4">FK que aponta para a PK da <em>mesma</em> tabela (ex.: representante de turma é um aluno).</p>
-        <img src="img/fig-4-3.png" alt="Figura 4.3: FK recursiva em tbAluno" class="rounded-lg shadow">
-        <p class="caption">Figura 4.3 — Exemplo de <code>tbAluno</code> com FK recursiva (representante).</p>
-      </section>
-
-      <!-- SLIDE 9 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Do ER ao Relacional — Ideia Geral</h2>
-        <p class="text-gray-700">O modelo relacional é construído a partir do DER: criamos tabelas (para entidades e alguns relacionamentos) e definimos FKs conforme as cardinalidades e participações.</p>
-      </section>
-
-      <!-- SLIDE 10 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Entidades → Tabelas</h2>
-        <p class="text-gray-700 mb-4">Cada entidade vira uma tabela com mesma PK e atributos.</p>
-        <div class="rule">
-          <ul class="list-disc pl-6 space-y-1">
-            <li>Atributo <strong>composto</strong> → decompose em atributos simples.</li>
-            <li>Atributo <strong>multivalorado</strong> → nova tabela para o atributo + PK da entidade como FK.</li>
-          </ul>
-        </div>
-      </section>
-
-      <!-- SLIDE 11 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Composto e Multivalorado</h2>
-        <img src="img/fig-4-4.png" alt="Figura 4.4: Conversão de entidade com atributo composto e multivalorado" class="rounded-lg shadow">
-        <p class="caption">Figura 4.4 — Conversão de entidade, atributo composto e multivalorado.</p>
-      </section>
-
-      <!-- SLIDE 12 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Multivalorado Composto</h2>
-        <img src="img/fig-4-5.png" alt="Figura 4.5: Atributo multivalorado composto" class="rounded-lg shadow">
-        <p class="caption">Figura 4.5 — Conversão de atributo multivalorado composto.</p>
-      </section>
-
-      <!-- SLIDE 13 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Entidade Fraca</h2>
-        <p class="text-gray-700 mb-4">Gera tabela própria contendo sua PK (geralmente composta) + FK da entidade forte relacionada.</p>
-        <img src="img/fig-4-6.png" alt="Figura 4.6: Conversão de entidade fraca" class="rounded-lg shadow">
-        <p class="caption">Figura 4.6 — Conversão de entidade fraca (ex.: <code>Contato</code> de <code>Aluno</code>).</p>
-      </section>
-
-      <!-- SLIDE 14 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Relacionamento N:N</h2>
-        <div class="rule mb-4">
-          <p><strong>Regra:</strong> Relacionamento Muitos-para-Muitos sempre vira <strong>nova tabela</strong> (associativa), levando as PKs das entidades como FKs. A PK da associativa é composta pelas FKs (às vezes + atributo descritivo).</p>
-        </div>
-        <img src="img/fig-4-7.png" alt="Figura 4.7: Conversão N:N" class="rounded-lg shadow">
-        <p class="caption">Figura 4.7 — Exemplo: <code>Professor</code> ⟷ <code>Disciplina</code> → <code>ProfessorDisciplina</code>.</p>
-      </section>
-
-      <!-- SLIDE 15 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Relacionamento 1:N</h2>
-        <div class="rule mb-4">
-          <p><strong>Regra:</strong> Não cria tabela nova. A PK do lado “1” vai como <strong>FK</strong> para o lado “N”. Atributos do relacionamento “seguem” a FK.</p>
-        </div>
-        <img src="img/fig-4-8.png" alt="Figura 4.8: Conversão 1:N" class="rounded-lg shadow">
-        <p class="caption">Figura 4.8 — Exemplo: <code>Escola</code> (1) → <code>Professor</code> (N) recebe <code>codigo_escola</code> como FK.</p>
-      </section>
-
-      <!-- SLIDE 16 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Relacionamento 1:1</h2>
-        <p class="text-gray-700 mb-3">Não cria tabela nova. Inserimos a PK de uma entidade como FK na outra. <em>Quem recebe?</em> Depende da <strong>participação</strong> (total/parcial) para evitar nulos.</p>
-        <img src="img/fig-4-9.png" alt="Figura 4.9: Conversão 1:1" class="rounded-lg shadow">
-        <p class="caption">Figura 4.9 — Ex.: toda <code>Escola</code> tem um <code>diretor</code> (participação total em <code>Escola</code>), então a FK fica em <code>tbEscola</code>.</p>
-      </section>
-
-      <!-- SLIDE 17 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Relacionamento Recursivo</h2>
-        <p class="text-gray-700 mb-3">Relaciona a entidade com ela mesma → gera FK na própria tabela.</p>
-        <img src="img/fig-4-10.png" alt="Figura 4.10: Recursivo" class="rounded-lg shadow">
-        <p class="caption">Figura 4.10 — Recursivo: <code>Aluno</code> → <code>Aluno</code> (representante).</p>
-      </section>
-
-      <!-- SLIDE 18 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Relacionamento Ternário (ou maior)</h2>
-        <p class="text-gray-700 mb-3">Três (ou mais) entidades: cria-se uma tabela contendo as FKs das entidades participantes (geralmente as que têm cardinalidade N) + atributos do relacionamento.</p>
-        <img src="img/fig-4-11.png" alt="Figura 4.11: Ternário" class="rounded-lg shadow">
-        <p class="caption">Figura 4.11 — Ex.: <code>Professor</code>–<code>Disciplina</code>–<code>Turma</code> → <code>ProfessorTurmaDisciplina</code>.</p>
-      </section>
-
-      <!-- SLIDE 19 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Agregação</h2>
-        <p class="text-gray-700 mb-3">Agregação (entidade resultante de um relacionamento) vira tabela, contendo seus atributos e FKs conforme os relacionamentos envolvidos.</p>
-        <img src="img/fig-4-12.png" alt="Figura 4.12: Agregação" class="rounded-lg shadow">
-        <p class="caption">Figura 4.12 — Ex.: <code>Compra</code> agregando <code>Cliente</code> e <code>Produto</code>; <code>Prestacao</code> referenciando <code>Compra</code> (FK composta).</p>
-      </section>
-
-      <!-- SLIDE 20 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Sintaxe de Modelo Relacional (Resumo)</h2>
-        <div class="code mb-3">
-          tbProfessor(<u>matricula_professor</u>, nome_professor, telefone_professor)<br>
-          tbDisciplina(<u>codigo_disciplina</u>, nome_disciplina)<br>
-          tbProfessorDisciplina(<u>matricula_professor</u>, <u>codigo_disciplina</u>, <u>data</u>)<br>
-          matricula_professor referencia tbProfessor<br>
-          codigo_disciplina referencia tbDisciplina
-        </div>
-        <p class="text-gray-700">Observe PK sublinhada, FKs declaradas e, quando necessário, PK composta na tabela associativa.</p>
-      </section>
-
-      <!-- SLIDE 21 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Atividade Prática - Parte 1 — Identificando PK/FK</h2>
-        <p class="text-gray-700 mb-3">Dado o esquema abaixo, identifique PKs e FKs.</p>
-        <div class="code">
-          tbAluno(<u>matricula_aluno</u>, nome_aluno, data_nascimento, codigo_turma)<br>
-          tbTurma(<u>codigo_turma</u>, nome_turma)
-        </div>
-        <p class="hint mt-3 hide">Dica: <code>codigo_turma</code> em <code>tbAluno</code> é FK para <code>tbTurma</code>.</p>
-      </section>
-
-      <!-- SLIDE 22 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Atividade Prática - Parte 2 — Evitando violação</h2>
-        <p class="text-gray-700 mb-3">O que ocorre ao tentar inserir uma FK que não existe?</p>
-        <div class="code">INSERT INTO tbAluno (matricula_aluno, nome_aluno, codigo_turma)<br>
-          VALUES (104, 'Pedro Lima', 6);</div>
-        <div class="warn mt-3 hide">
-          <p>Erro: integridade referencial — não existe <code>codigo_turma = 6</code> em <code>tbTurma</code>.</p>
-        </div>
-      </section>
-
-      <!-- SLIDE 23 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Atividade Prática - Parte 3 — N:N para tabela</h2>
-        <p class="text-gray-700 mb-3">Converta o relacionamento <em>Aluno cursa Disciplina (N:N)</em> para o modelo relacional.</p>
-        <div class="hint hide">
-          <p>Crie <code>tbMatricula</code> com PK composta: (<code>matricula_aluno</code>, <code>codigo_disciplina</code>) e FKs adequadas.</p>
-        </div>
-      </section>
-
-      <!-- SLIDE 24 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Participação Total vs Parcial</h2>
-        <p class="text-gray-700">Em 1:1, a decisão de onde colocar a FK leva em conta a participação para evitar nulos. Revise o caso “Diretor de Escola”.</p>
-      </section>
-
-      <!-- SLIDE 25 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Checklist de Conversão ER→Relacional</h2>
-        <ul class="list-disc pl-6 text-gray-700 space-y-2">
-          <li>Entidades → Tabelas (decompor compostos, multivalorados → nova tabela)</li>
-          <li>1:N → FK no lado N</li>
-          <li>N:N → Tabela associativa com PK composta</li>
-          <li>1:1 → FK na entidade com participação total (ou menor incidência de nulos)</li>
-          <li>Recursivo → FK na própria tabela</li>
-          <li>Ternário/Agregação → Tabela com FKs necessárias</li>
-        </ul>
-      </section>
-
-      <!-- SLIDE 26 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Atividade Prática - Parte final - Conversão ER→Relacional</h2>
-        <ol class="list-decimal pl-6 text-gray-700 space-y-2">
-          <li>Dado o DER a seguir, escreva o modelo relacional completo.</li>
-          <li>Indique PKs (sublinhe) e FKs (use “<code>x referencia tbX</code>”).</li>
-          <li>Classifique os relacionamentos (1:N, N:N, 1:1; recursivo; ternário; agregação).</li>
-        </ol>
-
-        <img src="img/q-10.png" alt="DER da questão 10">
-      </section>
-
-      <!-- SLIDE 27 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Perguntas Rápidas</h2>
-        <ul class="list-disc pl-6 text-gray-700 space-y-2">
-          <li>Por que N:N exige tabela associativa?</li>
-          <li>Quando um atributo gera nova tabela?</li>
-          <li>Como decidir a direção da FK em 1:1?</li>
-          <li>Exemplo de FK recursiva no contexto da turma?</li>
-        </ul>
-      </section>
-
-      <!-- SLIDE 28 -->
-      <section class="slide">
-        <h2 class="text-3xl font-bold mb-2">Dúvidas?</h2>
-        <p class="text-gray-700 mb-3">Façam o exercício das páginas 48 e 49. </p>
-        <div class="hint">
-          <p>Próxima aula será revisão para a prova.</p>
-        </div>
-      </section>
     </main>
 
-    <!-- TOC Modal -->
-    <dialog id="toc" class="p-0 rounded-xl w-[92vw] md:w-[720px]">
-      <div class="p-4 md:p-6">
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="text-xl font-semibold">Sumário de Slides</h3>
-          <button id="tocClose" class="px-3 py-1 rounded border">Fechar</button>
-        </div>
-        <div id="tocList" class="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-[60vh] overflow-y-auto"></div>
-      </div>
-    </dialog>
+    <script>
+        // --- CONTEÚDO DOS SLIDES ---
+        const slides = [
+            {
+                type: 'title',
+                title: 'Modelagem de Banco de Dados',
+                subtitle: 'Relacionamentos, Especialização e Agregação'
+            },
+            {
+                title: 'O que é um Relacionamento?',
+                content: `
+                    <ul class="list-disc space-y-3 text-lg text-left w-full">
+                        <li>Um relacionamento é uma <strong>associação entre entidades</strong>.</li>
+                        <li>É o que permite conectar dados para utilizá-los de forma eficiente.</li>
+                        <li>Exemplo: um relacionamento "pertence" conecta "Aluno" a "Turma".</li>
+                        <li>Representado por um losango nos diagramas.</li>
+                    </ul>
+                `,
+                image: { src: './fig/3.1.png', alt: 'Diagrama de relacionamento Aluno e Turma' }
+            },
+            {
+                title: 'Atributos em Relacionamentos',
+                content: `
+                    <ul class="list-disc space-y-3 text-lg text-left w-full">
+                        <li>Um relacionamento também pode ter seus próprios atributos, chamados de <strong>atributos descritivos</strong>.</li>
+                        <li>Esses atributos pertencem à relação, não às entidades individualmente.</li>
+                        <li><strong>Exemplo:</strong> A "data" em que um professor lecionou uma disciplina. A data pertence ao relacionamento "leciona".</li>
+                    </ul>
+                `,
+                image: { src: './fig/3.2.png', alt: 'Diagrama de relacionamento com atributo descritivo' }
+            },
+            {
+                title: 'Cardinalidade do Mapeamento',
+                content: `
+                    <div class="text-left w-full">
+                        <p class="text-lg mb-4">Expressa o número de objetos de uma entidade que podem ser associados a objetos de outra.</p>
+                        <p class="text-lg mb-6">Para definir, pergunte: "Um objeto da entidade X se associa a quantos da entidade Y?". As respostas podem ser <strong>0, 1 ou N (vários)</strong>.</p>
+                        <h3 class="font-semibold text-xl text-gray-800 mb-3">Tipos Principais:</h3>
+                        <div class="flex justify-around text-center">
+                            <div class="p-4 bg-gray-100 rounded-lg"><span class="font-bold text-lg">Um para Um (1:1)</span></div>
+                            <div class="p-4 bg-gray-100 rounded-lg"><span class="font-bold text-lg">Um para Muitos (1:N)</span></div>
+                            <div class="p-4 bg-gray-100 rounded-lg"><span class="font-bold text-lg">Muitos para Muitos (N:N)</span></div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: 'Cardinalidade Um para Um (1:1)',
+                content: `
+                    <p class="text-lg text-left w-full mb-4">Ocorre quando um objeto de uma entidade se relaciona a <strong>apenas um</strong> objeto de outra, e vice-versa.</p>
+                    <p class="text-lg text-left w-full"><strong>Exemplo:</strong> Um professor dirige apenas uma escola, e uma escola é dirigida por apenas um professor.</p>
+                `,
+                image: { src: './fig/3.4.png', alt: 'Exemplo de relacionamento 1 para 1' }
+            },
+            {
+                title: 'Cardinalidade Um para Muitos (1:N)',
+                content: `
+                    <p class="text-lg text-left w-full mb-4">Ocorre quando um objeto de uma entidade pode se relacionar a <strong>vários</strong> objetos de outra, mas o contrário não é verdadeiro.</p>
+                    <p class="text-lg text-left w-full"><strong>Exemplo:</strong> Uma escola pode ter vários professores, mas cada professor trabalha em apenas uma escola.</p>
+                `,
+                image: { src: './fig/3.5.png', alt: 'Exemplo de relacionamento 1 para N' }
+            },
+            {
+                title: 'Cardinalidade Muitos para Muitos (N:N)',
+                content: `
+                    <p class="text-lg text-left w-full mb-4">Acontece quando um objeto de uma entidade pode se relacionar a <strong>vários</strong> objetos da outra, e vice-versa.</p>
+                    <p class="text-lg text-left w-full"><strong>Exemplo:</strong> Um professor pode ministrar várias disciplinas, e uma disciplina pode ser ministrada por vários professores.</p>
+                `,
+                image: { src: './fig/3.6.png', alt: 'Exemplo de relacionamento N para N' }
+            },
+            {
+                title: 'Relacionamento Ternário',
+                content: `
+                    <p class="text-lg text-left w-full mb-4">Um relacionamento que ocorre entre <strong>três ou mais entidades</strong>.</p>
+                    <p class="text-lg text-left w-full"><strong>Exemplo:</strong> Para registrar qual <strong>professor</strong> ministra qual <strong>disciplina</strong> para qual <strong>turma</strong> em um determinado <strong>ano</strong>, um relacionamento ternário é necessário para manter a informação completa.</p>
+                `,
+                image: { src: './fig/3.7.png', alt: 'Exemplo de relacionamento ternário' }
+            },
+            {
+                title: 'Relacionamento Recursivo',
+                content: `
+                     <p class="text-lg text-left w-full mb-4">Também chamado de autorrelacionamento, é um tipo especial que associa objetos <strong>da mesma entidade</strong>.</p>
+                     <p class="text-lg text-left w-full"><strong>Exemplo:</strong> Dentro da entidade "Aluno", alguns alunos podem <strong>representar</strong> um grupo de outros alunos (serem <strong>representados</strong>).</p>
+                `,
+                image: { src: './fig/3.8.png', alt: 'Exemplo de relacionamento recursivo' }
+            },
+            {
+                title: 'Especialização e Generalização',
+                content: `
+                    <div class="text-left w-full">
+                        <p class="text-lg mb-4"><strong>Especialização:</strong> Subdivide uma entidade genérica (pai) em entidades mais específicas (filhas) com atributos próprios. Ex: "Pessoa" se especializa em "Professor" e "Aluno".</p>
+                        <p class="text-lg"><strong>Generalização:</strong> Processo inverso. Agrupa entidades similares em uma mais genérica, com um atributo "tipo" para diferenciá-las. Ex: "Telefone" com tipo "celular" ou "residencial".</p>
+                    </div>
+                `,
+                image: { src: './fig/3.9.png', alt: 'Diagramas de especialização e generalização' }
+            },
+            {
+                title: 'Agregação (Entidade Associativa)',
+                content: `
+                     <p class="text-lg text-left w-full mb-4">Usada quando precisamos criar um <strong>relacionamento com outro relacionamento</strong>.</p>
+                     <p class="text-lg text-left w-full"><strong>Exemplo:</strong> As prestações de um pagamento se relacionam com a "Compra" (o relacionamento entre "Cliente" e "Produto"), e não com as entidades individuais.</p>
+                `,
+                image: { src: './fig/3.13.png', alt: 'Exemplo de agregação' }
+            },
+            {
+                title: 'Conclusão',
+                content: `
+                    <ul class="list-disc space-y-4 text-xl text-left w-full">
+                        <li><strong>Relacionamentos</strong> conectam entidades, dando sentido aos dados.</li>
+                        <li><strong>Cardinalidade</strong> define as regras de negócio das associações.</li>
+                        <li><strong>Especialização e Agregação</strong> modelam cenários mais complexos e específicos.</li>
+                        <li class="pt-4 font-semibold">Compreender esses conceitos é fundamental para criar bancos de dados bem estruturados e eficientes.</li>
+                    </ul>
+                `
+            },
+            {
+                type: 'title',
+                title: 'Perguntas?',
+                subtitle: 'Fim da apresentação.'
+            }
+        ];
 
-    <!-- Footer controls -->
-    <footer class="mt-4 flex items-center justify-between text-sm text-gray-500">
-      <div>Use <span class="kbd">←</span> <span class="mx-1">/</span> <span class="kbd">→</span> para navegar</div>
-      <div>Pressione <span class="kbd">S</span> para abrir o Sumário</div>
-    </footer>
-  </div>
+        // --- LÓGICA DA APRESENTAÇÃO ---
+        let currentSlide = 0;
+        const slideContainer = document.getElementById('slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slideCounter = document.getElementById('slide-counter');
 
-  <script>
-    const deck = document.getElementById('deck');
-    const slides = Array.from(deck.querySelectorAll('.slide'));
-    const btnPrev = document.getElementById('btnPrev');
-    const btnNext = document.getElementById('btnNext');
-    const counter = document.getElementById('counter');
-    const btnTOC = document.getElementById('btnTOC');
-    const dlgTOC = document.getElementById('toc');
-    const tocList = document.getElementById('tocList');
-    const tocClose = document.getElementById('tocClose');
+        function renderSlide() {
+            const slideData = slides[currentSlide];
+            slideContainer.classList.remove('active');
 
-    let i = 0;
-    function show(n){
-      slides.forEach((s,idx)=>s.classList.toggle('active', idx===n));
-      counter.textContent = `Slide ${n+1} / ${slides.length}`;
-      btnPrev.disabled = n===0;
-      btnNext.disabled = n===slides.length-1;
-      i = n;
-    }
-    btnPrev.addEventListener('click', ()=> { if(i>0) show(i-1) });
-    btnNext.addEventListener('click', ()=> { if(i<slides.length-1) show(i+1) });
+            setTimeout(() => {
+                let html = '';
+                if (slideData.type === 'title') {
+                    html = `
+                        <div class="text-center">
+                            <h1 class="text-5xl font-bold text-gray-800 mb-4">${slideData.title}</h1>
+                            <p class="text-2xl text-gray-600">${slideData.subtitle}</p>
+                        </div>
+                    `;
+                } else {
+                    html = `
+                        <div class="w-full h-full flex flex-col md:flex-row items-center justify-center gap-8">
+                            <div class="md:w-1/2 flex-shrink-0">
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center md:text-left">${slideData.title}</h2>
+                                ${slideData.content}
+                            </div>
+                            ${slideData.image ? `
+                            <div class="md:w-1/2 flex items-center justify-center mt-6 md:mt-0">
+                                <img src="${slideData.image.src}" alt="${slideData.image.alt}" class="max-w-full h-auto rounded-lg bg-white p-2 border">
+                            </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+                slideContainer.innerHTML = html;
+                slideContainer.classList.add('active');
+                updateControls();
+            }, 250); // Tempo para a transição de fade-out
+        }
 
-    // Keyboard
-    window.addEventListener('keydown', (e)=>{
-      if(e.key==='ArrowRight') btnNext.click();
-      if(e.key==='ArrowLeft') btnPrev.click();
-      if(e.key.toLowerCase()==='s') openTOC();
-    });
+        function updateControls() {
+            slideCounter.textContent = `Slide ${currentSlide + 1} de ${slides.length}`;
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+        }
 
-    // TOC
-    function openTOC(){
-      tocList.innerHTML = '';
-      slides.forEach((s, idx)=>{
-        const h2 = s.querySelector('h2');
-        const title = h2 ? h2.textContent.trim() : `Slide ${idx+1}`;
-        const a = document.createElement('button');
-        a.className = 'text-left px-3 py-2 rounded border hover:bg-gray-50';
-        a.textContent = `${idx+1}. ${title}`;
-        a.addEventListener('click', ()=> { dlgTOC.close(); show(idx) });
-        tocList.appendChild(a);
-      });
-      dlgTOC.showModal();
-    }
-    btnTOC.addEventListener('click', openTOC);
-    tocClose.addEventListener('click', ()=> dlgTOC.close());
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                renderSlide();
+            }
+        }
 
-    // Init
-    show(0);
-  </script>
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                renderSlide();
+            }
+        }
 
-  <script>
-  // alternar tema ao pressionar a tecla "D"
-  document.addEventListener('keydown', e => {
-    if (e.key.toLowerCase() === 'd') {
-      document.body.dataset.theme =
-        document.body.dataset.theme === 'dark' ? '' : 'dark';
-    }
-  });
-</script>
+        // Event Listeners
+        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', prevSlide);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Inicialização
+        renderSlide();
+    </script>
 
 </body>
 </html>
