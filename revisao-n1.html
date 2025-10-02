@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Revisão de Banco de Dados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .slide {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .slide.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+        .correct {
+            background-color: #22c55e !important; /* green-500 */
+            color: white !important;
+            border-color: #16a34a !important; /* green-600 */
+        }
+        .incorrect {
+            background-color: #ef4444 !important; /* red-500 */
+            color: white !important;
+            border-color: #dc2626 !important; /* red-600 */
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 flex items-center justify-center min-h-screen p-4">
+
+    <div id="quiz-container" class="bg-white w-full max-w-2xl rounded-2xl shadow-xl p-6 md:p-8">
+        <!-- Cabeçalho do Quiz -->
+        <div class="mb-6 text-center">
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-700">Quiz de Revisão</h1>
+            <p class="text-slate-500">Banco de Dados</p>
+            <div class="w-full bg-slate-200 rounded-full h-2 mt-4">
+                <div id="progress-bar" class="bg-sky-500 h-2 rounded-full transition-all duration-300 ease-in-out" style="width: 0%;"></div>
+            </div>
+            <p id="progress-text" class="text-sm text-slate-500 mt-2">Pergunta 1 de 40</p>
+        </div>
+
+        <!-- Container do Slide -->
+        <div id="slide-container">
+            <!-- As perguntas serão injetadas aqui -->
+        </div>
+
+        <!-- Feedback e Navegação -->
+        <div class="mt-6">
+            <div id="feedback-container" class="min-h-[60px] p-4 rounded-lg bg-slate-50 border border-slate-200 hidden">
+                <p id="feedback-rationale" class="text-sm text-slate-600"></p>
+            </div>
+            <div class="flex justify-between mt-4">
+                <button id="prev-btn" class="bg-slate-300 hover:bg-slate-400 text-slate-800 font-bold py-2 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-arrow-left mr-2"></i> Anterior
+                </button>
+                <button id="next-btn" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    Próximo <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tela de Resultados -->
+    <div id="results-container" class="bg-white w-full max-w-2xl rounded-2xl shadow-xl p-8 text-center hidden">
+         <h2 class="text-3xl font-bold text-slate-700 mb-4">Quiz Concluído!</h2>
+         <p class="text-lg text-slate-600 mb-6">Sua pontuação final é:</p>
+         <div id="score-circle" class="relative w-40 h-40 mx-auto mb-6 flex items-center justify-center text-4xl font-bold bg-sky-100 rounded-full">
+            <span id="score-text"></span>
+         </div>
+         <p id="score-message" class="text-slate-500 mb-8"></p>
+         <button id="restart-btn" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-lg transition-colors text-lg">
+             <i class="fas fa-redo mr-2"></i> Tentar Novamente
+         </button>
+    </div>
+
+
+    <script>
+        const quizData = [
+            { question: "De acordo com o texto, qual é a principal razão pela qual a área de banco de dados é considerada de grande importância na informática?", options: [ { text: "Porque a informação é um bem precioso e deve ser armazenada de forma coerente e adequada.", isCorrect: true, rationale: "Esta opção reflete diretamente a introdução do capítulo, que enfatiza o valor da informação." }, { text: "Porque permite o uso de redes sociais como o Orkut.", isCorrect: false, rationale: "O Orkut é usado como um exemplo de aplicação, mas não é a razão fundamental da importância dos bancos de dados." }, { text: "Porque todo Sistema de Informação, por menor que seja, precisa ser rápido.", isCorrect: false, rationale: "A rapidez na recuperação de dados é uma característica importante, mas a razão principal é o armazenamento coerente da informação valiosa." }, { text: "Porque os arquitetos precisam de dados para desenvolver novos leiautes de salas de aula.", isCorrect: false, rationale: "Este é um exemplo específico de uso de dados, mas não a razão geral da importância da área de banco de dados." } ] },
+            { question: "Qual a diferença fundamental entre 'dados' e 'informação' no contexto inicial apresentado pelo livro?", options: [ { text: "Dados são o que coletamos, e informação são os dados úteis para um projeto específico.", isCorrect: true, rationale: "O texto define informação como o subconjunto de dados que tem utilidade para um determinado objetivo." }, { text: "Não há diferença, os termos são sempre sinônimos.", isCorrect: false, rationale: "O texto explica que, por convenção na área, os termos passam a ser usados como sinônimos porque só se deve armazenar o que é útil, mas inicialmente há uma distinção." }, { text: "Informação é tudo o que podemos coletar, e dados são apenas os números.", isCorrect: false, rationale: "O conceito de dados apresentado é amplo e não se restringe a números, incluindo cor, tipo de assoalho, etc." }, { text: "Dados são armazenados em arquivos e informação em bancos de dados.", isCorrect: false, rationale: "O local de armazenamento não define a diferença conceitual entre os dois termos." } ] },
+            { question: "Qual das seguintes opções NÃO é uma das três principais características de um Sistema de Banco de Dados mencionadas no texto?", options: [ { text: "Criar interfaces gráficas para o usuário.", isCorrect: true, rationale: "A criação de interfaces é responsabilidade da aplicação que utiliza o banco de dados, não do sistema de banco de dados em si." }, { text: "Armazenar os dados.", isCorrect: false, rationale: "Esta é a função mais básica de um sistema de banco de dados." }, { text: "Relacionar os dados armazenados.", isCorrect: false, rationale: "A capacidade de criar relações coerentes entre os dados é uma característica fundamental." }, { text: "Recuperar os dados rapidamente.", isCorrect: false, rationale: "A recuperação eficiente dos dados é uma das principais vantagens de usar um sistema de banco de dados." } ] },
+            { question: "O que diferencia um Sistema Gerenciador de Banco de Dados (SGBD) de um Sistema de Banco de Dados mais simples?", options: [ { text: "Um SGBD oferece funcionalidades adicionais como gerenciamento de transações e controle de acesso concorrente.", isCorrect: true, rationale: "O texto aponta que os SGBDs evoluíram para incluir essas e outras funcionalidades de gerenciamento avançado." }, { text: "Um SGBD só pode ser de código aberto, como o PostgreSQL e o MySQL.", isCorrect: false, rationale: "O texto cita exemplos de SGBDs tanto de código aberto quanto proprietários (Oracle, SQL Server)." }, { text: "Um SGBD não permite o relacionamento de dados, focando apenas no armazenamento.", isCorrect: false, rationale: "Pelo contrário, o gerenciamento de relacionamentos é uma parte crucial de um SGBD." }, { text: "Um SGBD armazena dados em múltiplos arquivos espalhados, enquanto um Sistema de Banco de Dados centraliza os dados.", isCorrect: false, rationale: "Tanto Sistemas de Banco de Dados quanto SGBDs têm como objetivo centralizar os dados para evitar que fiquem espalhados." } ] },
+            { question: "O que é uma 'transação' em um banco de dados?", options: [ { text: "Um conjunto de operações tratado como uma unidade lógica indivisível.", isCorrect: true, rationale: "Esta é a definição precisa apresentada no texto, onde ou todas as operações são concluídas ou nenhuma é." }, { text: "Qualquer consulta feita ao banco de dados usando a linguagem SQL.", isCorrect: false, rationale: "Uma consulta (SELECT) é uma operação, mas uma transação geralmente envolve um conjunto de operações (INSERT, UPDATE, DELETE) que devem ser tratadas como um bloco." }, { text: "O processo de login e senha de um usuário para acessar o banco de dados.", isCorrect: false, rationale: "Isso se refere às regras de segurança, não ao conceito de transação." }, { text: "Uma compra realizada em um site de e-commerce.", isCorrect: false, rationale: "Uma compra é um exemplo de processo que é gerenciado por uma transação, mas não é a definição da transação em si." } ] },
+            { question: "Qual é a principal responsabilidade de um Administrador de Banco de Dados (DBA)?", options: [ { text: "Monitorar e gerenciar as bases de dados, controlando permissões, backups e desempenho.", isCorrect: true, rationale: "O texto descreve o DBA como o responsável por toda a gestão e manutenção do SGBD e das bases de dados." }, { text: "Desenvolver as aplicações que se conectam ao banco de dados.", isCorrect: false, rationale: "Esta é a responsabilidade dos Analistas de Sistemas e Programadores." }, { text: "Inserir e alterar os dados diariamente através das aplicações.", isCorrect: false, rationale: "Esta é a função dos Usuários Finais." }, { text: "Modelar a base de dados na fase conceitual e lógica.", isCorrect: false, rationale: "A modelagem é tipicamente uma tarefa dos Analistas de Sistemas." } ] },
+            { question: "Na fase de Modelagem Conceitual de um projeto de banco de dados, qual é a principal preocupação?", options: [ { text: "Descrever quais dados serão armazenados e como eles se relacionam, refletindo a necessidade do usuário.", isCorrect: true, rationale: "A modelagem conceitual foca em entender e representar os requisitos do negócio do ponto de vista do usuário, sem se preocupar com detalhes de implementação." }, { text: "Escolher o SGBD que será utilizado e conhecer a linguagem SQL.", isCorrect: false, rationale: "Essas preocupações pertencem à fase de Implementação do Modelo Lógico." }, { text: "Transformar o modelo em algo mais próximo da implementação, como o modelo relacional.", isCorrect: false, rationale: "Isso descreve a fase de Modelagem Lógica." }, { text: "Criar índices na base de dados para aumentar o desempenho.", isCorrect: false, rationale: "Isso é uma preocupação do esquema físico, geralmente após a implementação." } ] },
+            { question: "O que é uma 'entidade' no Modelo de Entidade e Relacionamento (ER)?", options: [ { text: "Um conjunto de objetos do mesmo tipo do mundo real sobre os quais se pretende armazenar dados.", isCorrect: true, rationale: "Esta definição corresponde exatamente ao que o texto apresenta para entidade, como 'Professor' ou 'Aluno'." }, { text: "Uma propriedade ou característica de um objeto, como nome ou CPF.", isCorrect: false, rationale: "Isso define um 'atributo', não uma entidade." }, { text: "Uma associação entre dois ou more objetos, como 'leciona' ou 'pertence'.", isCorrect: false, rationale: "Isso descreve um 'relacionamento'." }, { text: "O diagrama gráfico que representa o modelo de dados.", isCorrect: false, rationale: "O diagrama é a representação gráfica do modelo, chamado de DER, não a entidade em si." } ] },
+            { question: "Um atributo que pode ser decomposto em outros atributos menores é chamado de:", options: [ { text: "Atributo composto.", isCorrect: true, rationale: "O exemplo clássico é 'endereço', que pode ser dividido em rua, número, etc." }, { text: "Atributo multivalorado.", isCorrect: false, rationale: "Um atributo multivalorado permite armazenar vários valores para o mesmo campo (ex: vários telefones), mas não significa que ele possa ser decomposto." }, { text: "Atributo derivado.", isCorrect: false, rationale: "Um atributo derivado é aquele cujo valor é calculado a partir de outros atributos (ex: idade calculada a partir da data de nascimento)." }, { text: "Atributo simples.", isCorrect: false, rationale: "Um atributo simples é o oposto, ele é indivisível." } ] },
+            { question: "O que é uma Chave Primária (PK) em uma entidade?", options: [ { text: "Um atributo ou conjunto de atributos que identifica unicamente cada objeto da entidade.", isCorrect: true, rationale: "A função da chave primária é garantir que cada registro (objeto) seja único e não possa ser duplicado." }, { text: "Qualquer atributo que não possa receber valor nulo.", isCorrect: false, rationale: "Uma chave primária não pode ser nula, mas nem todo atributo que não pode ser nulo é uma chave primária." }, { text: "Um atributo que se relaciona com outra entidade.", isCorrect: false, rationale: "Isso descreve uma chave estrangeira, não uma primária." }, { text: "O atributo mais importante da entidade, como o nome de uma pessoa.", isCorrect: false, rationale: "A importância é subjetiva. A chave primária é definida pela sua capacidade de identificação única, e 'nome' pode se repetir." } ] },
+            { question: "Uma 'Entidade Fraca' é caracterizada por:", options: [ { text: "Não possuir uma chave primária própria e depender de outra entidade para ser identificada.", isCorrect: true, rationale: "A identidade de uma entidade fraca está ligada à identidade de sua entidade 'proprietária'." }, { text: "Ter poucos atributos.", isCorrect: false, rationale: "O número de atributos não define se uma entidade é fraca ou forte." }, { text: "Não se relacionar com nenhuma outra entidade.", isCorrect: false, rationale: "Pelo contrário, uma entidade fraca é definida justamente por sua dependência e relacionamento com outra entidade." }, { text: "Sempre ter um relacionamento do tipo 1:1.", isCorrect: false, rationale: "O relacionamento que identifica a entidade fraca é tipicamente 1:N." } ] },
+            { question: "No Diagrama de Entidade e Relacionamento (DER), como um relacionamento é tipicamente representado?", options: [ { text: "Por um losango.", isCorrect: true, rationale: "O losango é a forma padrão para representar a associação entre entidades." }, { text: "Por um retângulo.", isCorrect: false, rationale: "O retângulo é usado para representar uma entidade." }, { text: "Por uma elipse.", isCorrect: false, rationale: "A elipse é usada para representar um atributo." }, { text: "Por uma linha.", isCorrect: false, rationale: "A linha conecta as entidades ao relacionamento, mas o relacionamento em si é o losango." } ] },
+            { question: "O que a cardinalidade de um relacionamento expressa?", options: [ { text: "O número de objetos de uma entidade que podem ser associados a objetos de outra entidade.", isCorrect: true, rationale: "A cardinalidade define as regras de negócio sobre quantos registros de uma tabela podem se relacionar com registros de outra." }, { text: "A quantidade de atributos que o relacionamento possui.", isCorrect: false, rationale: "Isso se refere a atributos descritivos, não à cardinalidade." }, { text: "Se o relacionamento é forte ou fraco.", isCorrect: false, rationale: "Essa terminologia está mais associada a entidades, não diretamente à cardinalidade." }, { text: "A importância do relacionamento para o modelo de dados.", isCorrect: false, rationale: "A importância é conceitual, enquanto a cardinalidade é uma restrição estrutural específica." } ] },
+            { question: "Qual situação abaixo descreve um relacionamento Muitos para Muitos (N:N)?", options: [ { text: "Um professor pode lecionar várias disciplinas, e uma disciplina pode ser lecionada por vários professores.", isCorrect: true, rationale: "Este é o exemplo clássico de N:N, onde um objeto de cada lado pode se relacionar com múltiplos objetos do outro lado." }, { text: "Um aluno pode pertencer a uma e apenas uma turma, mas uma turma pode ter vários alunos.", isCorrect: false, rationale: "Isso descreve um relacionamento Um para Muitos (1:N)." }, { text: "Um diretor pode dirigir apenas uma escola, e uma escola pode ser dirigida por apenas um diretor.", isCorrect: false, rationale: "Isso descreve um relacionamento Um para Um (1:1)." }, { text: "Um produto tem um único código de barras, e um código de barras identifica um único produto.", isCorrect: false, rationale: "Esta é uma relação 1:1 entre um objeto e seu identificador único." } ] },
+            { question: "O que é um relacionamento recursivo (ou autorrelacionamento)?", options: [ { text: "É um relacionamento que associa objetos da mesma entidade.", isCorrect: true, rationale: "Ocorre quando uma entidade se relaciona com ela mesma, como um funcionário que supervisiona outros funcionários." }, { text: "É um relacionamento que envolve três ou mais entidades.", isCorrect: false, rationale: "Isso define um relacionamento ternário ou de grau superior." }, { text: "É um relacionamento que não possui atributos descritivos.", isCorrect: false, rationale: "Um relacionamento recursivo pode ou não ter atributos, isso não o define." }, { text: "É um relacionamento que só pode ter cardinalidade 1:1.", isCorrect: false, rationale: "Relacionamentos recursivos podem ter cardinalidade 1:1, 1:N ou N:N." } ] },
+            { question: "O processo de subdividir uma entidade genérica (pai) em entidades mais específicas (filhas) é chamado de:", options: [ { text: "Especialização.", isCorrect: true, rationale: "A especialização permite refinar o modelo, adicionando atributos e relacionamentos específicos para subgrupos de uma entidade." }, { text: "Generalização.", isCorrect: false, rationale: "A generalização é o processo inverso: criar uma entidade mais genérica a partir de entidades específicas." }, { text: "Agregação.", isCorrect: false, rationale: "A agregação permite tratar um relacionamento como uma entidade para que ele possa participar de outros relacionamentos." }, { text: "Normalização.", isCorrect: false, rationale: "A normalização é um processo do modelo lógico para reduzir redundâncias, não uma subdivisão de entidades no modelo conceitual." } ] },
+            { question: "Em uma especialização, o que acontece com os atributos da entidade pai?", options: [ { text: "Eles são 'herdados' por todas as entidades filhas.", isCorrect: true, rationale: "Os atributos comuns ficam na entidade pai e são aplicáveis a todas as entidades especializadas." }, { text: "Eles devem ser repetidos em cada uma das entidades filhas.", isCorrect: false, rationale: "Repetir os atributos geraria redundância, que é o que a especialização visa evitar." }, { text: "Eles são descartados e apenas os atributos das entidades filhas são mantidos.", isCorrect: false, rationale: "Os atributos da entidade pai são fundamentais, pois representam as características comuns." }, { text: "Apenas a chave primária da entidade pai é herdada.", isCorrect: false, rationale: "Todos os atributos da entidade pai são herdados, não apenas a chave." } ] },
+            { question: "Quando devemos usar a 'agregação' (ou entidade associativa)?", options: [ { text: "Quando precisamos relacionar uma entidade a um relacionamento.", isCorrect: true, rationale: "A agregação trata um relacionamento existente como uma única entidade para que ele possa se conectar a outras entidades." }, { text: "Sempre que tivermos um relacionamento N:N.", isCorrect: false, rationale: "Um relacionamento N:N vira uma tabela no modelo relacional, mas a agregação é um conceito do modelo conceitual para relacionar um relacionamento a outra coisa." }, { text: "Quando uma entidade é fraca e depende de outra.", isCorrect: false, rationale: "Isso descreve o conceito de entidade fraca, não agregação." }, { text: "Quando queremos combinar duas entidades em uma só.", isCorrect: false, rationale: "Isso poderia ser um caso de generalização, não de agregação." } ] },
+            { question: "No Modelo Relacional, qual é o equivalente a uma 'entidade' do Modelo ER?", options: [ { text: "Tabela (ou Relação).", isCorrect: true, rationale: "Cada entidade do modelo conceitual é mapeada para uma tabela no modelo lógico relacional." }, { text: "Linha (ou Registro).", isCorrect: false, rationale: "Uma linha representa um objeto específico (uma instância) da entidade, não a entidade em si." }, { text: "Coluna (ou Campo).", isCorrect: false, rationale: "Uma coluna representa um atributo da entidade." }, { text: "Chave Estrangeira.", isCorrect: false, rationale: "A chave estrangeira é usada para implementar os relacionamentos entre as tabelas." } ] },
+            { question: "O que é uma 'Chave Estrangeira' (FK) no modelo relacional?", options: [ { text: "Um atributo em uma tabela que faz referência à chave primária de outra tabela (ou da mesma).", isCorrect: true, rationale: "É o mecanismo que implementa os relacionamentos, garantindo a ligação entre as tabelas." }, { text: "Uma chave primária que é composta por mais de um atributo.", isCorrect: false, rationale: "Isso define uma chave primária composta." }, { text: "Uma chave primária que não é a melhor escolha para a tabela.", isCorrect: false, rationale: "Isso se refere a uma chave candidata, não uma chave estrangeira." }, { text: "Um atributo que pode ter valores repetidos e nulos.", isCorrect: false, rationale: "Embora uma chave estrangeira possa, em alguns casos, ser nula ou repetida, sua definição principal é a referência a uma chave primária." } ] },
+            { question: "A 'integridade referencial' garante que:", options: [ { text: "O valor de uma chave estrangeira deve corresponder a um valor de chave primária existente ou ser nulo.", isCorrect: true, rationale: "Esta regra impede que existam 'referências órfãs', ou seja, registros que apontam para algo que não existe." }, { text: "A chave primária de uma tabela nunca pode ser nula.", isCorrect: false, rationale: "Isso é a 'integridade de entidade', não a integridade referencial." }, { text: "Todos os atributos em uma tabela devem ser do tipo de dado correto.", isCorrect: false, rationale: "Isso é a 'integridade de domínio'." }, { text: "Duas linhas em uma tabela não podem ser idênticas.", isCorrect: false, rationale: "Isso é garantido pela chave primária (integridade de entidade)." } ] },
+            { question: "Como um atributo multivalorado do Modelo ER é convertido para o Modelo Relacional?", options: [ { text: "Cria-se uma nova tabela para o atributo, contendo o próprio atributo e a chave primária da tabela original como chave estrangeira.", isCorrect: true, rationale: "O modelo relacional não suporta múltiplos valores em um único campo, então a solução é criar uma tabela separada para armazená-los." }, { text: "Criam-se várias colunas na tabela original, uma para cada valor possível (ex: telefone1, telefone2).", isCorrect: false, rationale: "Isso é uma má prática, pois limita o número de valores e dificulta as consultas." }, { text: "Os valores são armazenados em um único campo, separados por vírgula.", isCorrect: false, rationale: "Isso viola a primeira forma normal e torna a manipulação dos dados muito difícil." }, { text: "O atributo é simplesmente ignorado e não é incluído no modelo relacional.", isCorrect: false, rationale: "Se a informação é importante no modelo conceitual, ela deve ser representada no modelo relacional." } ] },
+            { question: "Na conversão de um relacionamento N:N (Muitos para Muitos) do Modelo ER para o Relacional, o que acontece?", options: [ { text: "Cria-se uma nova tabela que contém as chaves primárias das duas entidades originais como chaves estrangeiras.", isCorrect: true, rationale: "Esta nova tabela, chamada de tabela associativa ou de junção, representa o relacionamento e armazena as ligações entre os registros das duas tabelas originais." }, { text: "Adiciona-se uma chave estrangeira em cada uma das tabelas originais, apontando uma para a outra.", isCorrect: false, rationale: "Isso não funciona para N:N, pois uma coluna só pode armazenar um valor de chave estrangeira por vez." }, { text: "Escolhe-se uma das tabelas para receber a chave estrangeira da outra.", isCorrect: false, rationale: "Esta é a regra para relacionamentos 1:N, não N:N." }, { text: "O relacionamento é ignorado, pois o modelo relacional não consegue representá-lo.", isCorrect: false, rationale: "O modelo relacional representa relacionamentos N:N perfeitamente através de uma tabela intermediária." } ] },
+            { question: "Na conversão de um relacionamento 1:N (Um para Muitos), onde a chave estrangeira é colocada?", options: [ { text: "Na tabela que está no lado 'N' (muitos) do relacionamento.", isCorrect: true, rationale: "A tabela do lado 'N' recebe a chave primária da tabela do lado '1', permitindo que vários registros (ex: vários alunos) se conectem a um único registro (ex: uma turma)." }, { text: "Na tabela que está no lado '1' (um) do relacionamento.", isCorrect: false, rationale: "Isso resultaria em um atributo multivalorado (a turma teria que armazenar o ID de todos os seus alunos em um único campo), o que é incorreto." }, { text: "Cria-se uma nova tabela, assim como no relacionamento N:N.", isCorrect: false, rationale: "Não é necessário criar uma nova tabela para um relacionamento 1:N; uma chave estrangeira é suficiente." }, { text: "Em ambas as tabelas, uma apontando para a outra.", isCorrect: false, rationale: "Isso criaria uma redundância desnecessária e complexidade." } ] },
+            { question: "Para um relacionamento 1:1, qual é o critério principal para decidir qual tabela recebe a chave estrangeira?", options: [ { text: "A chave estrangeira deve ser colocada na tabela da entidade que tem participação total no relacionamento, para evitar valores nulos.", isCorrect: true, rationale: "Se uma entidade 'deve' participar do relacionamento (participação total), o campo da chave estrangeira nela nunca será nulo. Colocar na entidade de participação parcial geraria muitos nulos." }, { text: "A tabela com o menor número de atributos deve receber a chave estrangeira.", isCorrect: false, rationale: "O número de atributos não é o critério para essa decisão; a participação no relacionamento é." }, { text: "A tabela com a chave primária do tipo numérico deve receber a chave estrangeira.", isCorrect: false, rationale: "O tipo de dado da chave primária não influencia qual tabela recebe a FK." }, { text: "É indiferente; qualquer uma das tabelas pode receber a chave estrangeira sem nenhuma consequência.", isCorrect: false, rationale: "A escolha tem consequências, principalmente em relação à obrigatoriedade do preenchimento do campo (valores nulos)." } ] },
+            { question: "Verdadeiro ou Falso: No modelo relacional, o nome de uma chave estrangeira deve ser sempre idêntico ao nome da chave primária a que ela se refere.", options: [ { text: "Falso", isCorrect: true, rationale: "Embora seja uma boa prática para clareza, não é uma regra. A chave estrangeira pode ter um nome diferente, como 'matricula_aluno_representante' referenciando 'matricula_aluno'." }, { text: "Verdadeiro", isCorrect: false, rationale: "O nome pode ser diferente para dar mais contexto à relação, como no caso do relacionamento recursivo." } ] },
+            { question: "Como um relacionamento ternário do Modelo ER é mapeado para o Modelo Relacional?", options: [ { text: "Cria-se uma nova tabela contendo as chaves primárias de todas as entidades participantes como chaves estrangeiras.", isCorrect: true, rationale: "Similar a um relacionamento N:N, mas envolvendo três ou mais entidades, uma tabela de junção é criada para registrar as combinações de chaves." }, { text: "Criam-se três relacionamentos binários (1:N) para conectar as entidades.", isCorrect: false, rationale: "Isso pode levar à perda de informação, pois não garante que a relação entre as três entidades seja mantida como uma única ocorrência." }, { text: "Escolhe-se uma entidade central para receber as chaves estrangeiras das outras duas.", isCorrect: false, rationale: "Isso só funcionaria se os relacionamentos fossem 1:N a partir dessa entidade central, o que não é o caso de um relacionamento ternário genérico." }, { text: "Relacionamentos ternários não podem ser representados no modelo relacional.", isCorrect: false, rationale: "Eles são perfeitamente representáveis através de uma tabela associativa." } ] },
+            { question: "Qual é o papel do 'usuário final' em um sistema de banco de dados?", options: [ { text: "Trabalhar diariamente com as aplicações, sendo responsável pela entrada e alteração dos dados.", isCorrect: true, rationale: "O usuário final interage com o sistema através da aplicação, sem precisar de conhecimento técnico sobre o banco de dados." }, { text: "Garantir o melhor desempenho para o banco de dados e realizar backups.", isCorrect: false, rationale: "Esta é a função do Administrador de Banco de Dados (DBA)." }, { text: "Modelar a base de dados e conectá-la à aplicação.", isCorrect: false, rationale: "Esta é a função dos Analistas e Programadores." }, { text: "Escrever consultas em SQL para recuperar informações complexas.", isCorrect: false, rationale: "Normalmente, esta é uma tarefa de analistas ou programadores, não do usuário final, que utiliza relatórios e telas prontas." } ] },
+            { question: "Um atributo 'idade' calculado a partir de um atributo 'data_nascimento' é um exemplo de atributo:", options: [ { text: "Derivado.", isCorrect: true, rationale: "Seu valor não é armazenado diretamente, mas sim obtido (derivado) de outro valor já existente." }, { text: "Composto.", isCorrect: false, rationale: "Um atributo composto pode ser dividido em partes (ex: endereço), o que não é o caso de 'idade'." }, { text: "Multivalorado.", isCorrect: false, rationale: "Uma pessoa só tem uma idade em um dado momento, então não é multivalorado." }, { text: "Nulo.", isCorrect: false, rationale: "Nulo significa a ausência de valor, enquanto um atributo derivado tem um valor calculado." } ] },
+            { question: "Verdadeiro ou Falso: Um SGBD que opera em arquitetura cliente-servidor armazena as bases de dados na máquina do cliente.", options: [ { text: "Falso", isCorrect: true, rationale: "O texto afirma que na arquitetura cliente-servidor, todas as bases de dados são criadas, alteradas e excluídas no servidor." }, { text: "Verdadeiro", isCorrect: false, rationale: "A máquina cliente possui apenas a aplicação ou ferramenta de acesso; os dados e o SGBD residem no servidor." } ] },
+            { question: "A linguagem padrão para realizar consultas em bancos de dados relacionais é:", options: [ { text: "SQL (Structured Query Language).", isCorrect: true, rationale: "O texto menciona explicitamente o SQL como a linguagem de consulta para bancos de dados relacionais." }, { text: "Java.", isCorrect: false, rationale: "Java é uma linguagem de programação usada para criar aplicações que podem acessar bancos de dados, mas não é a linguagem de consulta em si." }, { text: "HTML.", isCorrect: false, rationale: "HTML é uma linguagem de marcação para criar páginas web." }, { text: "DBA.", isCorrect: false, rationale: "DBA é a sigla para Administrador de Banco de Dados, um papel profissional, não uma linguagem." } ] },
+            { question: "Se um atributo 'telefone' de um cliente pode ser opcional, isso significa que ele é um:", options: [ { text: "Atributo nulo.", isCorrect: true, rationale: "Permitir valor nulo significa que o atributo não é obrigatório e pode ser deixado em branco durante o cadastro." }, { text: "Atributo multivalorado.", isCorrect: false, rationale: "Multivalorado significa que o cliente pode ter vários telefones, mas não diz se o preenchimento é obrigatório ou não." }, { text: "Atributo simples.", isCorrect: false, rationale: "Simples significa que ele é indivisível, o que não tem relação com sua obrigatoriedade." }, { text: "Atributo chave.", isCorrect: false, rationale: "Um atributo chave (primária) nunca pode ser nulo." } ] },
+            { question: "Uma chave primária composta é aquela que:", options: [ { text: "É formada por dois ou mais atributos.", isCorrect: true, rationale: "É utilizada quando um único atributo não é suficiente para identificar unicamente um registro, mas a combinação de vários atributos é." }, { text: "É composta apenas por atributos do tipo texto.", isCorrect: false, rationale: "O tipo de dado dos atributos não define se a chave é simples ou composta." }, { text: "Faz referência a uma chave de outra tabela.", isCorrect: false, rationale: "Isso descreve uma chave estrangeira." }, { text: "Pode ser dividida em chaves menores.", isCorrect: false, rationale: "A chave é uma unidade lógica; a questão é que ela é formada por múltiplos atributos." } ] },
+            { question: "O que acontece com os atributos descritivos de um relacionamento 1:N quando ele é convertido para o modelo relacional?", options: [ { text: "Eles são adicionados à tabela do lado 'N', junto com a chave estrangeira.", isCorrect: true, rationale: "O texto afirma que os atributos descritivos 'seguem' a chave estrangeira." }, { text: "Eles são adicionados à tabela do lado '1'.", isCorrect: false, rationale: "Isso estaria incorreto, pois o atributo se refere à relação específica de um objeto do lado 'N' com um objeto do lado '1'." }, { text: "Cria-se uma nova tabela apenas para os atributos descritivos.", isCorrect: false, rationale: "Não há necessidade de uma nova tabela; eles podem ser acomodados na tabela já existente." }, { text: "Eles são descartados, pois não podem ser representados.", isCorrect: false, rationale: "Toda informação do modelo conceitual deve ser representada, e há uma regra clara para isso." } ] },
+            { question: "Qual dos seguintes papéis de usuário precisa de menos conhecimento técnico sobre banco de dados?", options: [ { text: "Usuário Final.", isCorrect: true, rationale: "Para o usuário final, o banco de dados é transparente; ele apenas interage com a interface da aplicação." }, { text: "Administrador do Banco de Dados (DBA).", isCorrect: false, rationale: "O DBA precisa de conhecimento profundo e especializado sobre o SGBD." }, { text: "Analista de Sistemas.", isCorrect: false, rationale: "O Analista precisa saber modelar o banco de dados e entender SQL." }, { text: "Programador de Aplicações.", isCorrect: false, rationale: "O Programador precisa saber como conectar a aplicação ao banco de dados e manipular os dados, geralmente usando SQL." } ] },
+            { question: "A afirmação 'valor nulo é o mesmo que o valor zero' é:", options: [ { text: "Falsa, pois nulo representa a ausência de valor, enquanto zero é um valor numérico específico.", isCorrect: true, rationale: "O texto destaca essa diferença, explicando que 'nulo' significa que o campo está vazio ou o valor é desconhecido." }, { text: "Verdadeira, pois ambos significam que não há informação no campo.", isCorrect: false, rationale: "Zero é uma informação (um número), enquanto nulo é a falta de informação." }, { text: "Verdadeira, mas apenas para campos do tipo numérico.", isCorrect: false, rationale: "A distinção é válida para todos os tipos de campo onde o conceito se aplica." }, { text: "Falsa, pois nulo é um texto e zero é um número.", isCorrect: false, rationale: "Nulo não é um texto 'null', mas um estado especial que indica a ausência de valor." } ] },
+            { question: "Verdadeiro ou Falso: Uma boa modelagem de dados é crucial porque alterações no esquema do banco de dados, após o desenvolvimento da aplicação, podem gerar um grande retrabalho.", options: [ { text: "Verdadeiro", isCorrect: true, rationale: "O texto enfatiza que a fase de modelagem é a principal etapa, e que mudanças posteriores no esquema frequentemente exigem alterações na aplicação." }, { text: "Falso", isCorrect: false, rationale: "O texto argumenta o oposto, destacando a dificuldade de alcançar a independência de dados lógica e os custos de retrabalho." } ] },
+            { question: "O conjunto de valores permitidos para um atributo é chamado de:", options: [ { text: "Domínio.", isCorrect: true, rationale: "O domínio define o 'universo' de valores que um atributo pode assumir (ex: o domínio do atributo 'sexo' pode ser {'M', 'F'})." }, { text: "Cardinalidade.", isCorrect: false, rationale: "Cardinalidade se refere ao número de associações em um relacionamento." }, { text: "Entidade.", isCorrect: false, rationale: "Entidade é um conjunto de objetos, não o conjunto de valores de um atributo." }, { text: "Esquema.", isCorrect: false, rationale: "Esquema é a estrutura geral da base de dados." } ] },
+            { question: "Na conversão de uma Entidade Fraca para o modelo relacional, como a sua chave primária é formada?", options: [ { text: "Pela combinação da chave primária da entidade forte (como chave estrangeira) com um ou mais atributos da própria entidade fraca.", isCorrect: true, rationale: "A entidade fraca precisa da chave da entidade 'proprietária' para que seus próprios atributos possam identificar unicamente um registro." }, { text: "Apenas pela chave primária da entidade forte, que é usada como chave primária e estrangeira ao mesmo tempo.", isCorrect: false, rationale: "Isso não funcionaria se a entidade forte pudesse ter vários registros fracos associados (relação 1:N), pois a chave se repetiria." }, { text: "Apenas pelos seus próprios atributos; não é necessário incluir a chave da entidade forte.", isCorrect: false, rationale: "Por definição, a entidade fraca não possui atributos próprios suficientes para formar uma chave primária sozinha." }, { text: "Uma nova chave primária sequencial (auto-incremento) é criada, e a chave da entidade forte entra apenas como chave estrangeira.", isCorrect: false, rationale: "Embora tecnicamente possível, a forma canônica de representar a dependência é incluir a chave da entidade forte na chave primária da entidade fraca." } ] },
+            { question: "Qual é o principal objetivo do Modelo de Entidade e Relacionamento (ER)?", options: [ { text: "Descrever os dados do ponto de vista do usuário, de forma conceitual, sem se preocupar com a implementação.", isCorrect: true, rationale: "O modelo ER é uma ferramenta de alto nível para entender e documentar os requisitos de dados de um sistema." }, { text: "Definir os tipos de dados exatos (inteiro, caracter, etc.) e os tamanhos para cada atributo.", isCorrect: false, rationale: "Esses detalhes de implementação são definidos no modelo lógico/relacional, não no conceitual." }, { text: "Criar as tabelas e chaves estrangeiras diretamente no SGBD.", isCorrect: false, rationale: "Esta é a fase de implementação, que ocorre após a modelagem conceitual e lógica." }, { text: "Otimizar o desempenho das consultas ao banco de dados.", isCorrect: false, rationale: "A otimização de desempenho é uma preocupação do modelo físico e da administração do banco de dados (DBA), não do modelo conceitual." } ] }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+
+        const slideContainer = document.getElementById('slide-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const feedbackRationale = document.getElementById('feedback-rationale');
+        
+        function buildSlides() {
+            quizData.forEach((quizItem, index) => {
+                const slide = document.createElement('div');
+                slide.classList.add('slide');
+                slide.id = `slide-${index}`;
+
+                let optionsHTML = '';
+                quizItem.options.forEach((option, optionIndex) => {
+                    optionsHTML += `<button class="option-btn w-full text-left p-4 my-2 border-2 border-slate-300 rounded-lg bg-white hover:bg-sky-50 hover:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-500" data-question-index="${index}" data-option-index="${optionIndex}">
+                        <span class="font-semibold">${String.fromCharCode(65 + optionIndex)}.</span> ${option.text}
+                    </button>`;
+                });
+
+                slide.innerHTML = `
+                    <h2 class="text-xl md:text-2xl font-semibold text-slate-800 mb-6">${quizItem.question}</h2>
+                    <div class="options-container space-y-3">
+                        ${optionsHTML}
+                    </div>
+                `;
+                slideContainer.appendChild(slide);
+            });
+
+            // Adicionar event listeners aos botões de opção
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', handleOptionClick);
+            });
+        }
+
+        function handleOptionClick(event) {
+            const btn = event.currentTarget;
+            const qIndex = parseInt(btn.dataset.questionIndex);
+            const oIndex = parseInt(btn.dataset.optionIndex);
+
+            if(userAnswers[qIndex] !== null) return; // Já respondido
+
+            const questionData = quizData[qIndex];
+            const selectedOption = questionData.options[oIndex];
+            
+            userAnswers[qIndex] = {
+                selected: oIndex,
+                isCorrect: selectedOption.isCorrect
+            };
+
+            showFeedback(qIndex);
+            updateNavigation();
+        }
+
+        function showFeedback(qIndex) {
+            const questionData = quizData[qIndex];
+            const userAnswer = userAnswers[qIndex];
+            const slide = document.getElementById(`slide-${qIndex}`);
+            const optionButtons = slide.querySelectorAll('.option-btn');
+            
+            optionButtons.forEach((button, index) => {
+                button.disabled = true;
+                const option = questionData.options[index];
+
+                if(option.isCorrect) {
+                    button.classList.add('correct');
+                } else if (index === userAnswer.selected) {
+                    button.classList.add('incorrect');
+                }
+            });
+
+            const rationale = userAnswer.isCorrect ? `<strong>Correto!</strong> ${questionData.options[userAnswer.selected].rationale}` : `<strong>Incorreto.</strong> ${questionData.options[userAnswer.selected].rationale}`;
+            feedbackRationale.innerHTML = rationale;
+            feedbackContainer.classList.remove('hidden');
+        }
+
+        function updateDisplay() {
+            document.querySelectorAll('.slide').forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentQuestionIndex);
+            });
+
+            progressBar.style.width = `${((currentQuestionIndex + 1) / quizData.length) * 100}%`;
+            progressText.textContent = `Pergunta ${currentQuestionIndex + 1} de ${quizData.length}`;
+
+            if(userAnswers[currentQuestionIndex] !== null) {
+                showFeedback(currentQuestionIndex);
+            } else {
+                feedbackContainer.classList.add('hidden');
+            }
+
+            updateNavigation();
+        }
+        
+        function updateNavigation() {
+            prevBtn.disabled = currentQuestionIndex === 0;
+            nextBtn.disabled = userAnswers[currentQuestionIndex] === null && currentQuestionIndex < quizData.length;
+        }
+
+        function showResults() {
+            const quizContainer = document.getElementById('quiz-container');
+            const resultsContainer = document.getElementById('results-container');
+            const scoreText = document.getElementById('score-text');
+            const scoreMessage = document.getElementById('score-message');
+
+            const score = userAnswers.filter(answer => answer && answer.isCorrect).length;
+            const percentage = Math.round((score / quizData.length) * 100);
+            
+            scoreText.textContent = `${percentage}%`;
+            scoreMessage.textContent = `Você acertou ${score} de ${quizData.length} perguntas.`;
+
+            let message;
+            if (percentage > 80) message = "Excelente! Você domina o assunto.";
+            else if (percentage > 60) message = "Bom trabalho! Continue estudando para aprimorar.";
+            else message = "Não desanime! Reveja os pontos e tente novamente.";
+            scoreMessage.textContent += `\n${message}`;
+
+            quizContainer.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                updateDisplay();
+            } else {
+                showResults();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                updateDisplay();
+            }
+        });
+
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            currentQuestionIndex = 0;
+            userAnswers.fill(null);
+            document.getElementById('results-container').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            
+            // Re-enable all buttons and remove feedback classes
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.disabled = false;
+                btn.classList.remove('correct', 'incorrect');
+            });
+            
+            updateDisplay();
+        });
+
+        // Inicia o Quiz
+        buildSlides();
+        updateDisplay();
+    </script>
+</body>
+</html>
