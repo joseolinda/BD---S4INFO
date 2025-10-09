@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolução da Avaliação - Banco de Dados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        .slide {
+            display: none;
+            min-height: 80vh;
+            width: 100%;
+            font-size: 24px !important;
+        }
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: left;
+        }
+        ul li {
+            background-color: #2c3144;
+            border-left: 4px solid #4a5568;
+            padding: 0.75rem;
+            border-radius: 0.25rem;
+        }
+        .correct-answer {
+            background-color: #2d572c;
+            border-left: 4px solid #48bb78;
+            padding: 0.75rem;
+            border-radius: 0.25rem;
+        }
+        .explanation {
+            background-color: #2c3144;
+            border-left: 4px solid #4a5568;
+        }
+        #navigation {
+            display: none;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div id="presentation-container" class="w-full mx-auto bg-gray-800 rounded-lg shadow-2xl p-6 md:p-10">
+        <!-- Slide 1: Título -->
+        <div class="slide active text-center">
+            <h1 class="text-4xl md:text-5xl font-bold text-green-400">Resolução da Avaliação - N1</h1>
+            <h2 class="text-2xl md:text-3xl mt-4 text-gray-300">Disciplina: Banco de Dados</h2>
+        </div>
+
+        <!-- Slide 2: Questão 1 -->
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 1</h3>
+            <p class="mb-4">De acordo com o Angelotti, qual é a principal razão pela qual a área de banco de dados é considerada de grande importância na informática?</p>
+            <ul class="space-y-3">
+                <li>a) Porque a informação é um bem precioso e deve ser armazenada de forma coerente e adequada.</li>
+                <li>b) Porque permite o uso de redes sociais como o Kwai e TikTok.</li>
+                <li>c) Porque todo Sistema de Informação, por menor que seja, precisa ser rápido.</li>
+                <li>d) Porque os arquitetos precisam de dados para desenvolver novos leiautes de salas de aula.</li>
+                <li>e) Para tirar nota boa na prova do professor Olinda.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 1</h3>
+            <p class="mb-4">De acordo com o Angelotti, qual é a principal razão pela qual a área de banco de dados é considerada de grande importância na informática?</p>
+            <ul class="space-y-3">
+                <li class="correct-answer">a) Porque a informação é um bem precioso e deve ser armazenada de forma coerente e adequada.</li>
+            </ul>
+            <div class="explanation mt-6 p-4 rounded-md">
+                <h4 class="font-bold">Explicação:</h4>
+                <p>A resposta correta é a (a). O cerne da disciplina de Banco de Dados é a gestão da informação. A informação é um ativo valioso para qualquer organização. Bancos de dados garantem que essa informação seja guardada de maneira segura, consistente, organizada e acessível, o que é fundamental para a tomada de decisões e o funcionamento de qualquer sistema.</p>
+            </div>
+        </div>
+
+        <!-- Slide 3: Questão 2 -->
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 2</h3>
+            <p class="mb-4">Na fase de Modelagem Conceitual de um projeto de banco de dados, qual é a principal preocupação?</p>
+            <ul class="space-y-3">
+                <li>a) Escolher o SGBD que será utilizado e conhecer a linguagem SQL.</li>
+                <li>b) Descrever quais dados serão armazenados e como eles se relacionam, refletindo a necessidade do usuário.</li>
+                <li>c) Transformar o modelo em algo mais próximo da implementação, como o modelo relacional.</li>
+                <li>d) Crie as tabelas, chaves estrangeiras e primárias.</li>
+                <li>e) Otimizar os aplicativos para funcionarem melhor.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 2</h3>
+            <ul class="space-y-3">
+                <li class="correct-answer">b) Descrever quais dados serão armazenados e como eles se relacionam, refletindo a necessidade do usuário.</li>
+            </ul>
+            <div class="explanation mt-6 p-4 rounded-md">
+                <h4 class="font-bold">Explicação:</h4>
+                <p>A resposta correta é a (b). A modelagem conceitual é a primeira etapa do projeto e foca em entender e documentar os requisitos de dados do negócio. Ela é de alto nível, independente de tecnologia (SGBD) e descreve as principais entidades (coisas) sobre as quais queremos guardar informação e como elas se associam. O objetivo é criar um mapa que represente o mundo real do usuário.</p>
+            </div>
+        </div>
+
+
+
+        <!-- Slide 4: Questão 3 -->
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 3</h3>
+            <p class="mb-4">Uma chave primária (PK) é um atributo ou conjunto de atributos que identifica unicamente uma entidade em uma relação. Qual das seguintes afirmações sobre chaves primárias é <strong>INCORRETA</strong>?</p>
+            <ul class="space-y-3">
+                <li>a) Uma chave primária não pode conter valores nulos (NULL).</li>
+                <li>b) Em uma tabela, podem existir múltiplas chaves primárias.</li>
+                <li>c) Ela é escolhida a partir de um conjunto de chaves candidatas, por exemplo Matrícula e CPF.</li>
+                <li>d) Seus valores devem ser únicos para cada registro na tabela, não permitindo repetição.</li>
+                <li>e) Pode ser formada pela combinação de mais de um atributo (chave primária composta).</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 3</h3>
+            <ul class="space-y-3">
+                <li class="correct-answer">b) Em uma tabela, podem existir múltiplas chaves primárias.</li>
+            </ul>
+            <div class="explanation mt-6 p-4 rounded-md">
+                <h4 class="font-bold">Explicação:</h4>
+                <p>A afirmação incorreta é a (b). Uma tabela (relação) só pode ter <strong>UMA</strong> chave primária. A função da chave primária é garantir a unicidade de cada registro (linha). Se múltiplas chaves primárias fossem permitidas, este conceito fundamental seria quebrado. Uma tabela pode ter várias <i>chaves candidatas</i> (atributos que poderiam ser a PK), mas apenas uma é escolhida para ser a chave primária.</p>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Questão 4 -->
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 4</h3>
+            <p class="mb-4">O Diagrama Entidade-Relacionamento (DER) é uma abordagem para modelagem de dados no nível conceitual. Qual de seus componentes é utilizado para descrever uma associação entre duas ou mais entidades?</p>
+            <ul class="space-y-3">
+                 <li>(a) Entidade.</li>
+                 <li>(b) Atributo.</li>
+                 <li>(c) Cardinalidade.</li>
+                 <li>(d) Grau.</li>
+                 <li>(e) Relacionamento.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 4</h3>
+            <ul class="space-y-3">
+                 <li class="correct-answer">(e) Relacionamento.</li>
+            </ul>
+            <div class="explanation mt-6 p-4 rounded-md">
+                <h4 class="font-bold">Explicação:</h4>
+                <p>A resposta correta é a (e). O componente que descreve uma associação ou interação entre entidades é o <strong>Relacionamento</strong>, geralmente representado por um losango no DER. 
+                <br>- <strong>Entidade:</strong> Representa um objeto do mundo real (ex: ALUNO).
+                <br>- <strong>Atributo:</strong> Característica de uma entidade (ex: nome do aluno).
+                <br>- <strong>Cardinalidade:</strong> Define o número de instâncias de uma entidade que podem se associar a instâncias de outra.
+                <br>- <strong>Grau:</strong> Número de entidades que participam do relacionamento.</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: Questão 5 -->
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 5</h3>
+            <p class="mb-4">Considere o seguinte diagrama E-R.</p>
+            <div class="my-4 p-4 bg-gray-700 rounded-lg flex justify-center">
+                <img src="/img/correcao-n1/empregado.png" alt="Diagrama Empregado-Dependente" class="max-w-full md:max-w-lg rounded">
+            </div>
+            <p class="mb-4">Com base nesse diagrama E-R, é correto afirmar que:</p>
+            <ul class="space-y-3">
+                 <li>a) o atributo <i>código</i> na tabela DEPENDENTE não é uma chave primária.</li>
+                 <li>b) na tabela EMPREGADO o atributo <i>código</i> é uma chave estrangeira.</li>
+                 <li>c) o atributo <i>nome</i> da tabela DEPENDENTE é uma chave primária.</li>
+                 <li>d) o símbolo losango representa um auto-relacionamento entre EMPREGADO e DEPENDENTE.</li>
+                 <li>e) a entidade DEPENDENTE só existe porque existe a entidade EMPREGADO.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 5</h3>
+            <ul class="space-y-3">
+                 <li class="correct-answer">e) a entidade DEPENDENTE só existe porque existe a entidade EMPREGADO.</li>
+            </ul>
+            <div class="explanation mt-6 p-4 rounded-md">
+                <h4 class="font-bold">Explicação:</h4>
+                <p>A resposta correta é a (e). A cardinalidade (1,1) do lado de EMPREGADO no relacionamento "possui" indica que um DEPENDENTE deve estar associado a exatamente um EMPREGADO. Isso significa que a existência de um DEPENDENTE está condicionada à existência de um EMPREGADO, caracterizando uma dependência de existência. Isso também sugere que DEPENDENTE é uma entidade fraca (geralmente representada com um retângulo duplo).</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Questão 6 -->
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 6</h3>
+            <p class="mb-4">Analise o Diagrama Entidade-Relacionamento de um sistema acadêmico abaixo:</p>
+            <div class="my-4 p-4 bg-gray-700 rounded-lg flex justify-center">
+                <img src="/img/correcao-n1/escola.png" alt="Diagrama Sistema Acadêmico" class="max-w-full md:max-w-2xl rounded">
+            </div>
+            <p class="mb-4">Marque a afirmativa <strong>correta</strong> sobre o diagrama apresentado:</p>
+            <ul class="space-y-3">
+                 <li>a) Uma disciplina pode ser lecionada por vários professores ao mesmo tempo.</li>
+                 <li>b) A entidade TURMA é uma entidade fraca, identificada pela disciplina a que pertence.</li>
+                 <li>c) Um professor não pode estar cadastrado no sistema sem lecionar nenhuma disciplina.</li>
+                 <li>d) O relacionamento "Leciona" é do tipo Muitos-para-Muitos (N:N).</li>
+                 <li>e) A chave primária da entidade TURMA é composta apenas pelo atributo "Ano_Letivo".</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 6</h3>
+            <ul class="space-y-3">
+                 <li class="correct-answer">d) O relacionamento "Leciona" é do tipo Muitos-para-Muitos (N:N).</li>
+            </ul>
+            <div class="explanation mt-6 p-4 rounded-md">
+                <h4 class="font-bold">Explicação:</h4>
+                <p>A resposta correta é a (d). Analisando a cardinalidade do relacionamento "Leciona", vemos (1,n) do lado de PROFESSOR e (0,n) do lado de DISCIPLINA. Isso se lê:
+                <br>- Um Professor leciona de <strong>zero</strong> a <strong>muitas (n)</strong> Disciplinas.
+                <br>- Uma Disciplina é lecionada por de <strong>um</strong> a <strong>muitos (n)</strong> Professores.
+                <br>Como ambos os lados podem ter "muitos" (n), o relacionamento é do tipo Muitos-para-Muitos (N:N).</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Questão 7 -->
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 7</h3>
+            <p class="mb-4">No processo de mapeamento de um modelo conceitual para o modelo relacional, a correta representação dos relacionamentos é fundamental. Qual das alternativas a seguir descreve corretamente as regras de conversão para os relacionamentos do tipo 1:1, 1:N e N:N?</p>
+            <ul class="space-y-3">
+                <li>a) Para relacionamentos 1:N, cria-se uma nova tabela. Para N:N, a chave primária do lado "N" migra para o lado "1". Para 1:1, as tabelas são fundidas em uma só.</li>
+                <li>b) Para relacionamentos 1:N, a chave primária da tabela do lado "N" migra como chave estrangeira para o lado "1". Para N:N, cria-se uma nova tabela. Para 1:1, a chave primária de uma tabela migra para a outra.</li>
+                <li>c) Para relacionamentos 1:N e N:N, o procedimento é o mesmo: cria-se uma nova tabela que armazena as chaves primárias de ambas as entidades como chave estrangeira. Para 1:1, não há necessidade de chave estrangeira.</li>
+                <li>d) Para relacionamentos 1:N, a chave primária do lado "1" migra para o lado "N". Para N:N, não é necessário criar uma nova tabela, apenas adicionar chaves estrangeiras em ambas as tabelas originais. Para 1:1, cria-se sempre uma nova tabela.</li>
+                <li>e) Para relacionamentos 1:1, a chave primária de uma das tabelas migra como chave estrangeira para a outra. Para 1:N, a chave primária da tabela do lado "1" migra como chave estrangeira para a tabela do lado "N". Para N:N, cria-se uma nova tabela, cuja chave primária é composta pelas chaves primárias das entidades envolvidas.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 7</h3>
+            <ul class="space-y-3">
+                <li class="correct-answer">e) Para relacionamentos 1:1, a chave primária de uma das tabelas migra como chave estrangeira para a outra. Para 1:N, a chave primária da tabela do lado "1" migra como chave estrangeira para a tabela do lado "N". Para N:N, cria-se uma nova tabela, cuja chave primária é composta pelas chaves primárias das entidades envolvidas.</li>
+            </ul>
+            <div class="explanation mt-6 p-4 rounded-md">
+                <h4 class="font-bold">Explicação:</h4>
+                <p>A resposta correta é a (e), que resume perfeitamente as regras de mapeamento:
+                <br>- <strong>1:1 (Um-para-Um):</strong> A chave primária (PK) de uma das tabelas "migra" para a outra como chave estrangeira (FK). A escolha de qual tabela recebe a FK depende da participação (opcional ou obrigatória).
+                <br>- <strong>1:N (Um-para-Muitos):</strong> A PK da tabela do lado "1" <strong>sempre</strong> migra para a tabela do lado "N" como FK. Isso é conhecido como "a chave desce".
+                <br>- <strong>N:N (Muitos-para-Muitos):</strong> É obrigatório criar uma nova tabela (tabela associativa) para representar o relacionamento. A chave primária dessa nova tabela é, por padrão, a combinação das chaves primárias das duas tabelas originais.</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: Questão 8 -->
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 8</h3>
+            <p class="mb-4">Dado o modelo conceitual de um sistema de blog simples abaixo, escreva o esquema do modelo relacional correspondente. Especifique as tabelas, seus atributos, e identifique as chaves primárias (PK) e estrangeiras (FK).</p>
+            <div class="my-4 p-4 bg-gray-700 rounded-lg flex justify-center">
+                <img src="/img/correcao-n1/post.png" alt="Diagrama Sistema de Blog" class="max-w-full md:max-w-2xl rounded">
+            </div>
+        </div>
+
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 8</h3>
+            <div class="explanation mt-6 p-4 rounded-md w-full">
+                <h4 class="font-bold">Esquema Relacional Resultante:</h4>
+                <pre class="text-sm md:text-base whitespace-pre-wrap bg-gray-900 p-4 rounded mt-2">
+<strong class="text-green-400">USUARIO</strong>(<strong class="underline">ID_Usuario</strong>, Nome, Email)
+
+<strong class="text-green-400">AUTOR</strong>(<strong class="underline">ID_Autor</strong>, Area_interesse, Formacao, <em class="text-blue-400">ID_Usuario (FK)</em>)
+    ↳ <em class="text-blue-400">ID_Usuario</em> referencia USUARIO
+
+<strong class="text-green-400">POST</strong>(<strong class="underline">ID</strong>, Titulo, Texto, Imagens, <em class="text-blue-400">ID_Autor (FK)</em>)
+    ↳ <em class="text-blue-400">ID_Autor</em> referencia AUTOR
+
+<strong class="text-green-400">COMENTARIO</strong>(<strong class="underline">ID_Comentario</strong>, Texto_comentario, <em class="text-blue-400">ID_Post (FK)</em>, <em class="text-blue-400">ID_Usuario (FK)</em>)
+    ↳ <em class="text-blue-400">ID_Post</em> referencia POST
+    ↳ <em class="text-blue-400">ID_Usuario</em> referencia USUARIO
+                </pre>
+                <p class="mt-4"><strong>Justificativa do Mapeamento:</strong>
+                <br>• O relacionamento 1:1 "É Um" entre USUARIO e AUTOR foi mapeado com a PK de USUARIO (ID_Usuario) migrando para AUTOR como FK.
+                <br>• O relacionamento 1:N "Cria" entre AUTOR e POST foi mapeado com a PK de AUTOR (ID_Autor) migrando para POST como FK.
+                <br>• O relacionamento N:N "Comenta" entre USUARIO e POST gerou uma nova tabela COMENTARIO, que contém as PKs de ambas as tabelas (ID_Usuario e ID_Post) como FKs. Foi adicionada uma PK artificial (ID_Comentario) para a nova tabela.</p>
+            </div>
+        </div>
+        
+        <!-- Slide 10: Questão 9 -->
+        <div class="slide">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Questão 9</h3>
+            <p class="mb-4">A seguir é apresentado o esquema relacional de um banco de dados para uma rede social. Sua tarefa é desenhar o Diagrama Entidade-Relacionamento (DER) correspondente.</p>
+            <pre class="text-sm whitespace-pre-wrap bg-gray-900 p-4 rounded my-4 w-full text-left">
+• <strong>tbUsuario</strong>(<u>id_usuario</u>, nome_usuario, email)
+• <strong>tdPerfil</strong>(<u>id_perfil</u>, bio, foto_url, <em>id_usuario (FK)</em>)
+• <strong>tbPost</strong>(<u>id_post</u>, url_imagem, legenda, data_hora, <em>id_usuario (FK)</em>)
+• <strong>tdCurtida</strong>(<u><em>id_post (FK)</em>, <em>id_perfil (FK)</em></u>, data_curtida)
+            </pre>
+        </div>
+
+    <!-- Navegação -->
+    <div id="navigation" class="flex justify-between mx-auto mt-6">
+        <button id="prevBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">Anterior</button>
+        <button id="nextBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">Próximo</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Permitir navegação com as setas do teclado
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowRight') {
+                if (currentSlide < totalSlides - 1) {
+                    currentSlide++;
+                    showSlide(currentSlide);
+                }
+            } else if (event.key === 'ArrowLeft') {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    showSlide(currentSlide);
+                }
+            }
+        });
+
+        showSlide(currentSlide);
+    </script>
+
+</body>
+</html>
