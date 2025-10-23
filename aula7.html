@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aula 07: Tópicos Avançados</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --accent:#0ea5e9; }
+    body { font-family: 'Inter', sans-serif; }
+    .slide { display:none; animation: fade .35s ease; }
+    .slide.active { display:block; }
+    @keyframes fade { from{opacity:.0; transform: translateY(8px)} to{opacity:1; transform:none} }
+    .kbd { border:1px solid #e5e7eb; border-bottom-width:3px; padding:.15rem .45rem; border-radius:.375rem; background:#fff }
+    .caption { font-size:.85rem; color:#6b7280; text-align:center; margin-top:.5rem }
+    .code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background:#f8fafc; border:1px solid #e5e7eb; padding:.6rem .8rem; border-radius:.5rem; }
+    .hint { background:#eff6ff; border-left:4px solid #3b82f6; padding: .75rem 1rem; border-radius:.5rem; }
+    .rule { background:#f0fdf4; border-left:4px solid #22c55e; padding:.75rem 1rem; border-radius:.5rem; }
+    .warn { background:#fef2f2; border-left:4px solid #ef4444; padding:.75rem 1rem; border-radius:.5rem; }
+    .grid-2 { display:grid; grid-template-columns: 1fr; gap:1rem }
+    img { width: auto; max-width: 100%; max-height: 480px; object-fit: contain; margin: 0 auto; }
+    .hide { display: none !important; }
+    @media (min-width: 900px){ .grid-2 { grid-template-columns: 1fr 1fr } }
+  </style>
+  <link rel="stylesheet" href="css/dark-mode.css"> 
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div class="max-w-6xl mx-auto p-4 md:p-8">
+    <!-- Header & Controls -->
+    <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Tópicos Avançados — Aula 7 - BD S4 Infor</h1>
+        <p class="text-gray-600">Professor Zé Olinda. Criado a partir do Cap. 5 (Angelloti)</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btnPrev" class="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed">Anterior</button>
+        <span id="counter" class="px-3 py-2 bg-white border rounded-lg text-gray-700">Slide 1 / 17</span>
+        <button id="btnNext" class="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700">Próximo</button>
+        <button id="btnTOC" class="px-4 py-2 border rounded-lg bg-white hover:bg-gray-50">Sumário</button>
+      </div>
+    </header>
+
+    <!-- Slides Container -->
+    <main id="deck" class="bg-white rounded-xl shadow-xl p-6 md:p-10 min-h-[560px] relative overflow-hidden">
+      <!-- SLIDE 1: Capa -->
+      <section class="slide active">
+        <h2 class="text-3xl font-bold mb-2">Aula 07 - Tópicos Avançados</h2>
+        <p class="text-gray-700 mb-4 ">
+            <ul class="space-y-2">
+                <li class="hint">Especialização</li>
+                <li class="hint">Dicionário de Dados (DD)</li>
+                <li class="hint">Normalização: 1FN, 2FN, 3FN</li>
+                <li class="hint">Atividades Práticas</li>
+            </ul>
+        </p>
+      </section>
+
+      <!-- SLIDE 2: O que é Dicionário de Dados? -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Especialização</h2>
+        <p class="text-gray-700 mb-4">A transformação de uma especialização do modelo de ER para o modelo relacional pode ser feita de 3 diferentes modos:</p>
+        <div class="rule">
+            <p>Criando uma tabela apenas para a entidade pai;</p>
+            <p>Criando tabelas apenas para as entidades filhas;</p>
+            <p>Criando uma tabela para cada entidade (tanto para a entidade pai, quanto para as filhas).</p>
+        </div>
+      </section>
+
+      <!-- SLIDE 2: O que é Dicionário de Dados? -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Especialização</h2>
+        <p class="text-gray-700 mb-4">A transformação de uma especialização do modelo de ER para o modelo relacional pode ser feita de 3 diferentes modos:</p>
+        <div class="rule">
+            <p>Criando uma tabela apenas para a entidade pai;</p>
+            <p>Criando tabelas apenas para as entidades filhas;</p>
+            <p>Criando uma tabela para cada entidade (tanto para a entidade pai, quanto para as filhas).</p>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Especialização</h2>
+        <p class="text-gray-700 mb-4">Criando uma tabela apenas para a entidade pai;</p>
+        <img src="img/fig-5-1.png" alt="Figura 5.1: Criando uma tabela apenas para a entidade pai" class="rounded-lg shadow">
+      </section>
+
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Especialização</h2>
+        <p class="text-gray-700 mb-4">Criando tabelas apenas para as entidades filhas</p>
+        <img src="img/fig-5-2.png" alt="Figura 5.2: Criando tabelas apenas para as entidades filhas" class="rounded-lg shadow">
+      </section>
+
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Especialização</h2>
+        <p class="text-gray-700 mb-4">Criando uma tabela para cada entidade (tanto para a entidade pai, quanto para as filhas)</p>
+        <img src="img/fig-5-2a.png" alt="Figura 5.2a: Criando uma tabela para cada entidade" class="rounded-lg shadow">
+      </section>
+
+      <!-- SLIDE 2: O que é Dicionário de Dados? -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Dicionário de Dados (DD)</h2>
+        <p class="text-gray-700 mb-4">É o "manual de instruções" do banco de dados. Um conjunto de metadados (dados sobre os dados) que descreve a estrutura lógica e física do banco.</p>
+        <p class="text-gray-700 mb-4">Ele descreve em detalhes cada tabela, seus atributos, estruturas físicas e restrições. É essencial para a documentação e manutenção.</p>
+        <div class="rule">
+            <p><strong>Objetivo:</strong> Garantir que o desenvolvedor que irá implementar o banco saiba exatamente como a base deve ser criada, quais restrições aplicar e o que cada campo significa.</p>
+        </div>
+      </section>
+
+      <!-- SLIDE 3: Estrutura do DD -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Dicionário de Dados: Estrutura</h2>
+        <p class="text-gray-700 mb-4">Um DD detalha cada atributo de cada tabela, geralmente com as seguintes colunas:</p>
+        <ul class="list-disc pl-6 text-gray-700 space-y-2">
+            <li><strong>Nome do Atributo:</strong> O nome físico da coluna (ex: `matricula_aluno`).</li>
+            <li><strong>Descrição:</strong> O que o atributo armazena (ex: "Armazena a matrícula do aluno").</li>
+            <li><strong>Tipo:</strong> O tipo de dado (Numérico, Caracter, Data, Inteiro, etc.).</li>
+            <li><strong>Tamanho:</strong> O tamanho alocado (ex: `Caracter(100)`, `Numérico(5)`).</li>
+            <li><strong>Restrições:</strong> As regras aplicadas ao atributo.</li>
+        </ul>
+      </section>
+
+      <!-- SLIDE 4: Restrições do DD -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Dicionário de Dados: Restrições</h2>
+        <p class="text-gray-700 mb-4">As restrições são a parte mais importante do DD:</p>
+        <ul class="list-disc pl-6 text-gray-700 space-y-2">
+            <li><strong>Nulo (Null):</strong> Define se o atributo é obrigatório (Não Nulo) ou opcional (Sim).</li>
+            <li><strong>Chave (Key):</strong> Identifica a Chave Primária (PK) e as Chaves Estrangeiras (FK), indicando qual tabela ela referencia.</li>
+            <li><strong>Regra (Check):</strong> Define um domínio de valores permitidos (ex: `turno` só pode ser 'Matutino', 'Vespertino', 'Noturno' ou 'Integral').</li>
+            <li><strong>Default (Padrão):</strong> Um valor padrão inserido se nenhum for fornecido (ex: `cidade_aluno` = 'Cedro').</li>
+            <li><strong>Unique (Único):</strong> Garante que não haja valores duplicados na coluna (ex: `RG_aluno` ou 'email_aluno'), mesmo que ela não seja a PK.</li>
+        </ul>
+      </section>
+
+      <!-- SLIDE 5: Exemplo de DD (Fig 5.3) -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Dicionário de Dados: Exemplo</h2>
+        <p class="text-gray-700 mb-3">Analisando as restrições definidas para a `tbAluno`:</p>
+        <img src="img/fig-5-3.png" alt="Figura 5.3: Dicionário de dados para a tabela tbAluno" class="rounded-lg shadow">
+        <p class="caption">Figura 5.3 — Exemplo de Dicionário de Dados para `tbAluno` (Angelloti, Cap. 5).</p>
+      </section>
+
+      <!-- SLIDE 6: Transição para Normalização -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Normalização</h2>
+        <p class="text-gray-700 mb-4">Muitos sistemas antigos (ou mal planejados) armazenam dados em "tabelões únicos" (como uma grande planilha do Excel), causando problemas graves:</p>
+        <ul class="list-disc pl-6 text-gray-700 space-y-4 mb-4">
+            <li><strong>Redundância:</strong> Dados repetidos várias vezes (ex: o nome do cliente em cada produto que ele comprou).</li>
+            <li><strong>Anomalias de Inconsistência:</strong> Ao atualizar um dado (ex: endereço do cliente), pode-se esquecer de atualizar em todas as linhas, gerando inconsistência.</li>
+            <li><strong>Muitos valores nulos.</strong></li>
+        </ul>
+        <div class="rule mt-2">
+            <p><strong>Normalização</strong> é um processo formal, passo-a-passo, para "limpar" a estrutura do banco, eliminando redundâncias e melhorando a integridade dos dados.</p>
+        </div>
+      </section>
+
+      <!-- SLIDE 7: Exemplo Base (Fig 5.4) -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Normalização</h2>
+        <p class="text-gray-700 mb-4">Vamos analisar esta tabela `tbPedido`, que está "não normalizada".</p>
+        <img src="img/fig-5-4.png" alt="Figura 5.4: Exemplo de tabela não normalizada" class="rounded-lg shadow">
+        <p class="caption">Figura 5.4 — Tabela `tbPedido` não normalizada (Angelloti, Cap. 5).</p>
+        <div class="warn mt-3">
+            <p><strong>Problemas visíveis:</strong><br>
+            1. <strong>Atributo Multivalorado:</strong> `(telefone_contato)` pode ter vários valores por pedido.<br>
+            2. <strong>Grupo de Valores Repetidos:</strong> `(codigo_produto, ...)` é uma "tabela dentro da tabela".</p>
+        </div>
+      </section>
+
+      <!-- SLIDE 8: Primeira Forma Normal (1FN) -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Primeira Forma Normal (1FN)</h2>
+        <div class="rule mb-4">
+            <p><strong>Regra:</strong> Todos os atributos devem ser <strong>atômicos</strong> (indivisíveis). Uma tabela não pode conter atributos multivalorados ou grupos repetidos.</p>
+        </div>
+        <p class="text-gray-700 mb-3"><strong>O que não é atômico?</strong></p>
+        <ul class="list-disc pl-6 text-gray-700 space-y-2">
+            <li><strong>Atributos Compostos:</strong> Ex: `endereco` (deve ser quebrado em `rua`, `numero`, `bairro`...).</li>
+            <li><strong>Atributos Multivalorados:</strong> Ex: `telefone_contato`.</li>
+            <li><strong>Grupos Repetidos:</strong> Ex: A lista de produtos dentro do pedido.</li>
+        </ul>
+        <p class="text-gray-700 mt-3"><strong>Solução:</strong> Criar novas tabelas para os atributos multivalorados e grupos repetidos, ligando-as com a PK da tabela original.</p>
+      </section>
+
+      <!-- SLIDE 9: Aplicando a 1FN (Fig 5.5) -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Aplicando a 1FN</h2>
+        <p class="text-gray-700 mb-3">Para resolver os problemas da Fig 5.4, quebramos a tabela em três:</p>
+        <img src="img/fig-5-5.png" alt="Figura 5.5: Modelo após a 1FN" class="rounded-lg shadow">
+        <p class="caption">Figura 5.5 — Modelo após a 1FN (Angelloti, Cap. 5).</p>
+        <ul class="list-disc pl-6 text-gray-700 space-y-2 mt-3">
+            <li><code>tbPedido</code>: Contém apenas os dados do pedido.</li>
+            <li><code>tbTelefoneContatoPedido</code>: Trata o atributo multivalorado.</li>
+            <li><code>tbPedidoProduto</code>: Trata o grupo repetido como uma entidade associativa.</li>
+        </ul>
+      </section>
+
+      <!-- SLIDE 10: Segunda Forma Normal (2FN) -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Segunda Forma Normal (2FN)</h2>
+        <div class="rule mb-4">
+            <p><strong>Regra:</strong> A tabela deve estar na 1FN; e todo atributo não-chave deve depender <strong>totalmente</strong> da chave primária composta.</p>
+        </div>
+        <p class="text-gray-700 mb-3">A 2FN só se aplica a tabelas com <strong>PK composta</strong>.</p>
+        <div class="warn">
+            <p><strong>Análise da <code>tbPedidoProduto</code>:</strong><br>
+            PK: (<u>codigo_pedido</u>, <u>codigo_produto</u>)<br>
+            - <code>quantidade</code>: Depende da PK inteira (OK).<br>
+            - <code>nome_produto</code>, <code>preco_unitario</code>: Dependem <strong>apenas</strong> de <code>codigo_produto</code>.
+            </p>
+            <p class="mt-2">Isso é uma <strong>Dependência Parcial</strong> e viola a 2FN (causa redundância).</p>
+        </div>
+        <p class="text-gray-700 mt-3"><strong>Solução:</strong> Mover os atributos parcialmente dependentes para uma nova tabela.</p>
+      </section>
+
+      <!-- SLIDE 11: Aplicando a 2FN (Fig 5.6) -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Aplicando a 2FN</h2>
+        <p class="text-gray-700 mb-3">Removemos a dependência parcial da <code>tbPedidoProduto</code>:</p>
+        <img src="img/fig-5-6.png" alt="Figura 5.6: Modelo após a 2FN" class="rounded-lg shadow">
+        <p class="caption">Figura 5.6 — Modelo após a 2FN (Angelloti, Cap. 5).</p>
+        <ul class="list-disc pl-6 text-gray-700 space-y-2 mt-3">
+            <li>Criamos <code>tbProduto</code> para armazenar <code>nome_produto</code> e <code>preco_unitario</code>.</li>
+            <li><code>tbPedidoProduto</code> agora só contém a FK <code>codigo_produto</code> e os atributos que dependem da PK completa (<code>quantidade</code>, etc.).</li>
+        </ul>
+      </section>
+
+      <!-- SLIDE 12: Terceira Forma Normal (3FN) -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Terceira Forma Normal (3FN)</h2>
+        <div class="rule mb-4">
+            <p><strong>Regra:</strong> A tabela deve estar na 2FN; e nenhum atributo não-chave pode depender de <strong>outro</strong> atributo não-chave.</p>
+        </div>
+        <p class="text-gray-700 mb-3">Isso é chamado de <strong>Dependência Transitiva</strong>.</p>
+        <div class="warn">
+            <p><strong>Exemplo (Fig 5.7):</strong><br>
+            <code>tbDepartamento(<u>codigo_depto</u>, nome_depto, codigo_gerente, nome_gerente)</code><br>
+            - <code>nome_gerente</code> depende de <code>codigo_gerente</code>.<br>
+            - <code>codigo_gerente</code> <strong>não</strong> é a PK (é um atributo não-chave).
+            </p>
+            <p class="mt-2">PK → Atributo Não-Chave → Outro Atributo Não-Chave (Violação da 3FN!)</p>
+        </div>
+        <p class="text-gray-700 mt-3"><strong>Solução:</strong> Mover a dependência transitiva para uma nova tabela.</p>
+      </section>
+
+      <!-- SLIDE 13: Aplicando a 3FN (Fig 5.7 e 5.8) -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Aplicando a 3FN</h2>
+        <p class="text-gray-700 mb-3">Removemos a dependência transitiva da <code>tbDepartamento</code>:</p>
+        <div class="grid-1 gap-4">
+            <div>
+                <img src="img/fig-5-7.png" alt="Figura 5.7: Tabela com dependência transitiva" class="rounded-lg shadow">
+                <p class="caption">Figura 5.7 — Problema.</p>
+            </div>
+            <div>
+                <img src="img/fig-5-8.png" alt="Figura 5.8: Solução após a 3FN" class="rounded-lg shadow">
+                <p class="caption">Figura 5.8 — Solução.</p>
+            </div>
+        </div>
+        <ul class="list-disc pl-6 text-gray-700 space-y-2 mt-3">
+            <li>Criamos <code>tbGerente(<u>codigo_gerente</u>, nome_gerente)</code>.</li>
+            <li><code>tbDepartamento</code> agora só armazena a FK <code>codigo_gerente</code>.</li>
+        </ul>
+      </section>
+
+      <!-- SLIDE 14: Resumo da Normalização -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Resumo da Normalização</h2>
+        <ul class="list-disc pl-6 text-gray-700 space-y-3">
+            <li><strong>1FN:</strong> Elimina atributos não-atômicos (multivalorados, compostos, grupos repetidos).
+                <br><span class="text-sm text-sky-700">"A chave"</span></li>
+            <li><strong>2FN:</strong> Elimina dependências parciais (atributos que dependem de parte da PK composta).
+                <br><span class="text-sm text-sky-700">"A chave inteira"</span></li>
+            <li><strong>3FN:</strong> Elimina dependências transitivas (atributos não-chave dependendo de outros não-chaves).
+                <br><span class="text-sm text-sky-700">"E nada mais que a chave"</span></li>
+        </ul>
+        <div class="hint mt-4">
+            <p><strong>Lembrete:</strong> "Os atributos devem depender da chave, da chave inteira, e de nada mais que a chave."</p>
+        </div>
+      </section>
+
+      <!-- SLIDE 15: Atividade Prática 1 -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Atividade Prática: Questão 1</h2>
+        <p class="text-gray-700 mb-3">Dado tabela não normalizada de uma Nota Fiscal, aplique o processo de normalização (1FN, 2FN, 3FN) e escreva o esquema relacional resultante (indicando PKs e FKs).</p>
+        <div class="code">
+            tbNotaFiscal(<u>NumNota</u>, DataNota, CodCliente, NomeCliente, EnderecoCliente, CodProduto, NomeProduto, PrecoUnit, Quantidade, ValorTotalNota)
+        </div>
+        <div class="hint mt-3 hidden">
+            <p><strong>Pistas:</strong><br>
+            1. (CodProduto...) é um grupo repetido (Viola a 1FN).<br>
+            2. (NomeProduto, PrecoUnit) dependem só de CodProduto (Viola a 2FN).<br>
+            3. (NomeCliente, EnderecoCliente) dependem só de CodCliente (Viola a 3FN).
+            </p>
+        </div>
+      </section>
+      
+      <!-- SLIDE 16: Atividade Prática 2 -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Atividade Prática: Questão 2</h2>
+        <p class="text-gray-700 mb-3">Dado a tabela de Cursos de uma faculdade, aplique o processo de normalização (1FN, 2FN, 3FN) e escreva o esquema relacional resultante.</p>
+        <div class="code">
+            tbCurso(<u>CodCurso</u>, NomeCurso, CodDisciplina, NomeDisciplina, CargaHoraria, CodCoordenador, NomeCoordenador, EmailCoordenador)
+        </div>
+         <div class="hint mt-3 hidden">
+            <p><strong>Pistas:</strong><br>
+            1. (CodDisciplina...) é um grupo repetido (Viola a 1FN).<br>
+            2. (NomeDisciplina, CargaHoraria) dependem só de CodDisciplina (Viola a 2FN).<br>
+            3. (NomeCoordenador, EmailCoordenador) dependem só de CodCoordenador (Viola a 3FN).
+            </p>
+        </div>
+      </section>
+
+      <!-- SLIDE 17: Dúvidas -->
+      <section class="slide">
+        <h2 class="text-3xl font-bold mb-2">Dúvidas?</h2>
+        <p class="text-gray-700 mb-3">Discutam as soluções para as atividades práticas.</p>
+        <div class="hint">
+          <p>A normalização é a base para um banco de dados relacional eficiente, íntegro e livre de redundâncias.</p>
+        </div>
+        <div class="warn mt-3">
+            <p><strong>Atenção:</strong><br>
+            1.  Existem outras formas normais (BCNF, 4FN, 5FN), mas são menos comuns. <br>
+            Por exemplo, a BCNF é uma versão mais rigorosa da 3FN.<br><br>
+            2.  A normalização pode ser "quebrada" em casos específicos para otimização (desnormalização).<br><br>
+            3.  Sempre documente as decisões de normalização no Dicionário de Dados. Os DDs devem refletir a estrutura final do banco. <br><br>
+            </p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- TOC Modal -->
+    <dialog id="toc" class="p-0 rounded-xl w-[92vw] md:w-[720px]">
+      <div class="p-4 md:p-6">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xl font-semibold">Sumário de Slides</h3>
+          <button id="tocClose" class="px-3 py-1 rounded border">Fechar</button>
+        </div>
+        <div id="tocList" class="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-[60vh] overflow-y-auto"></div>
+      </div>
+    </dialog>
+
+    <!-- Footer controls -->
+    <footer class="mt-4 flex items-center justify-between text-sm text-gray-500">
+      <div>Use <span class="kbd">←</span> <span class="mx-1">/</span> <span class="kbd">→</span> para navegar</div>
+      <div>Pressione <span class="kbd">S</span> para abrir o Sumário</div>
+    </footer>
+  </div>
+
+  <script>
+    const deck = document.getElementById('deck');
+    const slides = Array.from(deck.querySelectorAll('.slide'));
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const counter = document.getElementById('counter');
+    const btnTOC = document.getElementById('btnTOC');
+    const dlgTOC = document.getElementById('toc');
+    const tocList = document.getElementById('tocList');
+    const tocClose = document.getElementById('tocClose');
+
+    let i = 0;
+    function show(n){
+      slides.forEach((s,idx)=>s.classList.toggle('active', idx===n));
+      counter.textContent = `Slide ${n+1} / ${slides.length}`;
+      btnPrev.disabled = n===0;
+      btnNext.disabled = n===slides.length-1;
+      i = n;
+      
+      // Atualiza o hash da URL para persistir o slide
+      window.location.hash = `slide-${n+1}`;
+    }
+    
+    btnPrev.addEventListener('click', ()=> { if(i>0) show(i-1) });
+    btnNext.addEventListener('click', ()=> { if(i<slides.length-1) show(i+1) });
+
+    // Keyboard
+    window.addEventListener('keydown', (e)=>{
+      if (dlgTOC.open) {
+        if (e.key === 'Escape') dlgTOC.close();
+        return;
+      }
+      if(e.key==='ArrowRight') btnNext.click();
+      if(e.key==='ArrowLeft') btnPrev.click();
+      if(e.key.toLowerCase()==='s') openTOC();
+    });
+
+    // TOC
+    function openTOC(){
+      tocList.innerHTML = '';
+      slides.forEach((s, idx)=>{
+        const h2 = s.querySelector('h2');
+        const title = h2 ? h2.textContent.trim() : `Slide ${idx+1}`;
+        const a = document.createElement('button');
+        a.className = 'text-left px-3 py-2 rounded border hover:bg-gray-50';
+        if (idx === i) a.classList.add('bg-sky-100'); // Destaca o slide atual
+        a.textContent = `${idx+1}. ${title}`;
+        a.addEventListener('click', ()=> { dlgTOC.close(); show(idx) });
+        tocList.appendChild(a);
+      });
+      dlgTOC.showModal();
+    }
+    btnTOC.addEventListener('click', openTOC);
+    tocClose.addEventListener('click', ()=> dlgTOC.close());
+
+    // Init - Check URL hash
+    function initSlide(){
+        let startSlide = 0;
+        const hash = window.location.hash;
+        if (hash && hash.startsWith('#slide-')) {
+            let slideNum = parseInt(hash.substring(7), 10);
+            if (slideNum > 0 && slideNum <= slides.length) {
+                startSlide = slideNum - 1;
+            }
+        }
+        show(startSlide);
+    }
+    
+    initSlide();
+  </script>
+
+  <script>
+  document.addEventListener('keydown', e => {
+    if (e.key.toLowerCase() === 'd') {
+      document.body.dataset.theme =
+        document.body.dataset.theme === 'dark' ? '' : 'dark';
+    }
+  });
+</script>
+
+</body>
+</html>
