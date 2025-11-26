@@ -1,0 +1,2310 @@
+<html lang="pt-BR" class="dark">
+
+<head>
+    <script>'use strict'; var h = typeof Object.defineProperties == "function" ? Object.defineProperty : function (a, b, d) { if (a == Array.prototype || a == Object.prototype) return a; a[b] = d.value; return a }; function l(a) { a = ["object" == typeof globalThis && globalThis, a, "object" == typeof window && window, "object" == typeof self && self, "object" == typeof global && global]; for (var b = 0; b < a.length; ++b) { var d = a[b]; if (d && d.Math == Math) return d } throw Error("Cannot find global object"); } var n = l(this);
+        function p(a, b) { if (b) a: { var d = n; a = a.split("."); for (var c = 0; c < a.length - 1; c++) { var e = a[c]; if (!(e in d)) break a; d = d[e] } a = a[a.length - 1]; c = d[a]; b = b(c); b != c && b != null && h(d, a, { configurable: !0, writable: !0, value: b }) } } function r(a) { function b(c) { return a.next(c) } function d(c) { return a.throw(c) } return new Promise(function (c, e) { function f(g) { g.done ? c(g.value) : Promise.resolve(g.value).then(b, d).then(f, e) } f(a.next()) }) } function t(a) { return r(a()) }
+        p("Object.values", function (a) { return a ? a : function (b) { var d = [], c; for (c in b) Object.prototype.hasOwnProperty.call(b, c) && d.push(b[c]); return d } }); p("Array.prototype.includes", function (a) { return a ? a : function (b, d) { var c = this; c instanceof String && (c = String(c)); var e = c.length; d = d || 0; for (d < 0 && (d = Math.max(d + e, 0)); d < e; d++) { var f = c[d]; if (f === b || Object.is(f, b)) return !0 } return !1 } });/*
+
+ MIT License
+
+ Copyright (c) 2017-2023 W.Y.
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+
+*/
+        function u(a, b) { const d = a.style; b.backgroundColor && (d.backgroundColor = b.backgroundColor); b.width && (d.width = `${b.width}px`); b.height && (d.height = `${b.height}px`); const c = b.style; c != null && Object.keys(c).forEach(e => { d[e] = c[e] }) }; var v = (() => { let a = 0; return () => { a += 1; return `u${`0000${(Math.random() * 1679616 << 0).toString(36)}`.slice(-4)}${a}` } })(); function w(a) { const b = []; for (let d = 0, c = a.length; d < c; d++)b.push(a[d]); return b } let x = null; function y(a = {}) { return x ? x : a.l ? x = a.l : x = w(window.getComputedStyle(document.documentElement)) } function z(a, b) { return (a = (a.ownerDocument.defaultView || window).getComputedStyle(a).getPropertyValue(b)) ? parseFloat(a.replace("px", "")) : 0 }
+        function A(a, b = {}) { var d; if (!(d = b.width)) { d = z(a, "border-left-width"); var c = z(a, "border-right-width"); d = a.clientWidth + d + c } (b = b.height) || (b = z(a, "border-top-width"), c = z(a, "border-bottom-width"), b = a.clientHeight + b + c); return { width: d, height: b } } function B(a) { return new Promise((b, d) => { const c = new Image; c.onload = () => { c.decode().then(() => { requestAnimationFrame(() => b(c)) }) }; c.onerror = d; c.crossOrigin = "anonymous"; c.decoding = "async"; c.src = a }) }
+        function C(a) { return t(function* () { return Promise.resolve().then(() => (new XMLSerializer).serializeToString(a)).then(encodeURIComponent).then(b => `data:image/svg+xml;charset=utf-8,${b}`) }) }
+        function D(a, b, d) { return t(function* () { const c = document.createElementNS("http://www.w3.org/2000/svg", "svg"), e = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject"); c.setAttribute("width", `${b}`); c.setAttribute("height", `${d}`); c.setAttribute("viewBox", `0 0 ${b} ${d}`); e.setAttribute("width", "100%"); e.setAttribute("height", "100%"); e.setAttribute("x", "0"); e.setAttribute("y", "0"); e.setAttribute("externalResourcesRequired", "true"); c.appendChild(e); e.appendChild(a); return C(c) }) }
+        var E = (a, b) => { if (a instanceof b) return !0; a = Object.getPrototypeOf(a); return a === null ? !1 : a.constructor.name === b.name || E(a, b) }; function F(a, b) { return y(b).map(d => { const c = a.getPropertyValue(d), e = a.getPropertyPriority(d); return `${d}: ${c}${e ? " !important" : ""};` }).join(" ") }
+        function G(a, b, d, c) { a = window.getComputedStyle(a, d); var e = a.getPropertyValue("content"); if (e !== "" && e !== "none") { var f = v(); try { b.className = `${b.className} ${f}` } catch (k) { return } e = document.createElement("style"); var g = e.appendChild; d = `.${f}:${d}`; a.cssText ? (c = a.getPropertyValue("content"), c = `${a.cssText} content: '${c.replace(/'|"/g, "")}';`) : c = F(a, c); g.call(e, document.createTextNode(`${d}{${c}}`)); b.appendChild(e) } }; function H(a) { return a.search(/^(data:)/) !== -1 } function I(a, b, d) { return t(function* () { const c = yield fetch(a, b); if (c.status === 404) throw Error(`Resource "${c.url}" not found`); const e = yield c.blob(); return new Promise((f, g) => { const k = new FileReader; k.onerror = g; k.onloadend = () => { try { f(d({ o: c, result: k.result })) } catch (m) { g(m) } }; k.readAsDataURL(e) }) }) } const J = {}; function K(a, b, d) { let c = a.replace(/\?.*/, ""); d && (c = a); /ttf|otf|eot|woff2?/i.test(c) && (c = c.replace(/.*\//, "")); return b ? `[${b}]${c}` : c }
+        function L(a, b, d) { return t(function* () { const c = K(a, b, d.C); if (J[c] != null) return J[c]; d.u && (a += (/\?/.test(a) ? "&" : "?") + (new Date).getTime()); let e; try { const f = yield I(a, d.i, ({ o: g, result: k }) => { b || (b = g.headers.get("Content-Type") || ""); return k.split(/,/)[1] }); e = `data:${b};base64,${f}` } catch (f) { e = d.B || "" } return J[c] = e }) }; const M = { P: "application/font-woff", R: "application/font-woff", N: "application/font-truetype", v: "application/vnd.ms-fontobject", H: "image/png", F: "image/jpeg", D: "image/jpeg", A: "image/gif", M: "image/tiff", L: "image/svg+xml", O: "image/webp" }; function N(a) { return (a = /\.([^./]*?)$/g.exec(a)) ? a[1] : "" }; function O(a) { return t(function* () { const b = a.toDataURL(); return b === "data:," ? a.cloneNode(!1) : B(b) }) } function aa(a, b) { return t(function* () { if (a.currentSrc) { var d = document.createElement("canvas"); const c = d.getContext("2d"); d.width = a.clientWidth; d.height = a.clientHeight; c == null || c.drawImage(a, 0, 0, d.width, d.height); d = d.toDataURL(); return B(d) } d = a.poster; d = yield L(d, M[N(d).toLowerCase()] || "", b); return B(d) }) }
+        function ba(a, b) { return t(function* () { try { let d; if (a == null ? 0 : (d = a.contentDocument) == null ? 0 : d.body) return yield P(a.contentDocument.body, b, !0) } catch (d) { } return a.cloneNode(!1) }) } function ca(a, b) { return t(function* () { return E(a, HTMLCanvasElement) ? O(a) : E(a, HTMLVideoElement) ? aa(a, b) : E(a, HTMLIFrameElement) ? ba(a, b) : a.cloneNode(a.tagName != null && a.tagName.toUpperCase() === "SVG") }) }
+        function da(a, b, d) {
+            return t(function* () {
+                if (b.tagName != null && b.tagName.toUpperCase() === "SVG") return b; let c = []; if (a.tagName != null && a.tagName.toUpperCase() === "SLOT" && a.assignedNodes) c = w(a.assignedNodes()); else { let e; if (E(a, HTMLIFrameElement) && ((e = a.contentDocument) == null ? 0 : e.body)) c = w(a.contentDocument.body.childNodes); else { let f; c = w(((f = a.shadowRoot) != null ? f : a).childNodes) } } if (c.length === 0 || E(a, HTMLVideoElement)) return b; yield c.reduce((e, f) => e.then(() => P(f, d)).then(g => { g && b.appendChild(g) }), Promise.resolve());
+                return b
+            })
+        } function ea(a, b, d) { const c = b.style; if (c) { var e = window.getComputedStyle(a); e.cssText ? (c.cssText = e.cssText, c.transformOrigin = e.transformOrigin) : y(d).forEach(f => { let g = e.getPropertyValue(f); f === "font-size" && g.endsWith("px") && (g = `${Math.floor(parseFloat(g.substring(0, g.length - 2))) - .1}px`); E(a, HTMLIFrameElement) && f === "display" && g === "inline" && (g = "block"); f === "d" && b.getAttribute("d") && (g = `path(${b.getAttribute("d")})`); c.setProperty(f, g, e.getPropertyPriority(f)) }) } }
+        function fa(a, b) { E(a, HTMLSelectElement) && (b = Array.from(b.children).find(d => a.value === d.getAttribute("value"))) && b.setAttribute("selected", "") }
+        function ha(a, b) {
+            return t(function* () {
+                var d = a.querySelectorAll ? a.querySelectorAll("use") : []; if (d.length === 0) return a; var c = {}; for (var e = 0; e < d.length; e++) { var f = d[e].getAttribute("xlink:href"); if (f) { const g = document.querySelector(f); a.querySelector(f) || !g || c[f] || (c[f] = yield P(g, b, !0)) } } d = Object.values(c); if (d.length) {
+                    c = document.createElementNS("http://www.w3.org/1999/xhtml", "svg"); c.setAttribute("xmlns", "http://www.w3.org/1999/xhtml"); c.style.position = "absolute"; c.style.width = "0"; c.style.height = "0";
+                    c.style.overflow = "hidden"; c.style.display = "none"; e = document.createElementNS("http://www.w3.org/1999/xhtml", "defs"); c.appendChild(e); for (f = 0; f < d.length; f++)e.appendChild(d[f]); a.appendChild(c)
+                } return a
+            })
+        }
+        function P(a, b, d) { return t(function* () { return d || !b.filter || b.filter(a) ? Promise.resolve(a).then(c => ca(c, b)).then(c => da(a, c, b)).then(c => { E(c, Element) && (ea(a, c, b), G(a, c, ":before", b), G(a, c, ":after", b), E(a, HTMLTextAreaElement) && (c.textContent = a.value), E(a, HTMLInputElement) && c.setAttribute("value", a.value), fa(a, c)); return c }).then(c => ha(c, b)) : null }) }; const Q = /url\((['"]?)([^'"]+?)\1\)/g, ia = /url\([^)]+\)\s*format\((["']?)([^"']+)\1\)/g, ja = /src:\s*(?:url\([^)]+\)\s*format\([^)]+\)[,;]\s*)+/g; function ka(a) { const b = []; a.replace(Q, (d, c, e) => { b.push(e); return d }); return b.filter(d => !H(d)) }
+        function la(a, b, d, c) { return t(function* () { try { const e = d ? (new URL(b, d || void 0)).toString() : b; let f; f = yield L(e, M[N(b).toLowerCase()] || "", c); return a.replace(new RegExp(`(url\\(['"]?)(${b.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1")})(['"]?\\))`, "g"), `$1${f}$3`) } catch (e) { } return a }) } function ma(a, { I: b }) { return b ? a.replace(ja, d => { for (; ;) { const [c, , e] = ia.exec(d) || [], f = c, g = e; if (!g) return ""; if (g === b) return `src: ${f};` } }) : a }
+        function R(a, b, d) { return t(function* () { if (a.search(Q) === -1) return a; const c = ma(a, d); return ka(c).reduce((e, f) => e.then(g => la(g, f, b, d)), Promise.resolve(c)) }) }; function S(a, b, d) { return t(function* () { var c; const e = (c = b.style) == null ? void 0 : c.getPropertyValue(a); return e ? (c = yield R(e, null, d), b.style.setProperty(a, c, b.style.getPropertyPriority(a)), !0) : !1 }) } function na(a, b) { return t(function* () { (yield S("background", a, b)) || (yield S("background-image", a, b)); (yield S("mask", a, b)) || (yield S("-webkit-mask", a, b)) || (yield S("mask-image", a, b)) || (yield S("-webkit-mask-image", a, b)) }) }
+        function oa(a, b) { return t(function* () { const d = E(a, HTMLImageElement); if (d && !H(a.src) || E(a, SVGImageElement) && !H(a.href.baseVal)) { var c = d ? a.src : a.href.baseVal, e = yield L(c, M[N(c).toLowerCase()] || "", b); yield new Promise((f, g) => { a.onload = f; a.onerror = b.m ? (...k) => { try { f(b.m(...k)) } catch (m) { g(m) } } : g; a.decode && (a.decode = f); a.loading === "lazy" && (a.loading = "eager"); d ? (a.srcset = "", a.src = e) : a.href.baseVal = e }) } }) }
+        function pa(a, b) { return t(function* () { const d = w(a.childNodes).map(c => T(c, b)); yield Promise.all(d).then(() => a) }) } function T(a, b) { return t(function* () { E(a, Element) && (yield na(a, b), yield oa(a, b), yield pa(a, b)) }) }; const U = {}; function V(a) { return t(function* () { var b = U[a]; if (b != null) return b; b = yield (yield fetch(a)).text(); b = { url: a, cssText: b }; return U[a] = b }) } function W(a, b) { return t(function* () { let d = a.cssText; const c = /url\(["']?([^"')]+)["']?\)/g, e = (d.match(/url\([^)]+\)/g) || []).map(f => t(function* () { let g = f.replace(c, "$1"); g.startsWith("https://") || (g = (new URL(g, a.url)).href); return I(g, b.i, ({ result: k }) => { d = d.replace(f, `url(${k})`); return [f, k] }) })); return Promise.all(e).then(() => d) }) }
+        function X(a) {
+            if (a == null) return []; const b = []; a = a.replace(/(\/\*[\s\S]*?\*\/)/gi, ""); for (var d = RegExp("((@.*?keyframes [\\s\\S]*?){([\\s\\S]*?}\\s*?)})", "gi"); ;) { var c = d.exec(a); if (c === null) break; b.push(c[0]) } a = a.replace(d, ""); d = /@import[\s\S]*?url\([^)]*\)[\s\S]*?;/gi; for (c = RegExp("((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?){([\\s\\S]*?)}\\s*?})|(([\\s\\S]*?){([\\s\\S]*?)})", "gi"); ;) {
+                let e = d.exec(a); if (e === null) if (e = c.exec(a), e === null) break; else d.lastIndex = c.lastIndex; else c.lastIndex =
+                    d.lastIndex; b.push(e[0])
+            } return b
+        }
+        function qa(a, b) {
+            return t(function* () {
+                const d = [], c = []; a.forEach(e => {
+                    if ("cssRules" in e) try { w(e.cssRules || []).forEach((f, g) => { if (f.type === CSSRule.IMPORT_RULE) { let k = g + 1; f = V(f.href).then(m => W(m, b)).then(m => X(m).forEach(q => { try { e.insertRule(q, q.startsWith("@import") ? k += 1 : e.cssRules.length) } catch (Da) { } })).catch(() => { }); c.push(f) } }) } catch (f) {
+                        const g = a.find(k => k.href == null) || document.styleSheets[0]; e.href != null && c.push(V(e.href).then(k => W(k, b)).then(k => X(k).forEach(m => { g.insertRule(m, g.cssRules.length) })).catch(() => { }))
+                    }
+                }); return Promise.all(c).then(() => { a.forEach(e => { if ("cssRules" in e) try { w(e.cssRules || []).forEach(f => { d.push(f) }) } catch (f) { } }); return d })
+            })
+        } function ra(a) { return a.filter(b => b.type === CSSRule.FONT_FACE_RULE).filter(b => b.style.getPropertyValue("src").search(Q) !== -1) } function sa(a, b) { return t(function* () { if (a.ownerDocument == null) throw Error("Provided element is not within a Document"); var d = w(a.ownerDocument.styleSheets); d = yield qa(d, b); return ra(d) }) }
+        function ta(a) { function b(c) { (c.style.fontFamily || getComputedStyle(c).fontFamily).split(",").forEach(e => { d.add(e.trim().replace(/["']/g, "")) }); Array.from(c.children).forEach(e => { e instanceof HTMLElement && b(e) }) } const d = new Set; b(a); return d } function ua(a, b) { return t(function* () { const d = yield sa(a, b), c = ta(a); return (yield Promise.all(d.filter(e => c.has(e.style.fontFamily.trim().replace(/["']/g, ""))).map(e => R(e.cssText, e.parentStyleSheet ? e.parentStyleSheet.href : null, b)))).join("\n") }) }
+        function va(a, b) { return t(function* () { const d = b.j != null ? b.j : b.K ? null : yield ua(a, b); if (d) { const c = document.createElement("style"); c.appendChild(document.createTextNode(d)); a.firstChild ? a.insertBefore(c, a.firstChild) : a.appendChild(c) } }) }; function wa(a, b = {}) { return t(function* () { const { width: d, height: c } = A(a, b), e = yield P(a, b, !0); yield va(e, b); yield T(e, b); u(e, b); return yield D(e, d, c) }) }
+        function xa(a, b = {}) {
+            return t(function* () {
+                const { width: d, height: c } = A(a, b); var e = yield wa(a, b); e = yield B(e); const f = document.createElement("canvas"), g = f.getContext("2d"), k = b.G || window.devicePixelRatio || 1, m = b.h || d, q = b.g || c; f.width = m * k; f.height = q * k; !b.J && (f.width > 16384 || f.height > 16384) && (f.width > 16384 && f.height > 16384 ? f.width > f.height ? (f.height *= 16384 / f.width, f.width = 16384) : (f.width *= 16384 / f.height, f.height = 16384) : f.width > 16384 ? (f.height *= 16384 / f.width, f.width = 16384) : (f.width *= 16384 / f.height, f.height =
+                    16384)); f.style.width = `${m}`; f.style.height = `${q}`; b.backgroundColor && (g.fillStyle = b.backgroundColor, g.fillRect(0, 0, f.width, f.height)); g.drawImage(e, 0, 0, f.width, f.height); return f
+            })
+        } function ya(a, b = {}) { return t(function* () { return (yield xa(a, b)).toDataURL() }) }; const za = ["gemini.google.com", "corp.google.com", "proxy.googlers.com"]; function Y() { return document.body.querySelectorAll('[class*="animate"]').length > 0 } function Z(a) { return t(function* () { try { return yield ya(a, { h: a.offsetWidth, g: a.offsetHeight }) } catch (d) { var b = a.offsetHeight; const c = document.createElement("canvas"); c.width = a.offsetWidth; c.height = b; return c.toDataURL("image/png") } }) }
+        function Aa() { return t(function* () { const a = document.body.offsetWidth, b = document.body.offsetHeight, d = document.body.cloneNode(!0); d.querySelectorAll('[class*="animate"]').forEach(c => { c.classList.remove(...Array.from(c.classList).filter(e => e.startsWith("animate"))) }); d.style.width = `${a}px`; d.style.height = `${b}px`; return d }) }
+        function Ba(a) { return t(function* () { let b = document.body; if (Y()) { var d = yield Aa(); b = d; document.body.appendChild(d) } d = yield Z(b); Y() && document.body.removeChild(b); window.parent.postMessage({ type: "SEND_SCREENSHOT", image: d, topOffset: document.documentElement.scrollTop }, a.origin) }) } function Ca(a) { return t(function* () { const b = { type: "SEND_SCREENSHOT_FOR_DATA_VISUALIZATION", image: yield Z(document.body), topOffset: 0 }; window.parent.postMessage(b, a.origin) }) }
+        window.addEventListener("message", a => t(function* () { if (za.some(d => a.origin.includes(d))) { var b = a.data; b && (b.type === "MAKE_SCREENSHOT" && (yield Ba(a)), b.type === "MAKE_SCREENSHOT_FOR_DATA_VISUALIZATION" && (yield Ca(a))) } }));
+    </script>
+    <script>(function () {
+            // Ensure this script is executed only once
+            if (window.firebaseAuthBridgeScriptLoaded) {
+                return;
+            }
+            window.firebaseAuthBridgeScriptLoaded = true;
+
+            let nextTokenPromiseId = 0;
+
+            // Stores { resolve, reject } for ongoing token requests
+            const pendingTokenPromises = {};
+
+            // Listen for messages from the Host Application
+            window.addEventListener('message', function (event) {
+
+                const messageData = event.data;
+
+                if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
+                    const { success, token, error, promiseId } = messageData ?? {};
+                    if (pendingTokenPromises[promiseId]) {
+                        if (success) {
+                            pendingTokenPromises[promiseId].resolve(token);
+                        } else {
+                            pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
+                        }
+                        delete pendingTokenPromises[promiseId];
+                    }
+                }
+            });
+
+            // Expose a function for the Generated App to request a new Firebase token
+            window.requestNewFirebaseToken = function () {
+                const currentPromiseId = nextTokenPromiseId++;
+                const promise = new Promise((resolve, reject) => {
+                    pendingTokenPromises[currentPromiseId] = { resolve, reject };
+                });
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage({
+                        type: 'REQUEST_NEW_FIREBASE_TOKEN',
+                        promiseId: currentPromiseId
+                    }, '*');
+                } else {
+                    pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
+                    delete pendingTokenPromises[currentPromiseId];
+                }
+                return promise;
+            };
+        })();</script>
+    <script>
+        let realOriginalGetUserMedia = null;
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+        }
+
+        (function () {
+            if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
+                try {
+                    Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
+                        get: function () {
+                            return undefined; // Or throw an error
+                        },
+                        configurable: false
+                    });
+                } catch (error) {
+                    console.error("Error defining prototype getter:", error);
+                }
+            }
+        })();
+
+        (function () {
+            const pendingMediaResolvers = {};
+            let nextMediaPromiseId = 0;
+
+            function requestMediaPermissions(constraints) {
+                const mediaPromiseId = nextMediaPromiseId++;
+                const promise = new Promise((resolve, reject) => {
+                    pendingMediaResolvers[mediaPromiseId] = (granted) => {
+                        delete pendingMediaResolvers[mediaPromiseId];
+                        resolve(granted);
+                    };
+                });
+
+                window.parent.postMessage({
+                    type: 'requestMediaPermission',
+                    constraints: constraints,
+                    promiseId: mediaPromiseId,
+                }, '*');
+
+                return promise;
+            }
+
+            let originalGetUserMedia = realOriginalGetUserMedia;
+
+            function interceptGetUserMedia() {
+                if (navigator.mediaDevices) {
+                    Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
+                        value: function (constraints) {
+                            return requestMediaPermissions(constraints).then((granted) => {
+                                if (granted) {
+                                    if (originalGetUserMedia) {
+                                        return originalGetUserMedia(constraints);
+                                    } else {
+                                        throw new Error("Original getUserMedia not available.");
+                                    }
+                                } else {
+                                    throw new DOMException('Permission denied', 'NotAllowedError');
+                                }
+                            });
+                        },
+                        writable: false,
+                        configurable: false
+                    });
+                }
+            }
+
+            interceptGetUserMedia();
+
+            const observer = new MutationObserver(function (mutationsList, observer) {
+                for (const mutation of mutationsList) {
+                    if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
+                        interceptGetUserMedia();
+                    } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
+                        interceptGetUserMedia();
+                    } else if (mutation.type === 'childList' && mutation.addedNodes) {
+                        mutation.addedNodes.forEach(node => {
+                            if (node === navigator.mediaDevices) {
+                                interceptGetUserMedia();
+                            }
+                        });
+                    }
+                }
+            });
+
+            function interceptSpeechRecognition() {
+                if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+                    return;
+                }
+
+                const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+                const SpeechRecognitionWrapper = function (...args) {
+                    const recognizer = new OriginalSpeechRecognition(...args);
+                    const originalStart = recognizer.start.bind(recognizer);
+
+                    recognizer.start = function () {
+                        requestMediaPermissions({ audio: true }).then(granted => {
+                            if (granted) {
+                                originalStart();
+                            } else {
+                                const errorEvent = new SpeechRecognitionErrorEvent('error');
+                                errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
+                                recognizer.dispatchEvent(errorEvent);
+                            }
+                        });
+                    };
+
+                    return recognizer;
+                };
+
+                SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
+                SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
+
+                if (window.SpeechRecognition) {
+                    window.SpeechRecognition = SpeechRecognitionWrapper;
+                }
+                if (window.webkitSpeechRecognition) {
+                    window.webkitSpeechRecognition = SpeechRecognitionWrapper;
+                }
+            }
+
+            interceptSpeechRecognition();
+
+            window.addEventListener('message', function (event) {
+                if (event.data) {
+                    if (event.data.type === 'resolveMediaPermission') {
+                        const { promiseId, granted } = event.data;
+                        if (pendingMediaResolvers[promiseId]) {
+                            pendingMediaResolvers[promiseId](granted);
+                        }
+                    }
+                }
+            });
+
+        })();</script>
+    <script>((function (modelInformation) {
+            const originalFetch = window.fetch;
+            // TODO: b/421908508 - Move these out of the script and match all generative AI model calls.
+            let googleLlmBaseApiUrls = [
+                'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':streamGenerateContent',
+                'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':generateContent',
+                'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predict',
+                'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predictLongRunning',
+                'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageEditModelName + ':generateContent',
+                'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predict',
+                'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predictLongRunning',
+                'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.ttsModelName + ':generateContent',
+            ];
+            modelInformation.deprecatedTextModelNames.forEach((modelName) => {
+                googleLlmBaseApiUrls.push(
+                    'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+                    'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+                );
+            });
+            modelInformation.deprecatedImageModelNames.forEach((modelName) => {
+                googleLlmBaseApiUrls.push(
+                    'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predict',
+                    'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predictLongRunning',
+                );
+            });
+
+            const pendingFetchResolvers = {};
+            let nextPromiseId = 0;
+
+            function handleStringInput(input, optionsArgument) {
+                const actualUrl = input;
+                const fetchCallArgs = [actualUrl, optionsArgument];
+                const effectiveOptions = optionsArgument || {};
+                const bodyForApiKeyCheck = effectiveOptions.body;
+                const bodyForPostMessage = effectiveOptions.body;
+                return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+            }
+
+            function handleRequestInput(input, optionsArgument) {
+                const actualUrl = input.url;
+                const fetchCallArgs = [input, optionsArgument];
+                const effectiveOptions = { method: input.method, headers: new Headers(input.headers) };
+                let bodyForApiKeyCheck;
+                let bodyForPostMessage;
+
+                if (optionsArgument) {
+                    if (optionsArgument.method) effectiveOptions.method = optionsArgument.method;
+                    if (optionsArgument.headers) effectiveOptions.headers = new Headers(optionsArgument.headers);
+                    if ('body' in optionsArgument) {
+                        bodyForApiKeyCheck = optionsArgument.body;
+                        bodyForPostMessage = optionsArgument.body;
+                    } else {
+                        bodyForApiKeyCheck = undefined;
+                        bodyForPostMessage = input.body;
+                    }
+                } else {
+                    bodyForApiKeyCheck = undefined;
+                    bodyForPostMessage = input.body;
+                }
+                return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+            }
+
+            window.fetch = function (input, optionsArgument) {
+                let actualUrl;
+                let fetchCallArgs;
+                let effectiveOptions = {};
+                let bodyForApiKeyCheck;
+                let bodyForPostMessage;
+
+                if (typeof input === 'string') {
+                    ({ actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage } = handleStringInput(input, optionsArgument));
+                } else if (input instanceof Request) {
+                    ({ actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage } = handleRequestInput(input, optionsArgument));
+                } else {
+                    return originalFetch.apply(window, [input, optionsArgument]);
+                }
+
+                effectiveOptions.method = effectiveOptions.method || 'GET';
+                if (!effectiveOptions.headers) {
+                    effectiveOptions.headers = new Headers();
+                }
+
+
+                if (typeof actualUrl === 'string' && googleLlmBaseApiUrls.some((url) => actualUrl.startsWith(url))) {
+                    let apiKeyIsNull = true;
+
+                    const regex = new RegExp("models/([^:]+)");
+                    const modelNameMatch = actualUrl.match(regex);
+                    const modelName = modelNameMatch ? modelNameMatch[1] : 'unspecified';
+
+
+                    try {
+                        const urlObject = new URL(actualUrl);  // Use URL object for robust parsing
+                        const apiKeyParam = urlObject.searchParams.get('key');
+                        if (apiKeyParam) {
+                            apiKeyIsNull = false;
+                        }
+                    } catch (e) {
+                        // Continue checks even if URL parsing fails
+                    }
+
+                    if (apiKeyIsNull && effectiveOptions.headers) {
+                        const h = new Headers(effectiveOptions.headers);
+                        const apiKeyHeaderValue = h.get('X-API-Key') || h.get('x-api-key');
+                        if (apiKeyHeaderValue) {
+                            apiKeyIsNull = false;
+                            return originalFetch.apply(window, fetchCallArgs);
+                        }
+                    }
+
+                    if (apiKeyIsNull && effectiveOptions.method && ['POST', 'PUT', 'PATCH'].includes(effectiveOptions.method.toUpperCase()) && typeof bodyForApiKeyCheck === 'string') {
+                        try {
+                            const bodyData = JSON.parse(bodyForApiKeyCheck);
+                            if (bodyData && bodyData.apiKey) {
+                                apiKeyIsNull = false;
+                                return originalFetch.apply(window, fetchCallArgs);
+                            }
+                        } catch (e) {
+                            // Ignore JSON parsing errors
+                        }
+                    }
+
+                    if (apiKeyIsNull) {
+                        const promiseId = nextPromiseId++;
+                        const promise = new Promise((resolve) => {
+                            pendingFetchResolvers[promiseId] = (resolvedResponse) => {
+                                delete pendingFetchResolvers[promiseId];
+                                resolve(resolvedResponse);
+                            };
+                        });
+
+                        let serializedBodyForPostMessage;
+                        if (typeof bodyForPostMessage === 'string' || bodyForPostMessage == null) {
+                            serializedBodyForPostMessage = bodyForPostMessage;
+                        } else if (bodyForPostMessage instanceof ReadableStream) {
+                            serializedBodyForPostMessage = null;
+                        } else {
+                            try {
+                                serializedBodyForPostMessage = JSON.stringify(bodyForPostMessage);
+                            } catch (e) {
+                                serializedBodyForPostMessage = null;
+                            }
+                        }
+
+                        const messageOptions = {
+                            method: effectiveOptions.method,
+                            headers: Object.fromEntries(new Headers(effectiveOptions.headers).entries()),
+                            body: serializedBodyForPostMessage
+                        };
+
+                        window.parent.postMessage({
+                            type: 'requestFetch',
+                            url: actualUrl,
+                            modelName: modelName,
+                            options: messageOptions,
+                            promiseId: promiseId,
+                        }, '*');
+
+                        return promise;
+                    }
+                    return originalFetch.apply(window, fetchCallArgs);
+                }
+                return originalFetch.apply(window, fetchCallArgs);
+            };
+
+            window.addEventListener('message', function (event) {
+                if (event.data && event.data.type === 'resolveFetch') {
+                    const { promiseId, response } = event.data;
+                    if (pendingFetchResolvers[promiseId]) {
+                        try {
+                            const reconstructedResponse = new Response(response.body, {
+                                status: response.status,
+                                statusText: response.statusText,
+                                headers: new Headers(response.headers),
+                            });
+                            pendingFetchResolvers[promiseId](reconstructedResponse);
+                        } catch (error) {
+                            pendingFetchResolvers[promiseId](new Response(null, { status: 500, statusText: "Interceptor Response Reconstruction Error" }));
+                        }
+                    }
+                }
+            });
+
+        }))({ "textModelName": "gemini-2.5-flash-preview-09-2025", "imageModelName": "imagen-3.0-generate-002", "imageEditModelName": "gemini-2.5-flash-image-preview", "videoModelName": "veo-2.0-generate-001", "ttsModelName": "gemini-2.5-flash-preview-tts", "deprecatedTextModelNames": ["gemini-2.0-flash", "gemini-2.5-flash-preview-04-17", "gemini-2.5-flash-preview-05-20"], "deprecatedImageModelNames": ["imagen-3.0-generate-001"] })</script>
+    <script>(function () {
+                    const originalConsoleLog = console.log;
+                    const originalConsoleError = console.error;
+
+                    /**
+                   * Normalizes an error event or a promise rejection reason into a structured error object.
+                   * @param {*} errorEventOrReason The error object or reason.
+                   * @return {object} Structured error data { message, name, stack }.
+                   */
+                    function getErrorObject(errorEventOrReason) {
+                        if (errorEventOrReason instanceof Error) {
+                            return {
+                                message: errorEventOrReason.message,
+                                name: errorEventOrReason.name,
+                                stack: errorEventOrReason.stack,
+                            };
+                        }
+                        // Fallback for non-Error objects.
+                        try {
+                            return {
+                                message: JSON.stringify(errorEventOrReason),
+                                name: 'UnknownErrorType',
+                                stack: null,
+                            };
+                        } catch (e) {
+                            return {
+                                message: String(errorEventOrReason),
+                                name: 'UnknownErrorTypeNonStringifiable',
+                                stack: null,
+                            };
+                        }
+                    }
+
+                    /**
+                     * Converts an array of arguments (from log/error) into a single string.
+                     * Handles Error objects specially to include their message and stack.
+                     * @param {Array<*>} args - Arguments passed to console methods.
+                     * @return {string} A string representation of the arguments.
+                     */
+                    function stringifyArgs(args) {
+                        return args
+                            .map((arg) => {
+                                if (arg instanceof Error) {
+                                    const { message, stack } = arg;
+                                    return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
+                                }
+                                if (typeof arg === 'object' && arg !== null) {
+                                    try {
+                                        return JSON.stringify(arg);
+                                    } catch (error) {
+                                        return '[Circular Object]';
+                                    }
+                                } else {
+                                    return String(arg);
+                                }
+                            })
+                            .join(' ');
+                    }
+
+                    console.log = function (...args) {
+                        const logString = stringifyArgs(args);
+                        window.parent.postMessage({ type: 'log', message: logString }, '*');
+                        originalConsoleLog.apply(console, args);
+                    };
+
+                    console.error = function (...args) {
+                        let errorData;
+                        if (args.length > 0 && args[0] instanceof Error) {
+                            const err = args[0];
+                            // If the first arg is an Error, capture its details.
+                            errorData = {
+                                type: 'error',
+                                source: 'CONSOLE_ERROR',
+                                ...getErrorObject(err),
+                                rawArgsString: stringifyArgs(args.slice(1)),
+                                timestamp: new Date().toISOString(),
+                            };
+                        } else {
+                            // If not an Error object, treat all args as a general error message.
+                            errorData = {
+                                type: 'error',
+                                source: 'CONSOLE_ERROR',
+                                message: stringifyArgs(args),
+                                name: 'ConsoleLoggedError',
+                                stack: null,
+                                timestamp: new Date().toISOString(),
+                            };
+                        }
+                        window.parent.postMessage(errorData, '*');
+                        originalConsoleError.apply(console, args);
+                    };
+
+                    // Listen for global unhandled synchronous errors.
+                    window.addEventListener('error', function (event) {
+                        const errorDetails = event.error ? getErrorObject(event.error) : {
+                            message: event.message,
+                            name: 'GlobalError',
+                            stack: null,
+                            filename: event.filename,
+                            lineno: event.lineno,
+                            colno: event.colno,
+                        };
+
+                        window.parent.postMessage({
+                            type: 'error',
+                            source: 'global',
+                            ...errorDetails,
+                            message: errorDetails.message || event.message,
+                            timestamp: new Date().toISOString(),
+                        }, '*');
+                    });
+
+                    // Listen for unhandled promise rejections (asynchronous errors).
+                    window.addEventListener('unhandledrejection', function (event) {
+                        const errorDetails = getErrorObject(event.reason);
+
+                        window.parent.postMessage({
+                            type: 'error',
+                            source: 'unhandledrejection',
+                            ...errorDetails,
+                            message: errorDetails.message || 'Unhandled Promise Rejection',
+                            timestamp: new Date().toISOString(),
+                        }, '*');
+                    });
+
+                })();</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 04: Linguagem de Definição de Dados (DDL)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&amp;family=Lato:wght@400;700&amp;family=Roboto+Mono:wght@400;700&amp;display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* 1. THE SETUP */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #2a313b;
+            /* Fundo mais escuro para o body */
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 1fr;
+            margin: 0;
+            min-height: 100vh;
+            padding: 20px 0;
+            place-items: center;
+        }
+
+        .slide-container {
+            align-items: center;
+            background-color: #1d232a;
+            /* Cor de fundo escura do slide */
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            height: 720px;
+            justify-content: center;
+            overflow: hidden;
+            padding: 60px;
+            position: relative;
+            width: 1280px;
+        }
+
+        /* 1.1 BACKGROUND STYLING */
+
+        .slide-container::before {
+            content: '';
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 0;
+        }
+
+        .slide-container>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 2. CONSISTENT TYPOGRAPHY (Dark Theme Adaptation) */
+
+        /* Headings Font */
+
+        .slide-container h1,
+        .slide-container h2,
+        .slide-container h3 {
+            color: #f0f0f0;
+            /* Texto claro */
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+        }
+
+        /* Body Text Font */
+
+        .slide-container p,
+        .slide-container li,
+        .slide-container .subtitle,
+        .slide-container .number-label,
+        .slide-container .legend li,
+        .slide-container .chart-summary,
+        .slide-container .bar .label,
+        .slide-container th,
+        .slide-container td,
+        .slide-container .alternating-text-tile p,
+        .slide-container .bleed-text-side p {
+            color: #cccccc;
+            /* Texto cinza claro */
+            font-family: 'Lato', sans-serif;
+        }
+
+        /* Consistent Font Sizes */
+
+        .slide-container h1 {
+            font-size: 70px;
+        }
+
+        .slide-container .slide-title {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: left;
+            width: 100%;
+            color: #33d17a;
+            /* Verde destacado para títulos */
+        }
+
+        .slide-container h3 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #7cb5fe;
+            /* Azul claro para subtítulos */
+        }
+
+        /* Unified body text size */
+
+        .slide-container p,
+        .slide-container li,
+        .slide-container .subtitle,
+        .slide-container .legend li,
+        .slide-container .chart-summary,
+        .slide-container .bar .label,
+        .slide-container th,
+        .slide-container td,
+        .slide-container .alternating-text-tile p,
+        .slide-container .bleed-text-side p {
+            font-size: 20px;
+            /* Tamanho de fonte ligeiramente maior para legibilidade */
+            line-height: 1.6;
+        }
+
+        .slide-container .subtitle {
+            font-weight: 400;
+            margin: 20px auto;
+            font-size: 24px;
+        }
+
+        .slide-container .content-area {
+            align-items: flex-start;
+            /* Alinhar ao topo */
+            display: flex;
+            flex-grow: 1;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* 2.1 CUSTOM CODE BLOCK STYLE */
+        .code-block {
+            background-color: #0d1117;
+            /* Fundo de código (estilo GitHub Dark) */
+            border-radius: 8px;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 16px;
+            line-height: 1.5;
+            margin: 0;
+            overflow: auto;
+            padding: 20px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            height: 100%;
+            width: 100%;
+        }
+
+        .code-block .sql-keyword {
+            color: #7cb5fe;
+            /* Azul para CREATE, TABLE, ALTER, etc. */
+            font-weight: 700;
+        }
+
+        .code-block .sql-type {
+            color: #b392f0;
+            /* Roxo para DECIMAL, CHAR, VARCHAR */
+        }
+
+        .code-block .sql-constraint {
+            color: #ffab70;
+            /* Laranja para PRIMARY KEY, NOT NULL, REFERENCES */
+            font-weight: 700;
+        }
+
+        .code-block .sql-value {
+            color: #a5d6ff;
+            /* Azul claro para valores como 'São Paulo' */
+        }
+
+        .code-block .sql-comment {
+            color: #8b949e;
+            /* Cinza para comentários */
+            font-style: italic;
+        }
+
+
+        /* 3. LAYOUT DEFINITIONS (Dark Theme Adaptation) */
+
+        .title-layout {
+            text-align: center;
+        }
+
+        .title-layout h1 {
+            color: #ffffff;
+        }
+
+        .title-layout .subtitle {
+            color: #f0f0f0;
+            max-width: 800px;
+        }
+
+        .two-column {
+            align-items: flex-start;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            width: 100%;
+        }
+
+        .two-column.tiled {
+            align-items: stretch;
+        }
+
+        .two-column.tiled>div {
+            background-color: #2a313b;
+            /* Fundo do tile */
+            border-radius: 12px;
+            border: 1px solid #3a414b;
+            /* Borda sutil */
+            padding: 40px;
+        }
+
+        .two-column.tiled>div:last-child {
+            padding: 0;
+            /* Remover padding para o code block */
+            border: none;
+            background-color: transparent;
+        }
+
+
+        .two-column ul {
+            list-style: none;
+            /* Remover marcadores padrão */
+            margin: 0;
+            padding-left: 0;
+        }
+
+        .two-column li {
+            margin-bottom: 20px;
+            padding-left: 35px;
+            position: relative;
+        }
+
+        /* Adicionando ícones de marcador personalizados */
+        .two-column li::before {
+            content: '\f058';
+            /* Ícone de círculo de verificação do Font Awesome */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #33d17a;
+            /* Verde */
+            position: absolute;
+            left: 0;
+            top: 5px;
+            font-size: 20px;
+        }
+
+
+        .image-wrapper {
+            border-radius: 12px;
+            height: 100%;
+            /* Ajustar altura */
+            max-height: 450px;
+            /* Definir altura máxima */
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .image-wrapper img {
+            height: 100%;
+            object-fit: cover;
+            /* Mudar para cover para preencher */
+            width: 100%;
+        }
+
+        .two-column .image-wrapper img {
+            object-fit: contain;
+            /* Manter contain para este layout específico */
+        }
+
+        .tiled-content {
+            align-items: stretch;
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .tile {
+            align-items: center;
+            background-color: #2a313b;
+            /* Fundo do tile */
+            border-radius: 12px;
+            border: 1px solid #3a414b;
+            /* Borda sutil */
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: flex-start;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .tile .icon {
+            color: #33d17a;
+            /* Verde */
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .tile h3 {
+            color: #7cb5fe;
+            /* Azul */
+        }
+
+        .tile p {
+            font-size: 16px;
+            /* Texto menor nos tiles */
+            font-family: 'Roboto Mono', monospace;
+            /* Fonte mono para código/sintaxe */
+        }
+
+        .full-bg-image {
+            background-position: center;
+            background-size: cover;
+            padding: 0;
+            /* Remover padding para imagem de fundo inteira */
+        }
+
+        .full-bg-image .content-overlay {
+            background-color: rgba(0, 0, 0, 0.7);
+            /* Overlay escuro para legibilidade */
+            border-radius: 8px;
+            /* Arredondar o overlay interno */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 60px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .full-bg-image h1,
+        .full-bg-image .subtitle {
+            color: #ffffff;
+            /* Texto branco no overlay */
+        }
+
+        .highlight-numbers-layout>div:first-child {
+            flex: 0 0 40%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .highlight-numbers-layout .number {
+            color: #7cb5fe;
+            /* Azul */
+            font-size: 48px;
+            /* Tamanho menor para sintaxe */
+            font-weight: 700;
+            font-family: 'Roboto Mono', monospace;
+            /* Fonte mono */
+            line-height: 1.4;
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .highlight-numbers-layout .number-label {
+            font-size: 24px;
+            font-weight: 700;
+            color: #cccccc;
+        }
+
+        .highlight-numbers-layout>div:last-child {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .highlight-numbers-layout>div:last-child p {
+            font-size: 24px;
+        }
+
+
+        /* Section Title */
+
+        .section-title-layout {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        .section-title-layout h2 {
+            font-size: 72px;
+            margin-bottom: 20px;
+            color: #f0f0f0;
+        }
+
+        .section-title-layout p {
+            font-size: 24px;
+            margin: 0 auto;
+            max-width: 900px;
+            color: #cccccc;
+        }
+
+        .section-title-layout hr {
+            background-color: #33d17a;
+            /* Verde */
+            border: none;
+            height: 5px;
+            margin: 30px auto;
+            width: 100px;
+        }
+
+        /* Image Right Text Left */
+        .slide-container .image-right-text-left {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            width: 100%;
+            align-items: flex-start;
+        }
+
+        .slide-container .image-right-text-left .image-wrapper {
+            max-height: 100%;
+            /* Permitir que a imagem ocupe a altura */
+            height: 400px;
+            /* Altura fixa */
+        }
+
+        .slide-container .image-right-text-left .image-wrapper img {
+            object-fit: cover;
+            /* Usar cover */
+        }
+
+        /* Q&A Layout */
+
+        .qa-layout {
+            text-align: center;
+            width: 100%;
+            align-self: center;
+        }
+
+        .qa-layout h2 {
+            font-size: 80px;
+            margin-bottom: 20px;
+            color: #f0f0f0;
+        }
+
+        .qa-layout p {
+            font-size: 24px;
+            color: #cccccc;
+        }
+
+        .qa-layout .contact-info {
+            color: #7cb5fe;
+            font-size: 22px;
+            margin-top: 40px;
+            font-weight: 700;
+        }
+    </style>
+    <style>
+        .attribution-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .attribution-list__item {
+            align-items: center;
+            border-bottom: 1px solid #757575;
+            display: grid;
+            gap: 25px;
+            grid-template-columns: 90px 1fr;
+            padding: 15px 0;
+        }
+
+        .attribution-list__item:last-child {
+            border-bottom: none;
+        }
+
+        .attribution-list__item .attribution__thumbnail {
+            background-color: #f1f5f9;
+            height: 50px;
+            width: 90px;
+        }
+
+        .attribution__thumbnail .attribution__thumbnail__image {
+            border-radius: 8px;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .attribution__details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .attribution__details .attribution__raw-url {
+            color: inherit;
+            font-size: 13px;
+            margin: 0;
+            word-break: break-all;
+        }
+
+        .attribution__details .attribution__title {
+            color: inherit;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .attribution__details .attribution__title>.attribution__link {
+            color: #4f46e5;
+            text-decoration: none;
+        }
+    </style>
+    <style>
+        /* The container that fills available space. It's the positioning context. */
+        #slideshow-holder {
+            position: relative;
+            flex-grow: 1;
+            /* Replaces flex-grow Tailwind class for clarity */
+            width: 100%;
+            padding: 1rem;
+            /* Replaces p-4 Tailwind class */
+        }
+
+        /* The element that is scaled and centered. */
+        #slideshow-wrapper {
+            width: 1280px;
+            height: 720px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: center;
+            transform: translate(-50%, -50%) scale(var(--scale-factor, 1));
+            transition: transform 0.3s ease-in-out;
+            /* Visual styles moved here from the holder */
+            border-radius: 0.5rem;
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+            overflow: hidden;
+        }
+
+        /* Update slide container styles */
+        .slide-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        /* Make the active slide visible */
+        .slide-container.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class', }
+    </script>
+    <style>
+        *,
+        ::before,
+        ::after {
+            --tw-border-spacing-x: 0;
+            --tw-border-spacing-y: 0;
+            --tw-translate-x: 0;
+            --tw-translate-y: 0;
+            --tw-rotate: 0;
+            --tw-skew-x: 0;
+            --tw-skew-y: 0;
+            --tw-scale-x: 1;
+            --tw-scale-y: 1;
+            --tw-pan-x: ;
+            --tw-pan-y: ;
+            --tw-pinch-zoom: ;
+            --tw-scroll-snap-strictness: proximity;
+            --tw-gradient-from-position: ;
+            --tw-gradient-via-position: ;
+            --tw-gradient-to-position: ;
+            --tw-ordinal: ;
+            --tw-slashed-zero: ;
+            --tw-numeric-figure: ;
+            --tw-numeric-spacing: ;
+            --tw-numeric-fraction: ;
+            --tw-ring-inset: ;
+            --tw-ring-offset-width: 0px;
+            --tw-ring-offset-color: #fff;
+            --tw-ring-color: rgb(59 130 246 / 0.5);
+            --tw-ring-offset-shadow: 0 0 #0000;
+            --tw-ring-shadow: 0 0 #0000;
+            --tw-shadow: 0 0 #0000;
+            --tw-shadow-colored: 0 0 #0000;
+            --tw-blur: ;
+            --tw-brightness: ;
+            --tw-contrast: ;
+            --tw-grayscale: ;
+            --tw-hue-rotate: ;
+            --tw-invert: ;
+            --tw-saturate: ;
+            --tw-sepia: ;
+            --tw-drop-shadow: ;
+            --tw-backdrop-blur: ;
+            --tw-backdrop-brightness: ;
+            --tw-backdrop-contrast: ;
+            --tw-backdrop-grayscale: ;
+            --tw-backdrop-hue-rotate: ;
+            --tw-backdrop-invert: ;
+            --tw-backdrop-opacity: ;
+            --tw-backdrop-saturate: ;
+            --tw-backdrop-sepia: ;
+            --tw-contain-size: ;
+            --tw-contain-layout: ;
+            --tw-contain-paint: ;
+            --tw-contain-style:
+        }
+
+        ::backdrop {
+            --tw-border-spacing-x: 0;
+            --tw-border-spacing-y: 0;
+            --tw-translate-x: 0;
+            --tw-translate-y: 0;
+            --tw-rotate: 0;
+            --tw-skew-x: 0;
+            --tw-skew-y: 0;
+            --tw-scale-x: 1;
+            --tw-scale-y: 1;
+            --tw-pan-x: ;
+            --tw-pan-y: ;
+            --tw-pinch-zoom: ;
+            --tw-scroll-snap-strictness: proximity;
+            --tw-gradient-from-position: ;
+            --tw-gradient-via-position: ;
+            --tw-gradient-to-position: ;
+            --tw-ordinal: ;
+            --tw-slashed-zero: ;
+            --tw-numeric-figure: ;
+            --tw-numeric-spacing: ;
+            --tw-numeric-fraction: ;
+            --tw-ring-inset: ;
+            --tw-ring-offset-width: 0px;
+            --tw-ring-offset-color: #fff;
+            --tw-ring-color: rgb(59 130 246 / 0.5);
+            --tw-ring-offset-shadow: 0 0 #0000;
+            --tw-ring-shadow: 0 0 #0000;
+            --tw-shadow: 0 0 #0000;
+            --tw-shadow-colored: 0 0 #0000;
+            --tw-blur: ;
+            --tw-brightness: ;
+            --tw-contrast: ;
+            --tw-grayscale: ;
+            --tw-hue-rotate: ;
+            --tw-invert: ;
+            --tw-saturate: ;
+            --tw-sepia: ;
+            --tw-drop-shadow: ;
+            --tw-backdrop-blur: ;
+            --tw-backdrop-brightness: ;
+            --tw-backdrop-contrast: ;
+            --tw-backdrop-grayscale: ;
+            --tw-backdrop-hue-rotate: ;
+            --tw-backdrop-invert: ;
+            --tw-backdrop-opacity: ;
+            --tw-backdrop-saturate: ;
+            --tw-backdrop-sepia: ;
+            --tw-contain-size: ;
+            --tw-contain-layout: ;
+            --tw-contain-paint: ;
+            --tw-contain-style:
+        }
+
+        /* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */
+        *,
+        ::after,
+        ::before {
+            box-sizing: border-box;
+            border-width: 0;
+            border-style: solid;
+            border-color: #e5e7eb
+        }
+
+        ::after,
+        ::before {
+            --tw-content: ''
+        }
+
+        :host,
+        html {
+            line-height: 1.5;
+            -webkit-text-size-adjust: 100%;
+            -moz-tab-size: 4;
+            tab-size: 4;
+            font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-feature-settings: normal;
+            font-variation-settings: normal;
+            -webkit-tap-highlight-color: transparent
+        }
+
+        body {
+            margin: 0;
+            line-height: inherit
+        }
+
+        hr {
+            height: 0;
+            color: inherit;
+            border-top-width: 1px
+        }
+
+        abbr:where([title]) {
+            -webkit-text-decoration: underline dotted;
+            text-decoration: underline dotted
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-size: inherit;
+            font-weight: inherit
+        }
+
+        a {
+            color: inherit;
+            text-decoration: inherit
+        }
+
+        b,
+        strong {
+            font-weight: bolder
+        }
+
+        code,
+        kbd,
+        pre,
+        samp {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-feature-settings: normal;
+            font-variation-settings: normal;
+            font-size: 1em
+        }
+
+        small {
+            font-size: 80%
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        table {
+            text-indent: 0;
+            border-color: inherit;
+            border-collapse: collapse
+        }
+
+        button,
+        input,
+        optgroup,
+        select,
+        textarea {
+            font-family: inherit;
+            font-feature-settings: inherit;
+            font-variation-settings: inherit;
+            font-size: 100%;
+            font-weight: inherit;
+            line-height: inherit;
+            letter-spacing: inherit;
+            color: inherit;
+            margin: 0;
+            padding: 0
+        }
+
+        button,
+        select {
+            text-transform: none
+        }
+
+        button,
+        input:where([type=button]),
+        input:where([type=reset]),
+        input:where([type=submit]) {
+            -webkit-appearance: button;
+            background-color: transparent;
+            background-image: none
+        }
+
+        :-moz-focusring {
+            outline: auto
+        }
+
+        :-moz-ui-invalid {
+            box-shadow: none
+        }
+
+        progress {
+            vertical-align: baseline
+        }
+
+        ::-webkit-inner-spin-button,
+        ::-webkit-outer-spin-button {
+            height: auto
+        }
+
+        [type=search] {
+            -webkit-appearance: textfield;
+            outline-offset: -2px
+        }
+
+        ::-webkit-search-decoration {
+            -webkit-appearance: none
+        }
+
+        ::-webkit-file-upload-button {
+            -webkit-appearance: button;
+            font: inherit
+        }
+
+        summary {
+            display: list-item
+        }
+
+        blockquote,
+        dd,
+        dl,
+        figure,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        hr,
+        p,
+        pre {
+            margin: 0
+        }
+
+        fieldset {
+            margin: 0;
+            padding: 0
+        }
+
+        legend {
+            padding: 0
+        }
+
+        menu,
+        ol,
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0
+        }
+
+        dialog {
+            padding: 0
+        }
+
+        textarea {
+            resize: vertical
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            opacity: 1;
+            color: #9ca3af
+        }
+
+        [role=button],
+        button {
+            cursor: pointer
+        }
+
+        :disabled {
+            cursor: default
+        }
+
+        audio,
+        canvas,
+        embed,
+        iframe,
+        img,
+        object,
+        svg,
+        video {
+            display: block;
+            vertical-align: middle
+        }
+
+        img,
+        video {
+            max-width: 100%;
+            height: auto
+        }
+
+        [hidden]:where(:not([hidden=until-found])) {
+            display: none
+        }
+
+        .absolute {
+            position: absolute
+        }
+
+        .relative {
+            position: relative
+        }
+
+        .left-4 {
+            left: 1rem
+        }
+
+        .right-4 {
+            right: 1rem
+        }
+
+        .top-1\/2 {
+            top: 50%
+        }
+
+        .top-4 {
+            top: 1rem
+        }
+
+        .z-20 {
+            z-index: 20
+        }
+
+        .flex {
+            display: flex
+        }
+
+        .hidden {
+            display: none
+        }
+
+        .h-5 {
+            height: 1.25rem
+        }
+
+        .h-6 {
+            height: 1.5rem
+        }
+
+        .h-screen {
+            height: 100vh
+        }
+
+        .w-5 {
+            width: 1.25rem
+        }
+
+        .w-6 {
+            width: 1.5rem
+        }
+
+        .w-full {
+            width: 100%
+        }
+
+        .flex-shrink-0 {
+            flex-shrink: 0
+        }
+
+        .-translate-y-1\/2 {
+            --tw-translate-y: -50%;
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+        }
+
+        .flex-col {
+            flex-direction: column
+        }
+
+        .items-center {
+            align-items: center
+        }
+
+        .justify-center {
+            justify-content: center
+        }
+
+        .space-x-2> :not([hidden])~ :not([hidden]) {
+            --tw-space-x-reverse: 0;
+            margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+            margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)))
+        }
+
+        .rounded-full {
+            border-radius: 9999px
+        }
+
+        .rounded-md {
+            border-radius: 0.375rem
+        }
+
+        .bg-gray-100 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-white {
+            --tw-bg-opacity: 1;
+            background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-white\/50 {
+            background-color: rgb(255 255 255 / 0.5)
+        }
+
+        .p-2 {
+            padding: 0.5rem
+        }
+
+        .p-4 {
+            padding: 1rem
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+            line-height: 1.25rem
+        }
+
+        .font-medium {
+            font-weight: 500
+        }
+
+        .text-gray-600 {
+            --tw-text-opacity: 1;
+            color: rgb(75 85 99 / var(--tw-text-opacity, 1))
+        }
+
+        .text-gray-700 {
+            --tw-text-opacity: 1;
+            color: rgb(55 65 81 / var(--tw-text-opacity, 1))
+        }
+
+        .shadow-md {
+            --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
+            box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+        }
+
+        .backdrop-blur-sm {
+            --tw-backdrop-blur: blur(4px);
+            -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+            backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)
+        }
+
+        .transition-all {
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms
+        }
+
+        .transition-colors {
+            transition-property: color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms
+        }
+
+        .duration-300 {
+            transition-duration: 300ms
+        }
+
+        .hover\:bg-gray-100:hover {
+            --tw-bg-opacity: 1;
+            background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1))
+        }
+
+        .hover\:text-black:hover {
+            --tw-text-opacity: 1;
+            color: rgb(0 0 0 / var(--tw-text-opacity, 1))
+        }
+
+        .disabled\:cursor-not-allowed:disabled {
+            cursor: not-allowed
+        }
+
+        .disabled\:opacity-50:disabled {
+            opacity: 0.5
+        }
+
+        .dark\:bg-gray-800:is(.dark *) {
+            --tw-bg-opacity: 1;
+            background-color: rgb(31 41 55 / var(--tw-bg-opacity, 1))
+        }
+
+        .dark\:bg-gray-800\/50:is(.dark *) {
+            background-color: rgb(31 41 55 / 0.5)
+        }
+
+        .dark\:bg-gray-900:is(.dark *) {
+            --tw-bg-opacity: 1;
+            background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1))
+        }
+
+        .dark\:text-gray-300:is(.dark *) {
+            --tw-text-opacity: 1;
+            color: rgb(209 213 219 / var(--tw-text-opacity, 1))
+        }
+
+        .dark\:text-gray-400:is(.dark *) {
+            --tw-text-opacity: 1;
+            color: rgb(156 163 175 / var(--tw-text-opacity, 1))
+        }
+
+        .dark\:hover\:bg-gray-700:hover:is(.dark *) {
+            --tw-bg-opacity: 1;
+            background-color: rgb(55 65 81 / var(--tw-bg-opacity, 1))
+        }
+
+        .dark\:hover\:text-white:hover:is(.dark *) {
+            --tw-text-opacity: 1;
+            color: rgb(255 255 255 / var(--tw-text-opacity, 1))
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 flex flex-col h-screen transition-colors duration-300">
+
+    <!-- Slide 1: Title_Slide (Usando Full_Background_Image) -->
+
+
+    <!-- Slide 2: Section_Title -->
+
+
+    <!-- Slide 3: Two_Column_Tiled_Text (Adaptado para Texto + Código) -->
+
+
+    <!-- Slide 4: Two_Column_Tiled_Text (Restrições: Chave Primária) -->
+
+
+    <!-- Slide 5: Two_Column_Tiled_Text (Restrições: NOT NULL e UNIQUE) -->
+
+
+    <!-- Slide 6: Two_Column_Tiled_Text (Restrições: DEFAULT e CHECK) -->
+
+
+    <!-- Slide 7: Image_Right_Text_Left (Restrições: FOREIGN KEY) -->
+
+
+    <!-- Slide 8: Tiled_Text_With_Icons (ALTER TABLE) -->
+
+
+    <!-- Slide 9: Highlight_Numbers (DROP TABLE) -->
+
+
+    <!-- Slide 10: Image_Right_Text_Left (Índices) -->
+
+
+    <!-- Slide 11: Two_Column_Tiled_Text (Gerenciando Índices) -->
+
+
+    <!-- Slide 12: Q&A -->
+
+
+
+
+    <button id="theme-toggle"
+        class="absolute top-4 right-4 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm p-2 rounded-full shadow-md text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-all duration-300 z-20">
+        <svg id="theme-toggle-dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+        </svg>
+        <svg id="theme-toggle-light-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path
+                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 5.05a1 1 0 00-1.414 1.414l.707.707a1 1 0 001.414-1.414l-.707-.707zM5 10a1 1 0 01-1-1H3a1 1 0 110-2h1a1 1 0 011 1zm4.95-4.95a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414z"
+                fill-rule="evenodd" clip-rule="evenodd"></path>
+        </svg>
+    </button>
+
+    <div id="nav-controls" class="relative flex-shrink-0 w-full flex justify-center items-center p-4 hidden">
+        <span id="slide-counter"
+            class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-600 dark:text-gray-400">Slide
+            1 of 13</span>
+        <div class="flex items-center space-x-2">
+            <button id="prev-slide"
+                class="bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 p-2 rounded-md transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                disabled="">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <button id="next-slide"
+                class="bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 p-2 rounded-md transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-md">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div id="slideshow-holder">
+        <div id="slideshow-wrapper" style="--scale-factor: 0.70859375;">
+            <div class="slide-container full-bg-image active" id="slide1"
+                style="background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20251017/pngtree-abstract-digital-mesh-interconnected-lines-nodes-blue-to-green-transition-technology-image_19895760.webp');">
+                <div class="content-overlay">
+                    <h1>Linguagem de Definição de Dados (DDL)</h1>
+                    <p class="subtitle">Capítulo 04: Criando a Estrutura do Banco de Dados</p>
+                </div>
+            </div>
+            <div class="slide-container" id="slide2">
+                <div class="section-title-layout">
+                    <hr>
+                    <h2>O que é DDL?</h2>
+                    <p>A Linguagem de Definição de Dados (DDL) é um conjunto de instruções SQL que fornece meios para a
+                        criação, alteração e exclusão de tabelas e índices.</p>
+                </div>
+            </div>
+            <div class="slide-container" id="slide3">
+                <h2 class="slide-title">Criando Tabelas: CREATE TABLE</h2>
+                <div class="content-area">
+                    <div class="two-column tiled">
+                        <div>
+                            <h3>Sintaxe Básica</h3>
+                            <p>Uma tabela é definida usando o comando `CREATE TABLE`. Você deve especificar o nome da
+                                tabela, seus campos (colunas) e os tipos de dados de cada campo.</p>
+                            <pre class="code-block" style="font-size: 14px; margin-top: 20px; height: auto;"><span class="sql-keyword">create table</span> T (
+    A1 D1,
+    A2 D2,
+    ...
+)</pre>
+                        </div>
+                        <div>
+                            <pre class="code-block"><span class="sql-comment">-- Exemplo da Apostila (p. 10)</span>
+
+<span class="sql-keyword">create table</span> departamento (
+    Codigo   <span class="sql-type">decimal</span>(5),
+    Nome     <span class="sql-type">char</span>(20)
+);
+
+<span class="sql-keyword">create table</span> funcionario (
+    matricula  <span class="sql-type">decimal</span>(5),
+    nome       <span class="sql-type">char</span>(30),
+    rg         <span class="sql-type">decimal</span>(9),
+    sexo       <span class="sql-type">char</span>(1),
+    depto      <span class="sql-type">decimal</span>(5),
+    endereco   <span class="sql-type">varchar</span>(40),
+    cidade     <span class="sql-type">varchar</span>(20),
+    salario    <span class="sql-type">decimal</span>(10,2)
+);</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-container" id="slide4">
+                <h2 class="slide-title">Restrições: Chave Primária (PRIMARY KEY)</h2>
+                <div class="content-area">
+                    <div class="two-column tiled">
+                        <div>
+                            <h3>PRIMARY KEY</h3>
+                            <p>A Chave Primária (`PRIMARY KEY`) é a restrição mais importante. Sua função é identificar
+                                univocamente cada registro (linha) da tabela.</p>
+                            <ul>
+                                <li>Toda tabela deve possuir uma chave primária.</li>
+                                <li>Ela pode ser composta por um ou mais campos.</li>
+                                <li>Campos da chave primária são implicitamente `NOT NULL` (não nulos).</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <pre class="code-block"><span class="sql-comment">-- Sintaxe 1: Na definição da coluna</span>
+<span class="sql-keyword">create table</span> departamento (
+    Codigo <span class="sql-type">decimal</span>(5) <span class="sql-constraint">NOT NULL PRIMARY KEY</span>,
+    Nome   <span class="sql-type">char</span>(20)
+);
+
+<span class="sql-comment">-- Sintaxe 2: No final da tabela</span>
+<span class="sql-comment">-- (Obrigatória para chaves compostas)</span>
+<span class="sql-keyword">create table</span> funcionario (
+    matricula <span class="sql-type">decimal</span>(5) <span class="sql-constraint">NOT NULL</span>,
+    nome      <span class="sql-type">char</span>(30),
+    ...
+    <span class="sql-constraint">PRIMARY KEY</span> (matricula)
+);</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-container" id="slide5">
+                <h2 class="slide-title">Restrições: NOT NULL e UNIQUE</h2>
+                <div class="content-area">
+                    <div class="two-column tiled">
+                        <div>
+                            <h3>Evitando Valores Nulos</h3>
+                            <p>A cláusula `NOT NULL` garante que um campo seja de preenchimento obrigatório. O SGBD
+                                apresentará um erro se o usuário tentar inserir um registro sem valor para este campo.
+                            </p>
+
+                            <h3>Evitando Valores Duplicados</h3>
+                            <p>A cláusula `UNIQUE` garante que o valor armazenado em um campo seja único em toda a
+                                tabela. Não podem haver dois registros com o mesmo valor.</p>
+                        </div>
+                        <div>
+                            <pre class="code-block"><span class="sql-keyword">create table</span> funcionario (
+    matricula <span class="sql-type">decimal</span>(5) <span class="sql-constraint">NOT NULL PRIMARY KEY</span>,
+    
+    <span class="sql-comment">-- Preenchimento obrigatório</span>
+    nome <span class="sql-type">char</span>(30) <span class="sql-constraint">NOT NULL</span>,
+    
+    <span class="sql-comment">-- Não pode haver RGs duplicados</span>
+    rg <span class="sql-type">decimal</span>(9) <span class="sql-constraint">NOT NULL UNIQUE</span>,
+    
+    sexo <span class="sql-type">char</span>(1),
+    ...
+);</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-container" id="slide6">
+                <h2 class="slide-title">Restrições: DEFAULT e CHECK</h2>
+                <div class="content-area">
+                    <div class="two-column tiled">
+                        <div>
+                            <h3>Valores Padrão (DEFAULT)</h3>
+                            <p>A cláusula `DEFAULT` define um valor padrão para um campo. Se o usuário não especificar
+                                um valor durante a inserção, este valor padrão será usado automaticamente.</p>
+
+                            <h3>Valores Válidos (CHECK)</h3>
+                            <p>A cláusula `CHECK` restringe os valores de um campo a um determinado conjunto ou
+                                condição, evitando dados inválidos.</p>
+                        </div>
+                        <div>
+                            <pre class="code-block"><span class="sql-keyword">create table</span> funcionario (
+    ...
+    sexo <span class="sql-type">char</span>(1) <span class="sql-constraint">CHECK</span> (sexo <span class="sql-keyword">in</span> (<span class="sql-value">'M'</span>, <span class="sql-value">'F'</span>)),
+    ...
+    <span class="sql-comment">-- Valor padrão 'São Paulo'</span>
+    cidade <span class="sql-type">varchar</span>(20) <span class="sql-constraint">DEFAULT</span> <span class="sql-value">'São Paulo'</span>,
+    
+    <span class="sql-comment">-- Salário deve ser maior que 350</span>
+    salario <span class="sql-type">decimal</span>(10,2) <span class="sql-constraint">CHECK</span> (salario &gt; 350)
+);</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-container" id="slide7">
+                <h2 class="slide-title">Restrições: Integridade Referencial (FOREIGN KEY)</h2>
+                <div class="content-area">
+                    <div class="image-right-text-left">
+                        <div>
+                            <h3>FOREIGN KEY</h3>
+                            <p>A Chave Estrangeira (`FOREIGN KEY`) garante a integridade referencial entre tabelas.</p>
+                            <p>Ela define que o valor em um campo (ex: `depto` em `funcionario`) <strong>deve</strong>
+                                existir na chave primária de outra tabela (ex: `codigo` em `departamento`).</p>
+                            <pre class="code-block" style="font-size: 14px; height: auto; margin-top: 15px;"><span class="sql-comment">-- Sintaxe 1: Inline</span>
+...
+depto <span class="sql-type">decimal</span>(5) <span class="sql-constraint">REFERENCES</span> departamento(codigo),
+...
+
+<span class="sql-comment">-- Sintaxe 2: No final da tabela</span>
+...
+<span class="sql-constraint">FOREIGN KEY</span> (depto) 
+    <span class="sql-constraint">REFERENCES</span> departamento (codigo)
+...
+</pre>
+                        </div>
+                        <div>
+                            <div class="image-wrapper"><img
+                                    alt="Diagrama de integridade referencial mostrando duas tabelas ligadas por uma chave estrangeira."
+                                    src="https://montecarlodata.com/wp-content/uploads/2024/06/referential-data-integrity.png">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-container" id="slide8">
+                <h2 class="slide-title">Alterando uma Tabela: ALTER TABLE</h2>
+                <div class="content-area">
+                    <div class="tiled-content">
+                        <div class="tile">
+                            <div class="icon"><i class="fa-solid fa-plus-circle"></i></div>
+                            <h3>Adicionar Campos</h3>
+                            <p>alter table T<br>add A1 D1,<br>add A2 D2, ...</p>
+                        </div>
+                        <div class="tile">
+                            <div class="icon"><i class="fa-solid fa-trash-alt"></i></div>
+                            <h3>Excluir Campos</h3>
+                            <p>alter table T<br>drop A1,<br>drop A2, ...</p>
+                        </div>
+                        <div class="tile">
+                            <div class="icon"><i class="fa-solid fa-pencil-alt"></i></div>
+                            <h3>Alterar Campos</h3>
+                            <p>alter table T<br>alter A1 to nA1; (muda nome)<br><br>alter table T<br>alter A1 type t1;
+                                (muda tipo)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-container" id="slide9">
+                <h2 class="slide-title">Removendo uma Tabela: DROP TABLE</h2>
+                <div class="content-area">
+                    <div class="two-column highlight-numbers-layout">
+                        <div>
+                            <div class="number">DROP TABLE T</div>
+                            <div class="number-label"></div>
+                        </div>
+                        <div>
+                            <h3>CUIDADO!</h3>
+                            <p>O comando `DROP TABLE` remove permanentemente a tabela e <strong>todas as
+                                    informações</strong> sobre ela do banco de dados.</p>
+                            <p>Isso inclui a estrutura, os dados, os índices e as restrições. A operação não pode ser
+                                desfeita facilmente.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-container" id="slide10">
+                <h2 class="slide-title">Índices: CREATE INDEX</h2>
+                <div class="content-area">
+                    <div class="image-right-text-left">
+                        <div>
+                            <h3>O que são Índices?</h3>
+                            <p>Índices são componentes do banco de dados destinados a <strong>agilizar o acesso aos
+                                    dados</strong>. Funcionam de forma similar ao índice de um livro, permitindo que o
+                                SGBD encontre os registros mais rapidamente.</p>
+                            <p>Podem ser associados a uma ou várias colunas.</p>
+                            <pre class="code-block" style="font-size: 14px; height: auto; margin-top: 15px;"><span class="sql-comment">-- Cria um índice padrão</span>
+<span class="sql-keyword">create index</span> i_func_rg
+    <span class="sql-keyword">on</span> funcionario (RG);
+
+<span class="sql-comment">-- Cria um índice que também força unicidade</span>
+<span class="sql-keyword">create UNIQUE index</span> i_func_rg_unico
+    <span class="sql-keyword">on</span> funcionario (RG);</pre>
+                        </div>
+                        <div>
+                            <div class="image-wrapper"><img
+                                    alt="Representação abstrata de um índice de dados, mostrando linhas de dados sendo organizadas e acessadas rapidamente."
+                                    src="https://static.vecteezy.com/system/resources/previews/070/722/586/large_2x/abstract-light-streaks-background-speeding-lines-digital-technology-futuristic-motion-high-speed-data-transfer-and-energy-flow-photo.jpeg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-container" id="slide11">
+                <h2 class="slide-title">Gerenciando Índices: Vantagens e Custos</h2>
+                <div class="content-area">
+                    <div class="two-column tiled">
+                        <div>
+                            <h3>Vantagens</h3>
+                            <p>Existem duas razões principais para usar índices:</p>
+                            <ul>
+                                <li><strong>Integridade:</strong> Evita dados duplicados, usando a cláusula `UNIQUE`.
+                                </li>
+                                <li><strong>Desempenho:</strong> Aumenta a rapidez das consultas (`SELECT`) que utilizam
+                                    os campos indexados no `WHERE`.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Cautela e Remoção</h3>
+                            <p>Tenha cautela! Índices não são gratuitos. Eles ocupam espaço em disco e podem tornar
+                                operações de escrita (`INSERT`, `UPDATE`, `DELETE`) mais lentas, pois o índice também
+                                precisa ser atualizado.</p>
+                            <p>Para remover um índice:</p>
+                            <pre class="code-block" style="font-size: 16px; height: auto; margin-top: 10px;"><span class="sql-comment">-- Remove o índice pelo nome</span>
+<span class="sql-keyword">drop index</span> i_func_rg;</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-container" id="slide12">
+                <div class="qa-layout">
+                    <h2>Perguntas?</h2>
+                    <p>Fim do Capítulo 04.</p>
+                    <div class="contact-info">
+                        Próximo Tópico: Capítulo 05: Linguagem de Manipulação de Dados (DML)
+                    </div>
+                </div>
+            </div>
+            <div class="slide-container" id="slide-attributions-1">
+                <h2 class="slide-title">Image Sources</h2>
+                <div class="content-area">
+                    <ul class="attribution-list">
+                        <li class="attribution-list__item">
+                            <div class="attribution__thumbnail"><img class="attribution__thumbnail__image"
+                                    src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRA95kmn7Zcdq4ZrcEDcwQrWz8IQn6_06JN8vGBmGfAqwxkWBhwPz2Qw4_ZeKZ-"
+                                    alt="Thumbnail for www.montecarlodata.com"></div>
+                            <div class="attribution__details">
+                                <p class="attribution__raw-url">
+                                    https://montecarlodata.com/wp-content/uploads/2024/06/referential-data-integrity.png
+                                </p>
+                                <p class="attribution__title">Source: <a
+                                        href="https://www.montecarlodata.com/blog-how-to-maintain-referential-data-integrity/"
+                                        target="_blank" class="attribution__link">www.montecarlodata.com</a></p>
+                            </div>
+                        </li>
+                        <li class="attribution-list__item">
+                            <div class="attribution__thumbnail"><img class="attribution__thumbnail__image"
+                                    src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRA5B7awe3E2hWPrREYlaAqJmQ6RKtV6HXL36eQHtpyC3_LfAPMcMYrI2lwmOTz"
+                                    alt="Thumbnail for www.vecteezy.com"></div>
+                            <div class="attribution__details">
+                                <p class="attribution__raw-url">
+                                    https://static.vecteezy.com/system/resources/previews/070/722/586/large_2x/abstract-light-streaks-background-speeding-lines-digital-technology-futuristic-motion-high-speed-data-transfer-and-energy-flow-photo.jpeg
+                                </p>
+                                <p class="attribution__title">Source: <a
+                                        href="https://www.vecteezy.com/photo/70722586-abstract-light-streaks-background-speeding-lines-digital-technology-futuristic-motion-high-speed-data-transfer-and-energy-flow"
+                                        target="_blank" class="attribution__link">www.vecteezy.com</a></p>
+                            </div>
+                        </li>
+                        <li class="attribution-list__item">
+                            <div class="attribution__thumbnail"><img class="attribution__thumbnail__image"
+                                    src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR5IfucwgegnHu341YWViR-mOwQHGnDUrZl6UDc8qAHuJmSDi47M1D5SmUiDodU"
+                                    alt="Thumbnail for pngtree.com"></div>
+                            <div class="attribution__details">
+                                <p class="attribution__raw-url">
+                                    https://png.pngtree.com/thumb_back/fh260/background/20251017/pngtree-abstract-digital-mesh-interconnected-lines-nodes-blue-to-green-transition-technology-image_19895760.webp
+                                </p>
+                                <p class="attribution__title">Source: <a
+                                        href="https://pngtree.com/free-backgrounds-photos/blue-node-technology"
+                                        target="_blank" class="attribution__link">pngtree.com</a></p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        /**
+         * Fetches an image blob using a method that attempts to bypass CORS issues
+         * by adding 'alr=yes' to the URL and following redirects.
+         */
+        async function fetchFifeImageBlobUsingAlr(urlString) {
+            if (urlString.startsWith('blob:') || urlString.startsWith('data:')) {
+                throw new Error('Input URL is already a blob or data URL.');
+            }
+            let url = new URL(urlString, window.location.href);
+            url.searchParams.set('alr', 'yes');
+            for (let i = 0; i < 5; i++) {
+                const response = await fetch(url.toString(), { credentials: 'include' });
+                if (!response.ok) throw new Error(`Fetch received not OK response: ${response.status}`);
+                if (!response.headers.get('content-type')?.startsWith('text/plain')) {
+                    const blob = await response.blob();
+                    if (blob.size > 0 && blob.type.startsWith('image/')) return blob;
+                    // This will now correctly throw an error for non-image types like fonts.
+                    else throw new Error('Fetched blob is not a valid image.');
+                }
+                url = new URL(await response.text());
+            }
+            throw new Error('Exceeded maximum number of redirects.');
+        }
+
+        async function updateImageSourcesUsingAlr() {
+            // Get all img elements on the page.
+            const allImages = Array.from(document.querySelectorAll('img'));
+
+            // Use Promise.all to handle all updates concurrently for better performance.
+            await Promise.all(allImages.map(async (img) => {
+                // Only proceed if the img tag has a valid 'src' attribute with a
+                // googleusercontent URL.
+                if (img.src && img.src.includes('googleusercontent')) {
+                    try {
+                        const blob = await fetchFifeImageBlobUsingAlr(img.src);
+                        // Create a new URL from the Blob and set it as the image's source.
+                        img.src = URL.createObjectURL(blob);
+                    } catch (error) {
+                        // Do nothing.
+                    }
+                }
+            }));
+        }
+
+        async function updateBackgroundImagesUsingAlr() {
+            // Find all elements with a googleusercontent background image.
+            const elementsToProcess = document.querySelectorAll('[style*="googleusercontent"]');
+            const urlRegex = /url\((['"]?)(https?:\/\/.*?googleusercontent.*?)\1\)/;
+
+            if (elementsToProcess.length > 0) {
+
+                const promises = Array.from(elementsToProcess).map(element => {
+                    return new Promise(async (resolve) => {
+                        const style = element.style.backgroundImage;
+                        const match = style.match(urlRegex);
+
+                        if (match && match[2]) {
+                            const originalUrl = match[2];
+                            try {
+                                const blob = await fetchFifeImageBlobUsingAlr(originalUrl);
+                                const blobUrl = URL.createObjectURL(blob);
+
+                                // Directly update the element's style property.
+                                const newBackgroundImage = style.replace(originalUrl, blobUrl);
+                                element.style.backgroundImage = newBackgroundImage;
+                            } catch (error) {
+                                // Do nothing.
+                            }
+                        }
+                        resolve();
+                    });
+                });
+
+                // Wait for all images to be processed.
+                await Promise.all(promises);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            await Promise.all([
+                updateImageSourcesUsingAlr(),
+                updateBackgroundImagesUsingAlr()
+            ]);
+            initializeSlideshowUI();
+        });
+
+        // --- SLIDESHOW LOGIC ---
+        function initializeSlideshowUI() {
+            const slides = document.querySelectorAll('.slide-container');
+            const prevButton = document.getElementById('prev-slide');
+            const nextButton = document.getElementById('next-slide');
+            const slideCounter = document.getElementById('slide-counter');
+            let currentSlide = 0;
+
+            function updateUI() {
+                slides.forEach((slide, index) => {
+                    slide.classList.toggle('active', index === currentSlide);
+                });
+                prevButton.disabled = currentSlide === 0;
+                nextButton.disabled = currentSlide === slides.length - 1;
+                slideCounter.textContent = `Slide ${currentSlide + 1} of ${slides.length}`;
+            }
+
+            function showNextSlide() {
+                if (currentSlide < slides.length - 1) {
+                    currentSlide++;
+                    updateUI();
+                }
+            }
+
+            function showPrevSlide() {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateUI();
+                }
+            }
+
+            nextButton.addEventListener('click', showNextSlide);
+            prevButton.addEventListener('click', showPrevSlide);
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') showNextSlide();
+                else if (e.key === 'ArrowLeft') showPrevSlide();
+            });
+
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const darkIcon = document.getElementById('theme-toggle-dark-icon');
+            const lightIcon = document.getElementById('theme-toggle-light-icon');
+            const htmlEl = document.documentElement;
+
+            function setTheme(isDark) {
+                htmlEl.classList.toggle('dark', isDark);
+                darkIcon.classList.toggle('hidden', isDark);
+                lightIcon.classList.toggle('hidden', !isDark);
+                localStorage.setItem('color-theme', isDark ? 'dark' : 'light');
+            }
+            const isDarkMode = localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            setTheme(isDarkMode);
+            themeToggleBtn.addEventListener('click', () => setTheme(!htmlEl.classList.contains('dark')));
+
+            function updateScale() {
+                const baseWidth = 1280;
+                const baseHeight = 720;
+                const slideshowWrapper = document.getElementById('slideshow-wrapper');
+                const slideshowHolder = document.getElementById('slideshow-holder');
+
+                // The available space is the dimensions of the holder div.
+                const availableWidth = slideshowHolder.clientWidth;
+                const availableHeight = slideshowHolder.clientHeight;
+
+                // Calculate the scale ratio based on both width and height
+                const scaleX = availableWidth / baseWidth;
+                const scaleY = availableHeight / baseHeight;
+
+                // Use the smaller of the two ratios to ensure it fits
+                const finalScale = Math.min(scaleX, scaleY);
+
+                slideshowWrapper.style.setProperty('--scale-factor', finalScale);
+            }
+
+            updateUI();
+            updateScale();
+            window.addEventListener('resize', updateScale);
+        }
+    </script>
+</body>
+
+</html>

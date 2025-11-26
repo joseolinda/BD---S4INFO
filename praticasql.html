@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Atividade Prática: Consultas SQL</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --accent:#0ea5e9; }
+    body { font-family: 'Inter', sans-serif; }
+    .slide { display:none; animation: fade .35s ease; }
+    .slide.active { display:block; }
+    @keyframes fade { from{opacity:.0; transform: translateY(8px)} to{opacity:1; transform:none} }
+    .kbd { border:1px solid #e5e7eb; border-bottom-width:3px; padding:.15rem .45rem; border-radius:.375rem; background:#fff }
+    .caption { font-size:.85rem; color:#6b7280; text-align:center; margin-top:.5rem }
+    /* Estilo para blocos de código */
+    .code { 
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace; 
+      background:#f8fafc; 
+      border:1px solid #e5e7eb; 
+      padding:.6rem .8rem; 
+      border-radius:.5rem; 
+      white-space: pre-wrap; /* Garante a quebra de linha no código */
+      word-wrap: break-word;
+    }
+    /* Estilo para explicações (hint) */
+    .hint { 
+      background:#eff6ff; /* Fundo azul claro */
+      border-left:4px solid #3b82f6; /* Borda esquerda azul */
+      padding: .75rem 1rem; 
+      border-radius:.5rem; 
+      margin-top: 1rem;
+    }
+    .hint ul { list-style-type: disc; margin-left: 1.5rem; }
+    .rule { background:#f0fdf4; border-left:4px solid #22c55e; padding:.75rem 1rem; border-radius:.5rem; }
+    .warn { background:#fef2f2; border-left:4px solid #ef4444; padding:.75rem 1rem; border-radius:.5rem; }
+    .grid-2 { display:grid; grid-template-columns: 1fr; gap:1rem }
+    img { width: auto; max-width: 100%; max-height: 480px; object-fit: contain; margin: 0 auto; }
+    .hide { display: none !important; }
+    @media (min-width: 900px){ .grid-2 { grid-template-columns: 1fr 1fr } }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div class="max-w-6xl mx-auto p-4 md:p-8">
+    <!-- Header & Controls -->
+    <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Atividade Prática: Consultas SQL</h1>
+        <p class="text-gray-600">Praticando SELECT e WHERE</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btnPrev" class="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed">Anterior</button>
+        <span id="counter" class="px-3 py-2 bg-white border rounded-lg text-gray-700">Slide 1 / N</span>
+        <button id="btnNext" class="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700">Próximo</button>
+        <button id="btnTOC" class="px-4 py-2 border rounded-lg bg-white hover:bg-gray-50">Sumário</button>
+      </div>
+    </header>
+
+    <!-- Slides Container -->
+    <main id="deck" class="bg-white rounded-xl shadow-xl p-6 md:p-10 min-h-[560px] relative overflow-hidden">
+      
+      <!-- SLIDE 1: Capa -->
+      <section class="slide active">
+        <h2 class="text-3xl font-bold mb-4">Atividade Prática: Consultas SQL</h2>
+        <h3 class="text-xl text-gray-700 mb-4">Introdução ao Desafio</h3>
+        
+        <div class="rule">
+            <h4 class="font-semibold text-lg mb-2">Objetivo:</h4>
+            <p class="mb-4">Praticar o uso dos comandos `SELECT` e `WHERE` para extrair informações do nosso banco de dados.</p>
+            
+            <h4 class="font-semibold text-lg mb-2">Instruções:</h4>
+            <ol class="list-decimal list-inside space-y-1">
+                <li>Leia a pergunta no slide.</li>
+                <li>Tente escrever o comando SQL e encontrar a resposta por conta própria.</li>
+                <li>Avance para o slide seguinte para ver o gabarito e a explicação.</li>
+            </ol>
+        </div>
+      </section>
+
+      <!-- SLIDE 2: Sumário (TOC) -->
+      <section class="slide" data-slide-name="Sumário">
+        <h2 class="text-3xl font-bold mb-4">Sumário da Atividade</h2>
+        <ul id="toc-list" class="space-y-2">
+          <!-- O JavaScript irá popular esta lista -->
+        </ul>
+      </section>
+
+      <!-- SLIDE 3: Lembrete do BD -->
+      <section class="slide" data-slide-name="Lembrete: Banco de Dados">
+        <h2 class="text-3xl font-bold mb-4">Nosso Banco de Dados</h2>
+        <p class="text-gray-700 mb-4">Estrtutura básica:</p>
+        <ul class="space-y-3">
+          <li class="code"><b>Pessoa</b> (id, nome, fone) <br><i class="text-sm text-gray-600">Contém Pessoas Físicas e Jurídicas.</i></li>
+          <li class="code"><b>Area</b> (id, nome) <br><i class="text-sm text-gray-600">Ex: 'Tecnologia da Informação', 'Saúde'.</i></li>
+          <li class="code"><b>Especialidade</b> (id, nome, area_id) <br><i class="text-sm text-gray-600">Ex: 'Banco de Dados', 'Cardiologia'.</i></li>
+          <li class="code"><b>PessoaFisica</b> (cpf, pessoa_id) <br><i class="text-sm text-gray-600">Contém os CPFs ligados ao ID da Pessoa.</i></li>
+          <li class="code"><b>PessoaJuridica</b> (cnpj, pessoa_id) <br><i class="text-sm text-gray-600">Contém os CNPJs ligados ao ID da Pessoa.</i></li>
+          <li class="code"><b>Projeto</b> (id, nome, data_inicio, data_fim, coordenador_cpf) <br><i class="text-sm text-gray-600">Contém os projetos, datas e quem coordena.</i></li>
+          <li class="code"><b>Doacao</b> (id, valor, data, projeto_id, pessoajuridica_cnpj) <br><i class="text-sm text-gray-600">Contém doações feitas por PJs para projetos.</i></li>
+        </ul>
+      </section>
+
+      <!-- SLIDE 4: Questão 1 -->
+      <section class="slide" data-slide-name="Questão 1: Todas as Áreas">
+        <h2 class="text-3xl font-bold mb-4">Questão 1</h2>
+        <p class="text-2xl text-gray-800 mb-6">
+          Liste os nomes de <strong>todas</strong> as Áreas de conhecimento cadastradas.
+        </p>
+        <p class="text-lg text-gray-500 italic">
+        </p>
+      </section>
+
+      <!-- SLIDE 5: Gabarito 1 -->
+      <section class="slide" data-slide-name="Gabarito 1">
+        <h2 class="text-3xl font-bold mb-4">Gabarito: Questão 1</h2>
+        
+        <h3 class="text-xl font-semibold mb-2">Comando SQL:</h3>
+        <pre class="code"><code>SELECT nome FROM Area;</code></pre>
+
+        <h3 class="text-xl font-semibold mt-4 mb-2">Resposta (Resultado):</h3>
+        <pre class="code"><code>(Uma lista de 30 áreas, incluindo 'Tecnologia da Informação', 'Saúde', 'Educação', etc.)</code></pre>
+
+        <div class="hint">
+          <h4 class="font-bold text-lg mb-2">Explicação do Comando:</h4>
+          <ul>
+            <li><code>SELECT nome</code>: Informa ao banco que queremos <strong>selecionar</strong> (buscar) os dados da coluna `nome`.</li>
+            <li><code>FROM Area</code>: Especifica de qual tabela queremos buscar os dados, neste caso, a tabela `Area`.</li>
+          </ul>
+        </div>
+      </section>
+      
+      <!-- SLIDE 6: Questão 2 -->
+      <section class="slide" data-slide-name="Questão 2: Nome e Telefone">
+        <h2 class="text-3xl font-bold mb-4">Questão 2</h2>
+        <p class="text-2xl text-gray-800 mb-6">
+          Liste o <strong>nome</strong> e o <strong>telefone</strong> de todas as Pessoas (físicas e jurídicas) cadastradas.
+        </p>
+      </section>
+
+      <!-- SLIDE 7: Gabarito 2 -->
+      <section class="slide" data-slide-name="Gabarito 2">
+        <h2 class="text-3xl font-bold mb-4">Gabarito: Questão 2</h2>
+        
+        <h3 class="text-xl font-semibold mb-2">Comando SQL:</h3>
+        <pre class="code"><code>SELECT nome, fone FROM Pessoa;</code></pre>
+
+        <h3 class="text-xl font-semibold mt-4 mb-2">Resposta (Resultado):</h3>
+        <pre class="code"><code>(Uma lista de 60 nomes e telefones, começando com 'Ana Silva | 85911110001' e 'Empresa Alpha TI | 88922220001', etc.)</code></pre>
+
+        <div class="hint">
+          <h4 class="font-bold text-lg mb-2">Explicação do Comando:</h4>
+          <ul>
+            <li><code>SELECT nome, fone</code>: Seleciona múltiplas colunas. Pedimos ao banco para buscar tanto a coluna `nome` quanto a coluna `fone`.</li>
+            <li><code>FROM Pessoa</code>: Especifica que a busca deve ser feita na tabela `Pessoa`.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SLIDE 8: Questão 3 -->
+      <section class="slide" data-slide-name="Questão 3: Pessoa por ID">
+        <h2 class="text-3xl font-bold mb-4">Questão 3</h2>
+        <p class="text-2xl text-gray-800 mb-6">
+          Qual é o nome da Pessoa (física ou jurídica) que possui o <code>id = 15</code>?
+        </p>
+      </section>
+
+      <!-- SLIDE 9: Gabarito 3 -->
+      <section class="slide" data-slide-name="Gabarito 3">
+        <h2 class="text-3xl font-bold mb-4">Gabarito: Questão 3</h2>
+        
+        <h3 class="text-xl font-semibold mb-2">Comando SQL:</h3>
+        <pre class="code"><code>SELECT nome FROM Pessoa WHERE id = 15;</code></pre>
+
+        <h3 class="text-xl font-semibold mt-4 mb-2">Resposta (Resultado):</h3>
+        <pre class="code"><code>Olívia Queiroz</code></pre>
+
+        <div class="hint">
+          <h4 class="font-bold text-lg mb-2">Explicação do Comando:</h4>
+          <ul>
+            <li><code>SELECT nome</code>: Queremos buscar a coluna `nome`.</li>
+            <li><code>FROM Pessoa</code>: Da tabela `Pessoa`.</li>
+            <li><code>WHERE id = 15</code>: Esta é a condição (filtro). Estamos dizendo ao banco: "Não traga todos os nomes, traga <strong>apenas</strong> aquele ONDE (WHERE) o `id` é igual a 15".</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SLIDE 10: Questão 4 -->
+      <section class="slide" data-slide-name="Questão 4: Telefone por Nome">
+        <h2 class="text-3xl font-bold mb-4">Questão 4</h2>
+        <p class="text-2xl text-gray-800 mb-6">
+          Qual é o telefone da empresa (Pessoa) chamada 'Construtora Delta'?
+        </p>
+      </section>
+
+      <!-- SLIDE 11: Gabarito 4 -->
+      <section class="slide" data-slide-name="Gabarito 4">
+        <h2 class="text-3xl font-bold mb-4">Gabarito: Questão 4</h2>
+        
+        <h3 class="text-xl font-semibold mb-2">Comando SQL:</h3>
+        <pre class="code"><code>SELECT fone FROM Pessoa WHERE nome = 'Construtora Delta';</code></pre>
+
+        <h3 class="text-xl font-semibold mt-4 mb-2">Resposta (Resultado):</h3>
+        <pre class="code"><code>88922220004</code></pre>
+
+        <div class="hint">
+          <h4 class="font-bold text-lg mb-2">Explicação do Comando:</h4>
+          <ul>
+            <li><code>SELECT fone</code>: Queremos buscar a coluna `fone`.</li>
+            <li><code>FROM Pessoa</code>: Da tabela `Pessoa`.</li>
+            <li><code>WHERE nome = 'Construtora Delta'</code>: Filtramos pela coluna `nome`. Note que textos (strings) em SQL devem estar entre aspas simples (<code>' '</code>).</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SLIDE 12: Questão 5 -->
+      <section class="slide" data-slide-name="Questão 5: ID por CPF">
+        <h2 class="text-3xl font-bold mb-4">Questão 5</h2>
+        <p class="text-2xl text-gray-800 mb-6">
+          Qual é o <code>pessoa_id</code> (ID da tabela Pessoa) associado à Pessoa Física com CPF <code>'00000000001'</code>?
+        </p>
+      </section>
+
+      <!-- SLIDE 13: Gabarito 5 -->
+      <section class="slide" data-slide-name="Gabarito 5">
+        <h2 class="text-3xl font-bold mb-4">Gabarito: Questão 5</h2>
+        
+        <h3 class="text-xl font-semibold mb-2">Comando SQL:</h3>
+        <pre class="code"><code>SELECT pessoa_id FROM PessoaFisica WHERE cpf = '00000000001';</code></pre>
+
+        <h3 class="text-xl font-semibold mt-4 mb-2">Resposta (Resultado):</h3>
+        <pre class="code"><code>1</code></pre>
+
+        <div class="hint">
+          <h4 class="font-bold text-lg mb-2">Explicação do Comando:</h4>
+          <ul>
+            <li><code>SELECT pessoa_id</code>: Seleciona a coluna `pessoa_id`.</li>
+            <li><code>FROM PessoaFisica</code>: Busca na tabela `PessoaFisica`.</li>
+            <li><code>WHERE cpf = '00000000001'</code>: Filtra para encontrar a linha exata onde o `cpf` corresponde ao valor procurado.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SLIDE 14: Questão 6 -->
+      <section class="slide" data-slide-name="Questão 6: Especialidade por ID">
+        <h2 class="text-3xl font-bold mb-4">Questão 6</h2>
+        <p class="text-2xl text-gray-800 mb-6">
+          Qual é o nome da Especialidade que possui o <code>id = 10</code>?
+        </p>
+      </section>
+
+      <!-- SLIDE 15: Gabarito 6 -->
+      <section class="slide" data-slide-name="Gabarito 6">
+        <h2 class="text-3xl font-bold mb-4">Gabarito: Questão 6</h2>
+        
+        <h3 class="text-xl font-semibold mb-2">Comando SQL:</h3>
+        <pre class="code"><code>SELECT nome FROM Especialidade WHERE id = 10;</code></pre>
+
+        <h3 class="text-xl font-semibold mt-4 mb-2">Resposta (Resultado):</h3>
+        <pre class="code"><code>Botânica</code></pre>
+
+        <div class="hint">
+          <h4 class="font-bold text-lg mb-2">Explicação do Comando:</h4>
+          <ul>
+            <li><code>SELECT nome</code>: Seleciona a coluna `nome`.</li>
+            <li><code>FROM Especialidade</code>: Busca na tabela `Especialidade`.</li>
+            <li><code>WHERE id = 10</code>: Filtra pelo `id` número 10 (números não precisam de aspas).</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SLIDE 16: Questão 7 -->
+      <section class="slide" data-slide-name="Questão 7: Projeto por Data">
+        <h2 class="text-3xl font-bold mb-4">Questão 7</h2>
+        <p class="text-2xl text-gray-800 mb-6">
+          Liste o <strong>nome</strong> de todos os projetos que começaram (ou vão começar) exatamente no dia <code>'2024-01-01'</code>.
+        </p>
+      </section>
+
+      <!-- SLIDE 17: Gabarito 7 -->
+      <section class="slide" data-slide-name="Gabarito 7">
+        <h2 class="text-3xl font-bold mb-4">Gabarito: Questão 7</h2>
+        
+        <h3 class="text-xl font-semibold mb-2">Comando SQL:</h3>
+        <pre class="code"><code>SELECT nome FROM Projeto WHERE data_inicio = '2024-01-01';</code></pre>
+
+        <h3 class="text-xl font-semibold mt-4 mb-2">Resposta (Resultado):</h3>
+        <pre class="code"><code>Sistema de Biblioteca</code></pre>
+
+        <div class="hint">
+          <h4 class="font-bold text-lg mb-2">Explicação do Comando:</h4>
+          <ul>
+            <li><code>SELECT nome</code>: Seleciona a coluna `nome` (nome do projeto).</li>
+            <li><code>FROM Projeto</code>: Busca na tabela `Projeto`.</li>
+            <li><code>WHERE data_inicio = '2024-01-01'</code>: Filtra pela coluna `data_inicio`. Datas em SQL geralmente são tratadas como strings (texto) no formato 'AAAA-MM-DD'.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SLIDE 18: Questão 8 -->
+      <section class="slide" data-slide-name="Questão 8: Doações Maiores que">
+        <h2 class="text-3xl font-bold mb-4">Questão 8</h2>
+        <p class="text-2xl text-gray-800 mb-6">
+          Liste apenas os <strong>valores</strong> de todas as doações que foram <strong>maiores</strong> que R$ 20.000.
+        </p>
+      </section>
+
+      <!-- SLIDE 19: Gabarito 8 -->
+      <section class="slide" data-slide-name="Gabarito 8">
+        <h2 class="text-3xl font-bold mb-4">Gabarito: Questão 8</h2>
+        
+        <h3 class="text-xl font-semibold mb-2">Comando SQL:</h3>
+        <pre class="code"><code>SELECT valor FROM Doacao WHERE valor > 20000;</code></pre>
+
+        <h3 class="text-xl font-semibold mt-4 mb-2">Resposta (Resultado):</h3>
+        <pre class="code"><code>50000.00
+100000.00
+30000.00
+45000.00
+22000.00</code></pre>
+
+        <div class="hint">
+          <h4 class="font-bold text-lg mb-2">Explicação do Comando:</h4>
+          <ul>
+            <li><code>SELECT valor</code>: Seleciona a coluna `valor`.</li>
+            <li><code>FROM Doacao</code>: Busca na tabela `Doacao`.</li>
+            <li><code>WHERE valor > 20000</code>: Aqui usamos um operador de comparação (<code>></code>). Queremos as linhas ONDE (WHERE) o `valor` é <strong>maior que</strong> 20000.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SLIDE 20: Questão 9 -->
+      <section class="slide" data-slide-name="Questão 9: Projeto por CNPJ">
+        <h2 class="text-3xl font-bold mb-4">Questão 9</h2>
+        <p class="text-2xl text-gray-800 mb-6">
+          Qual foi o <code>projeto_id</code> que recebeu uma doação da empresa (Pessoa Jurídica) com CNPJ <code>'00000000000019'</code>?
+        </p>
+      </section>
+
+      <!-- SLIDE 21: Gabarito 9 -->
+      <section class="slide" data-slide-name="Gabarito 9">
+        <h2 class="text-3xl font-bold mb-4">Gabarito: Questão 9</h2>
+        
+        <h3 class="text-xl font-semibold mb-2">Comando SQL:</h3>
+        <pre class="code"><code>SELECT projeto_id FROM Doacao WHERE pessoajuridica_cnpj = '00000000000019';</code></pre>
+
+        <h3 class="text-xl font-semibold mt-4 mb-2">Resposta (Resultado):</h3>
+        <pre class="code"><code>19</code></pre>
+
+        <div class="hint">
+          <h4 class="font-bold text-lg mb-2">Explicação do Comando:</h4>
+          <ul>
+            <li><code>SELECT projeto_id</code>: Seleciona a coluna `projeto_id`.</li>
+            <li><code>FROM Doacao</code>: Busca na tabela `Doacao`.</li>
+            <li><code>WHERE pessoajuridica_cnpj = '00000000000019'</code>: Filtra a tabela `Doacao` pela coluna `pessoajuridica_cnpj` para encontrar o CNPJ específico.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SLIDE 22: Questão 10 -->
+      <section class="slide" data-slide-name="Questão 10: Projeto por Coordenador">
+        <h2 class="text-3xl font-bold mb-4">Questão 10</h2>
+        <p class="text-2xl text-gray-800 mb-6">
+          Qual é o nome do projeto que tem o CPF <code>'00000000010'</code> como coordenador?
+        </p>
+      </section>
+
+      <!-- SLIDE 23: Gabarito 10 -->
+      <section class="slide" data-slide-name="Gabarito 10">
+        <h2 class="text-3xl font-bold mb-4">Gabarito: Questão 10</h2>
+        
+        <h3 class="text-xl font-semibold mb-2">Comando SQL:</h3>
+        <pre class="code"><code>SELECT nome FROM Projeto WHERE coordenador_cpf = '00000000010';</code></pre>
+
+        <h3 class="text-xl font-semibold mt-4 mb-2">Resposta (Resultado):</h3>
+        <pre class="code"><code>Otimização Cálculo Numérico</code></pre>
+
+        <div class="hint">
+          <h4 class="font-bold text-lg mb-2">Explicação do Comando:</h4>
+          <ul>
+            <li><code>SELECT nome</code>: Seleciona a coluna `nome` (nome do projeto).</li>
+            <li><code>FROM Projeto</code>: Busca na tabela `Projeto`.</li>
+            <li><code>WHERE coordenador_cpf = '00000000010'</code>: Filtra a tabela `Projeto` procurando pela linha ONDE (WHERE) a coluna `coordenador_cpf` é igual ao valor fornecido.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SLIDE 24: Fim -->
+      <section class="slide" data-slide-name="Fim da Atividade">
+        <h2 class="text-3xl font-bold mb-4">Fim da Atividade</h2>
+        <p class="text-2xl text-gray-800 mb-6">
+          Parabéns por completar o exercício!
+        </p>
+        <div class="rule">
+            <h4 class="font-semibold text-lg mb-2">O que aprendemos:</h4>
+            <ul class="list-disc list-inside space-y-1">
+                <li>Buscar colunas específicas com <code>SELECT</code>.</li>
+                <li>Escolher a tabela correta com <code>FROM</code>.</li>
+                <li>Filtrar por números com <code>WHERE id = 10</code>.</li>
+                <li>Filtrar por texto com <code>WHERE nome = '...'</code>.</li>
+                <li>Usar operadores de comparação como <code>WHERE valor > 20000</code>.</li>
+            </ul>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const deck = document.getElementById('deck');
+      // Seleciona apenas slides que são filhos diretos de 'deck'
+      const slides = Array.from(deck.querySelectorAll(':scope > .slide'));
+      const btnPrev = document.getElementById('btnPrev');
+      const btnNext = document.getElementById('btnNext');
+      const counter = document.getElementById('counter');
+      const btnTOC = document.getElementById('btnTOC');
+      const tocList = document.getElementById('toc-list');
+      
+      let currentSlide = 0;
+      const totalSlides = slides.length;
+      let tocSlideIndex = -1; // Índice do slide de sumário
+
+      // Popula o sumário e encontra o índice do slide de sumário
+      slides.forEach((slide, index) => {
+        const slideName = slide.getAttribute('data-slide-name');
+        if (slideName) {
+          const li = document.createElement('li');
+          const button = document.createElement('button');
+          button.textContent = `${index + 1}. ${slideName}`;
+          button.className = "text-left text-sky-600 hover:text-sky-800 hover:underline";
+          button.onclick = () => showSlide(index);
+          li.appendChild(button);
+          tocList.appendChild(li);
+        }
+        
+        if (slide.getAttribute('data-slide-name') === 'Sumário') {
+            tocSlideIndex = index;
+        }
+      });
+
+      function showSlide(index) {
+        // Remove 'active' de todos os slides
+        slides.forEach((slide, i) => {
+          slide.classList.remove('active');
+        });
+
+        // Adiciona 'active' ao slide atual
+        currentSlide = index;
+        slides[currentSlide].classList.add('active');
+
+        // Atualiza o contador
+        counter.textContent = `Slide ${currentSlide + 1} / ${totalSlides}`;
+
+        // Atualiza os botões
+        btnPrev.disabled = currentSlide === 0;
+        btnNext.disabled = currentSlide === totalSlides - 1;
+      }
+
+      // Event Listeners
+      btnNext.addEventListener('click', () => {
+        if (currentSlide < totalSlides - 1) {
+          showSlide(currentSlide + 1);
+        }
+      });
+
+      btnPrev.addEventListener('click', () => {
+        if (currentSlide > 0) {
+          showSlide(currentSlide - 1);
+        }
+      });
+
+      btnTOC.addEventListener('click', () => {
+        if (tocSlideIndex !== -1) {
+          showSlide(tocSlideIndex);
+        }
+      });
+
+      // Atalhos de teclado
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+          showSlide(currentSlide + 1);
+        } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+          showSlide(currentSlide - 1);
+        } else if (e.key === 't' || e.key === 'T') {
+            if (tocSlideIndex !== -1) {
+                showSlide(tocSlideIndex);
+            }
+        }
+      });
+
+      // Inicia a apresentação
+      showSlide(0);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 2: Fundamentos de BD Relacionais</title>
+    <!-- Carregamento do Tailwind CSS para um design moderno e responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configuração customizada do Tailwind
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary-blue': '#1e40af', // Blue 700
+                        'secondary-gray': '#4b5563', // Gray 600
+                        'accent-yellow': '#fde047', // Yellow 300
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/aual08.css" />
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Container da Apresentação -->
+    <div id="presentation-area" class="relative min-h-screen">
+
+        <!-- Slide 1: Título da Aula -->
+        <div id="slide-1" class="slide-container active">
+            <div class="slide-content text-center justify-center">
+                <h1 class="slide-title text-5xl md:text-6xl mb-4">Introdução ao Modelo Físico</h1>
+                <p class="slide-subtitle text-xl md:text-2xl mt-8">Do modelo relacional ao SQL</p>
+                <div class="mt-8 text-secondary-gray text-lg space-y-2">
+                    <p class="font-light">Baseado em "MySQL Crash Course"</p>
+                    <p class="font-semibold">Prof. Zé Olinda</p>
+                    <p class="font-semibold">30/10/2025</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: O Conceito de Banco de Dados (BD) -->
+        <div id="slide-2" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">O Conceito de Banco de Dados (BD)</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">O que é um Banco de Dados (BD)?</h3>
+                <div class="space-y-4 text-lg">
+                    <p><span class="font-bold text-primary-blue">Um Banco de Dados</span> é uma coleção organizada de dados inter-relacionados.</p>
+                    <ul class="list-disc list-inside ml-4 space-y-2">
+                        <li>Ele permite o armazenamento, gerenciamento e recuperação eficiente de informações.</li>
+                        <li><span class="font-bold">Propósito:</span> Transformar dados brutos em informação significativa para a tomada de decisões.</li>
+                    </ul>
+                    <p class="mt-4 p-4 bg-blue-50 border-l-4 border-primary-blue rounded-r-lg">
+                        Imagine-o como um grande arquivo digital, mas com regras rigorosas para manter a ordem e a integridade.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Tipos de Bancos de Dados -->
+        <div id="slide-3" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Tipos de Bancos de Dados</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">Principais tipos</h3>
+                <table class="w-full text-left rounded-lg overflow-hidden border-collapse table-custom">
+                    <thead>
+                        <tr>
+                            <th class="p-3">Tipo</th>
+                            <th class="p-3">Característica Principal</th>
+                            <th class="p-3">Exemplo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3 font-semibold">Relacional (SQL)</td>
+                            <td class="p-3">Estrutura rígida (tabelas); Foco em relações e integridade.</td>
+                            <td class="p-3">MySQL, PostgreSQL, Oracle, SQL Server</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50 bg-gray-100">
+                            <td class="p-3 font-semibold">Não Relacional (NoSQL)</td>
+                            <td class="p-3">Estrutura flexível (documentos, grafos, chave-valor); Foco em escalabilidade e velocidade.</td>
+                            <td class="p-3">MongoDB, Redis, Neo4j</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="mt-8 text-center text-xl font-bold text-green-700 p-3 bg-green-100 rounded-lg">
+                    Nossa disciplina se concentra nos BDs Relacionais, especificamente o MySQL.
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 4: O Modelo Relacional (MR) -->
+        <div id="slide-4" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">O Modelo Relacional (MR)</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">Entendendo a Base do MySQL</h3>
+                <p class="text-lg mb-4">O Modelo Relacional (MR) armazena dados em tabelas (também chamadas de relações). As relações são interconectadas por meio de valores em campos comuns (chaves).</p>
+
+                <table class="w-full text-left rounded-lg overflow-hidden border-collapse table-custom mt-6">
+                    <thead>
+                        <tr>
+                            <th class="p-3">Vantagens do MR</th>
+                            <th class="p-3">Desvantagens Comuns</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3">Alta Integridade e Consistência.</td>
+                            <td class="p-3">Menor escalabilidade horizontal (tradicionalmente).</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50 bg-gray-100">
+                            <td class="p-3">Fácil de entender e gerenciar.</td>
+                            <td class="p-3">Rigidez de esquema.</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3">Uso da linguagem padronizada <span class="font-mono font-bold">SQL</span>.</td>
+                            <td class="p-3">Performance em dados massivos e não estruturados.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Slide 5: Sistema de Gerenciamento de BD (SGBD) -->
+        <div id="slide-5" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Sistema de Gerenciamento de BD (SGBD)</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">O Guardião dos Dados (Ex: MySQL)</h3>
+                <p class="text-lg mb-6">O <span class="font-bold text-primary-blue">SGBD</span> (Sistema de Gerenciamento de Banco de Dados) é o software que interage com o usuário, a aplicação e o banco de dados.</p>
+
+                <p class="text-2xl font-semibold mb-4 text-secondary-gray">Funções Chave:</p>
+                <ul class="list-disc list-inside ml-6 space-y-3 text-lg bg-yellow-50 p-4 rounded-lg border-l-4 border-accent-yellow">
+                    <li><span class="font-bold">Definir e Modificar a Estrutura:</span> Linguagem DDL (Data Definition Language).</li>
+                    <li><span class="font-bold">Manipular os Dados:</span> Inserir, Atualizar, Excluir (Linguagem DML).</li>
+                    <li><span class="font-bold">Garantir a Governança:</span> Segurança, concorrência e integridade dos dados.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 6: Componentes Essenciais: Tabela (Table) -->
+        <div id="slide-6" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Componentes Essenciais: Tabela (Table)</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">A Unidade Fundamental de Armazenamento</h3>
+                <ul class="list-disc list-inside space-y-3 text-lg">
+                    <li>Uma <span class="font-bold text-primary-blue">Tabela</span> (ou Relação) representa uma única entidade (Ex: Cliente) ou um relacionamento.</li>
+                    <li>É organizada em Colunas (atributos) e Linhas (registros).</li>
+                    <li><span class="font-bold">Nomeação:</span> Deve ser singular e descritivo (Ex: <span class="font-mono">Clientes</span>, <span class="font-mono">Produtos</span>, <span class="font-mono">Pedidos</span>).</li>
+                </ul>
+
+                <div class="mt-8">
+                    <p class="font-mono font-bold text-xl mb-3 text-center">Tabela: `Clientes` (Estrutura)</p>
+                    <div class="w-full bg-gray-100 p-4 rounded-lg shadow-inner">
+                        <p class="font-mono text-center">ID_Cliente, Nome, Sobrenome, Email, Data_Cadastro</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Componentes Essenciais: Coluna (Column) -->
+        <div id="slide-7" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Componentes Essenciais: Coluna (Column)</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">Os Atributos da Entidade</h3>
+                <ul class="list-disc list-inside space-y-3 text-lg">
+                    <li>Uma Coluna (ou Atributo) define uma peça específica de informação.</li>
+                    <li>Cada coluna tem um nome (Ex: <span class="font-mono">Email</span>) e um tipo de dado (Ex: <span class="font-mono">VARCHAR(100)</span>).</li>
+                    <li>As colunas definem a <span class="font-bold text-primary-blue">estrutura</span> (o esquema) da tabela.</li>
+                </ul>
+
+                <div class="mt-8 p-6 bg-blue-50 rounded-lg shadow-md">
+                    <p class="text-xl font-semibold mb-2">Exemplo na tabela `Clientes`:</p>
+                    <p class="font-mono text-lg p-2 bg-white rounded">`Email` (VARCHAR), `ID_Cliente` (INT), `Data_Cadastro` (DATE)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Componentes Essenciais: Linha (Row) -->
+        <div id="slide-8" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Componentes Essenciais: Linha (Row)</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">O Registro de Dados</h3>
+                <ul class="list-disc list-inside space-y-3 text-lg">
+                    <li>Uma <span class="font-bold text-primary-blue">Linha</span> (ou Tupla ou Registro) é o conjunto completo de valores para um único item.</li>
+                    <li>Representa uma <span class="font-bold">ocorrência individual</span> da entidade (Ex: um cliente específico).</li>
+                </ul>
+
+                <div class="mt-8">
+                    <p class="font-mono font-bold text-xl mb-3 text-center">Linha de Exemplo:</p>
+                    <table class="w-full text-left rounded-lg overflow-hidden border-collapse table-custom">
+                        <thead>
+                            <tr>
+                                <th class="p-3">ID_Cliente (PK)</th>
+                                <th class="p-3">Nome</th>
+                                <th class="p-3">Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-t hover:bg-gray-50">
+                                <td class="p-3 font-mono">1</td>
+                                <td class="p-3">Maria</td>
+                                <td class="p-3 font-mono">maria@email.com</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Terminologia Relacional (Revisão) -->
+        <div id="slide-9" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Terminologia Relacional (Revisão)</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">Tradução de Conceitos</h3>
+                <table class="w-full text-left rounded-lg overflow-hidden border-collapse table-custom">
+                    <thead>
+                        <tr>
+                            <th class="p-3">Termo Comum</th>
+                            <th class="p-3">Termo Relacional</th>
+                            <th class="p-3">Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3">Arquivo</td>
+                            <td class="p-3">Banco de Dados (Database)<br>O MySQL também chama de <i>Schema</i>.</td>
+                            <td class="p-3">O container geral para os dados.</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50 bg-gray-100">
+                            <td class="p-3">Tabela</td>
+                            <td class="p-3">Relação (Relation)</td>
+                            <td class="p-3">Uma estrutura com nome e atributos.</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3">Coluna</td>
+                            <td class="p-3">Atributo (Attribute). Também chamado de <i>Field</i> ou campo.</td>
+                            <td class="p-3">O tipo de dado armazenado (Ex: Nome).</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50 bg-gray-100">
+                            <td class="p-3">Linha</td>
+                            <td class="p-3">Tupla (Tuple) / Registro</td>
+                            <td class="p-3">Um registro individual completo.</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3">Chave</td>
+                            <td class="p-3">Chave (Key)</td>
+                            <td class="p-3">Um valor para identificar ou ligar registros.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Slide 10: Integridade de Dados -->
+        <div id="slide-10" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Integridade de Dados</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">A Qualidade e Confiabilidade da Informação</h3>
+                <p class="text-lg mb-6"><span class="font-bold text-primary-blue">Integridade de Dados</span> refere-se à exatidão, consistência e confiabilidade dos dados no BD.</p>
+
+                <p class="text-2xl font-semibold mb-4 text-secondary-gray">Por que é vital?</p>
+                <ul class="list-disc list-inside ml-6 space-y-3 text-lg bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
+                    <li>Evita erros de lógica na aplicação (Ex: falhas no carrinho de compras).</li>
+                    <li>Garante que relatórios e análises sejam precisos.</li>
+                    <li><span class="font-bold">Exemplo de Problema:</span> Vender um produto com estoque negativo, resultando em dados inconsistentes.</li>
+                </ul>
+                <p class="mt-6 text-center text-xl font-bold">
+                    O uso de <span class="text-primary-blue">Chaves</span> (PKs e FKs) é a principal ferramenta para garantir essa integridade.
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 11: Chaves (Keys) -->
+        <div id="slide-11" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Chaves (Keys)</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">O Mecanismo de Conexão e Identificação</h3>
+                <p class="text-lg mb-6">Chaves são colunas usadas para identificar linhas de forma única e conectar tabelas entre si.</p>
+
+                <div class="space-y-4 text-xl ml-6">
+                    <p class="font-bold p-3 bg-green-100 rounded-lg border-l-4 border-green-500">
+                        1. Chave Primária (Primary Key - PK): <br><span class="font-normal text-lg">Identifica a linha unicamente dentro da tabela.</span>
+                    </p>
+                    <p class="font-bold p-3 bg-blue-100 rounded-lg border-l-4 border-blue-500">
+                        2. Chave Estrangeira (Foreign Key - FK): <br><span class="font-normal text-lg">Garante a integridade referencial entre tabelas.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Chave Primária (PK) -->
+        <div id="slide-12" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Chave Primária (PK)</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">O Identificador Único da Tabela</h3>
+                <p class="text-lg mb-6">A <span class="font-bold text-primary-blue">Chave Primária (PK)</span> é a coluna que identifica cada linha de forma única na tabela.</p>
+
+                <p class="text-2xl font-semibold mb-4 text-secondary-gray">Regras Essenciais:</p>
+                <ul class="list-decimal list-inside ml-6 space-y-3 text-xl font-bold">
+                    <li class="text-green-600">Unicidade: <span class="font-normal text-lg text-gray-700">Nenhum valor pode se repetir (Ex: Dois clientes não podem ter o mesmo ID).</span></li>
+                    <li class="text-green-600">Não Nula: <span class="font-normal text-lg text-gray-700">O valor deve sempre existir (não pode ser NULL).</span></li>
+                </ul>
+
+                <p class="mt-6 p-4 bg-yellow-50 border-l-4 border-accent-yellow rounded-r-lg text-lg">
+                    Frequentemente, é um número sequencial e automático (auto-incremento), como o <span class="font-mono">ID_Cliente</span>.
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 13: Chave Estrangeira (FK) -->
+        <div id="slide-13" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Chave Estrangeira (FK)</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">O Vínculo entre Tabelas</h3>
+                <p class="text-lg mb-6">A <span class="font-bold text-primary-blue">Chave Estrangeira (FK)</span> é uma coluna na tabela filha que referencia a PK da tabela mãe.</p>
+
+                <p class="text-2xl font-semibold mb-4 text-secondary-gray">Exemplo Visual:</p>
+                <div class="flex flex-col items-center space-y-4">
+                    <div class="p-3 bg-green-200 rounded-lg font-bold text-lg border-2 border-green-600">Tabela Mãe: CLIENTES (PK: ID_Cliente)</div>
+                    <div class="text-3xl text-red-500">
+                        &darr; Referência
+                    </div>
+                    <div class="p-3 bg-blue-200 rounded-lg font-bold text-lg border-2 border-blue-600">Tabela Filha: PEDIDOS (FK: ID_Cliente)</div>
+                </div>
+
+                <p class="mt-6 p-4 bg-gray-100 rounded-lg text-lg">
+                    <span class="font-bold">Propósito:</span> Criar e impor o relacionamento "um-para-muitos" (Um cliente pode ter muitos pedidos).
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 14: Integridade Referencial -->
+        <div id="slide-14" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Integridade Referencial</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">Mantendo a Consistência dos Relacionamentos</h3>
+                <p class="text-lg mb-6">É a regra imposta pela Chave Estrangeira (FK) para garantir que as referências sejam sempre válidas.</p>
+
+                <div class="p-6 bg-red-100 rounded-lg border-l-4 border-red-500 shadow-md">
+                    <p class="text-xl font-bold mb-3 text-red-700">A Integridade Referencial Garante Que:</p>
+                    <ul class="list-disc list-inside ml-4 space-y-3 text-lg">
+                        <li>Você não pode inserir um valor na tabela filha (FK) que não existe na tabela mãe (PK).</li>
+                        <li><span class="font-bold">Exemplo Prático:</span> É impossível registrar um Pedido com um <span class="font-mono">ID_Cliente</span> que não está cadastrado na tabela <span class="font-mono">Clientes</span>.</li>
+                    </ul>
+                </div>
+
+                <p class="mt-6 text-center text-xl font-bold text-secondary-gray">
+                    Isso evita "registros órfãos" e mantém o BD logicamente consistente.
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Tipos de Dados (Data Types) -->
+        <div id="slide-15" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Tipos de Dados (Data Types)</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">Definindo o Tipo de Conteúdo de uma Coluna</h3>
+                <p class="text-lg mb-6">O <span class="font-bold text-primary-blue">Tipo de Dado</span> especifica a natureza da informação armazenada (Ex: Número, Texto, Data).</p>
+
+                <p class="text-2xl font-semibold mb-4 text-secondary-gray">Por que a escolha é crucial?</p>
+                <ul class="list-disc list-inside ml-6 space-y-3 text-lg bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
+                    <li><span class="font-bold">1. Integridade:</span> Garante que os dados sejam válidos (Ex: não permite texto em um campo numérico).</li>
+                    <li><span class="font-bold">2. Performance:</span> Otimiza o armazenamento, pois um tipo menor consome menos espaço, e acelera as consultas.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 16: Tipos de Dados Comuns: Numéricos -->
+        <div id="slide-16" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Tipos de Dados Comuns: Numéricos</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">Valores de Contagem e Cálculo</h3>
+                <table class="w-full text-left rounded-lg overflow-hidden border-collapse table-custom">
+                    <thead>
+                        <tr>
+                            <th class="p-3">Tipo (MySQL)</th>
+                            <th class="p-3">Descrição</th>
+                            <th class="p-3">Exemplo de Uso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3 font-mono font-semibold">INT</td>
+                            <td class="p-3">Inteiro de tamanho padrão.</td>
+                            <td class="p-3">`ID_Cliente`, `Quantidade_Estoque`</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50 bg-gray-100">
+                            <td class="p-3 font-mono font-semibold">DECIMAL</td>
+                            <td class="p-3">Armazenamento exato de ponto flutuante (Ideal para moedas).</td>
+                            <td class="p-3">`Preco_Unitario` (Ex: `DECIMAL(10, 2)`)</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3 font-mono font-semibold">FLOAT / DOUBLE</td>
+                            <td class="p-3">Armazenamento aproximado de ponto flutuante.</td>
+                            <td class="p-3">`Latitude`, `Longitude`</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Slide 17: Tipos de Dados Comuns: Strings -->
+        <div id="slide-17" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Tipos de Dados Comuns: Strings</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">Valores de Texto</h3>
+                <table class="w-full text-left rounded-lg overflow-hidden border-collapse table-custom">
+                    <thead>
+                        <tr>
+                            <th class="p-3">Tipo (MySQL)</th>
+                            <th class="p-3">Descrição</th>
+                            <th class="p-3">Exemplo de Uso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3 font-mono font-semibold">VARCHAR</td>
+                            <td class="p-3">Strings de tamanho <span class="font-bold">variável</span>. Mais comum e eficiente.</td>
+                            <td class="p-3">`Nome_Produto`, `Endereco`, `Email`</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50 bg-gray-100">
+                            <td class="p-3 font-mono font-semibold">CHAR</td>
+                            <td class="p-3">Strings de tamanho <span class="font-bold">fixo</span>. Preenche com espaços.</td>
+                            <td class="p-3">Códigos de país (Ex: `CHAR(3)`)</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3 font-mono font-semibold">TEXT</td>
+                            <td class="p-3">Armazena grandes volumes de texto (até 64KB).</td>
+                            <td class="p-3">`Descricao_Longa_Produto`</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="mt-6 p-4 bg-yellow-50 border-l-4 border-accent-yellow rounded-r-lg text-lg font-semibold">
+                    Dica: Use VARCHAR para textos onde o tamanho varia para economizar espaço de armazenamento.
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 18: Tipos de Dados Comuns: Data e Hora -->
+        <div id="slide-18" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Tipos de Dados Comuns: Data e Hora</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">Valores Temporais</h3>
+                <table class="w-full text-left rounded-lg overflow-hidden border-collapse table-custom">
+                    <thead>
+                        <tr>
+                            <th class="p-3">Tipo (MySQL)</th>
+                            <th class="p-3">Descrição</th>
+                            <th class="p-3">Formato</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3 font-mono font-semibold">DATE</td>
+                            <td class="p-3">Apenas a data.</td>
+                            <td class="p-3">`YYYY-MM-DD`</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50 bg-gray-100">
+                            <td class="p-3 font-mono font-semibold">TIME</td>
+                            <td class="p-3">Apenas a hora.</td>
+                            <td class="p-3">`HH:MM:SS`</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3 font-mono font-semibold">DATETIME</td>
+                            <td class="p-3">Data e hora combinadas.</td>
+                            <td class="p-3">`YYYY-MM-DD HH:MM:SS`</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50 bg-gray-100">
+                            <td class="p-3 font-mono font-semibold">TIMESTAMP</td>
+                            <td class="p-3">Útil para registrar atualizações automaticamente.</td>
+                            <td class="p-3">`YYYY-MM-DD HH:MM:SS`</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Slide 19: Breve Introdução ao SQL -->
+        <div id="slide-19" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Breve Introdução ao SQL</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">A Linguagem de Consulta Estruturada</h3>
+                <p class="text-lg mb-6">O <span class="font-bold text-primary-blue">SQL</span> (Structured Query Language) é a linguagem universal para interagir com BDs Relacionais.</p>
+
+                <p class="text-2xl font-semibold mb-4 text-secondary-gray">As Quatro Ações Fundamentais (CRUD):</p>
+                <div class="grid grid-cols-2 gap-4 text-lg font-mono font-bold">
+                    <p class="p-3 bg-green-100 rounded-lg">C(riar) → <span class="text-green-700">INSERT</span></p>
+                    <p class="p-3 bg-blue-100 rounded-lg">R(er) → <span class="text-blue-700">SELECT</span></p>
+                    <p class="p-3 bg-yellow-100 rounded-lg">U(pdate) → <span class="text-yellow-700">UPDATE</span></p>
+                    <p class="p-3 bg-red-100 rounded-lg">D(elete) → <span class="text-red-700">DELETE</span></p>
+                </div>
+
+                <p class="mt-8 text-center text-xl font-bold p-3 bg-gray-100 rounded-lg">
+                    Na ultima aula, usamos no comando <span class="font-mono text-blue-700">SELECT</span> para recuperar dados.
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 20: Resumo e Próximos Passos -->
+        <div id="slide-20" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Resumo</h2>
+
+                <p class="text-2xl font-bold mb-3 text-primary-blue">Revisão Rápida:</p>
+                <ul class="list-disc list-inside ml-6 space-y-2 text-lg">
+                    <li>A estrutura é baseada em <span class="font-bold">Tabelas</span>, <span class="font-bold">Colunas</span> e <span class="font-bold">Linhas</span>.</li>
+                    <li>A PK garante a identificação única.</li>
+                    <li>A FK garante a integridade dos relacionamentos.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 21: Convenções de Nomenclatura -->
+        <div id="slide-21" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Boas Práticas: Nomenclatura</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">Deixando o Código Limpo e Consistente</h3>
+
+                <p class="text-2xl font-semibold mb-4 text-primary-blue">Regras Comuns (Snake_Case):</p>
+                <div class="space-y-4 text-lg">
+                    <div class="p-3 bg-green-100 rounded-lg border-l-4 border-green-500">
+                        <span class="font-bold">Tabelas:</span> Use o nome no Plural.
+                        <p class="font-mono text-base mt-1">Ex: <span class="text-green-700">`clientes`</span>, <span class="text-green-700">`produtos`</span> (não `cliente`, `produto_tabela`).</p>
+                    </div>
+                    <div class="p-3 bg-blue-100 rounded-lg border-l-4 border-blue-500">
+                        <span class="font-bold">Colunas:</span> Use o nome no Singular e letras minúsculas (snake_case).
+                        <p class="font-mono text-base mt-1">Ex: <span class="text-blue-700">`nome`</span>, <span class="text-blue-700">`email_cliente`</span> (não `NomeCliente`).</p>
+                    </div>
+                    <div class="p-3 bg-yellow-100 rounded-lg border-l-4 border-accent-yellow">
+                        <span class="font-bold">Chaves (PK/FK):</span> Use prefixos claros.
+                        <p class="font-mono text-base mt-1">Ex: <span class="text-yellow-700">`id_cliente`</span> (PK), <span class="text-yellow-700">`cliente_id`</span> (FK - Alternativa comum).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 22: Escolhendo Chaves Primárias -->
+        <div id="slide-22" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Escolhendo Chaves Primárias</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">Substitutas vs. Naturais</h3>
+
+                <p class="text-2xl font-semibold mb-4 text-secondary-gray">1. Chaves Substitutas (Surrogate Keys)</p>
+                <ul class="list-disc list-inside ml-6 space-y-2 text-lg">
+                    <li>Valor artificial (geralmente um <span class="font-mono">INT</span> autoincremental).</li>
+                    <li><span class="font-bold text-green-600">Vantagem:</span> Simples, nunca muda, pequeno, rápido.</li>
+                    <li><span class="font-bold text-red-600">Desvantagem:</span> Não tem significado para o usuário final.</li>
+                </ul>
+
+                <p class="text-2xl font-semibold mt-6 mb-4 text-secondary-gray">2. Chaves Naturais</p>
+                <ul class="list-disc list-inside ml-6 space-y-2 text-lg">
+                    <li>Valor baseado em dados reais (Ex: CPF, CNPJ, Número de Série).</li>
+                    <li><span class="font-bold text-red-600">Risco:</span> Podem ser longas, complexas (requerem chaves compostas) ou, pior, podem MUDAR (Ex: formato de CPF em outro país).</li>
+                </ul>
+                <p class="mt-6 text-center text-xl font-bold p-3 bg-primary-blue text-white rounded-lg">
+                    Recomendação: No modelo físico (SQL), sempre que possível, utilize Chaves Substitutas (IDs simples). São mais práticas.
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 23: Restrições de Coluna (Constraints) -->
+        <div id="slide-23" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Restrições de Coluna (Constraints)</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">Controlando a Obrigatoriedade e Unicidade</h3>
+
+                <table class="w-full text-left rounded-lg overflow-hidden border-collapse table-custom">
+                    <thead>
+                        <tr>
+                            <th class="p-3">Restrição</th>
+                            <th class="p-3">Propósito</th>
+                            <th class="p-3">Exemplo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-t hover:bg-gray-50 bg-gray-100">
+                            <td class="p-3 font-mono font-semibold">NOT NULL</td>
+                            <td class="p-3"><span class="font-bold text-red-600">Obrigatório.</span> O campo deve ter um valor.</td>
+                            <td class="p-3">`nome`, `data_nascimento`</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3 font-mono font-semibold">NULL (Padrão)</td>
+                            <td class="p-3"><span class="font-bold text-green-600">Opcional.</span> Pode ser deixado em branco.</td>
+                            <td class="p-3">`telefone_opcional`, `observacoes`</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50 bg-gray-100">
+                            <td class="p-3 font-mono font-semibold">UNIQUE</td>
+                            <td class="p-3">Garante que não haverá valores duplicados nesta coluna.</td>
+                            <td class="p-3">`email`, `cpf` (se for natural key)</td>
+                        </tr>
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3 font-mono font-semibold">DEFAULT</td>
+                            <td class="p-3">Define um valor padrão se nenhum for fornecido.</td>
+                            <td class="p-3">`status_ativo` = 1</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Slide 24: Tipos de Relacionamento (Modelo Conceitual) -->
+        <div id="slide-24" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Tipos de Relacionamento</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">A Estrutura do Modelo Conceitual</h3>
+
+                <p class="text-2xl font-semibold mb-4 text-primary-blue">1. Um para Um (1:1)</p>
+                <p class="text-lg ml-6">Cada registro em A se relaciona com, no máximo, um registro em B. (Ex: Pessoa e Passaporte).</p>
+
+                <p class="text-2xl font-semibold mt-6 mb-4 text-primary-blue">2. Um para Muitos (1:N)</p>
+                <div class="p-3 bg-blue-100 rounded-lg border-l-4 border-blue-500 text-lg">
+                    <span class="font-bold">Mais Comum.</span> Um registro em A pode ter muitos registros em B.
+                    <p class="mt-1">Ex: <span class="font-bold">1</span> Cliente para <span class="font-bold">N</span> Pedidos. (Implementado via <span class="font-mono">FK</span>).</p>
+                </div>
+
+                <p class="text-2xl font-semibold mt-6 mb-4 text-primary-blue">3. Muitos para Muitos (N:M)</p>
+                <div class="p-3 bg-red-100 rounded-lg border-l-4 border-red-500 text-lg">
+                    Um registro em A pode ter muitos em B, e vice-versa.
+                    <p class="mt-1"><span class="font-bold">Solução:</span> Requer uma terceira tabela de Junção ou Ligação (Ex: <span class="font-mono">Pedidos_Produtos</span>).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 25: O Ciclo de Design do BD -->
+        <div id="slide-25" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">O Ciclo de Design do BD</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">Design e Implementação</h3>
+
+                <div class="space-y-4 text-xl">
+                    <div class="p-3 bg-gray-100 rounded-lg shadow-md">
+                        <span class="font-bold text-primary-blue">1. Requisitos:</span> Entender o que o BD precisa fazer e quais dados armazenar.
+                    </div>
+                    <div class="p-3 bg-gray-100 rounded-lg shadow-md">
+                        <span class="font-bold text-primary-blue">2. Modelo Conceitual (ER):</span> Mapear Entidades, Atributos e Relacionamentos.
+                    </div>
+                    <div class="p-3 bg-gray-100 rounded-lg shadow-md">
+                        <span class="font-bold text-primary-blue">3. Modelo Lógico:</span> Definir Tabelas, Colunas, Chaves e Tipos de Dados.
+                    </div>
+                    <div class="p-3 bg-gray-100 rounded-lg shadow-md">
+                        <span class="font-bold text-primary-blue">4. Modelo Físico:</span> Implementação concreta no SGBD (Ex: Usando SQL para <span class="font-mono">CREATE TABLE</span>).
+                    </div>
+                </div>
+
+                <p class="text-3xl font-extrabold text-center mt-8 text-red-600">Ao traduzir nossos modelos para SQL, já estamos trabalhando com o modelo físico.</p>
+            </div>
+        </div>
+        
+        <!-- Slide 26: Comando CREATE DATABASE -->
+        <div id="slide-26" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Exemplo Prático 1: Criando o Banco de Dados</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">DDL: CREATE DATABASE</h3>
+                
+                <p class="text-lg mb-4">Comando para criar um novo banco de dados (esquema). O `IF NOT EXISTS` evita erros caso o BD já exista.</p>
+
+                <div class="code-block mt-4">
+<span class="text-yellow-400">-- Comando para Criar o Banco de Dados (Schema)</span>
+<span class="text-cyan-400">CREATE DATABASE</span> <span class="text-green-400">IF NOT EXISTS</span> <span class="text-orange-400">meu_primeiro_bd</span><span class="text-white">;</span>
+
+<span class="text-yellow-400">-- Comando para selecionar o BD como o atual</span>
+<span class="text-cyan-400">USE</span> <span class="text-orange-400">meu_primeiro_bd</span><span class="text-white">;</span>
+                </div>
+
+                <p class="mt-6 p-3 bg-green-50 border-l-4 border-green-500 rounded-r-lg text-lg">
+                    <span class="font-bold">No Workbench:</span> Digite e execute os comandos em um painel de consulta. O BD aparecerá na lista de Schemas.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Slide 27: Comando CREATE TABLE (Simples) -->
+        <div id="slide-27" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Exemplo Prático 2: Criando a Tabela 'clientes'</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">DDL: CREATE TABLE (Definindo a PK)</h3>
+                
+                <p class="text-lg mb-4">Criamos a tabela `clientes` com a Chave Primária (PK) autoincremental e restrições `NOT NULL`.</p>
+
+                <div class="code-block mt-4">
+<span class="text-yellow-400">-- Cria a tabela de clientes dentro do BD selecionado</span>
+<span class="text-cyan-400">CREATE TABLE</span> <span class="text-orange-400">clientes</span> <span class="text-white">(</span>
+    <span class="text-green-400">id_cliente</span> <span class="text-yellow-400">INT</span> <span class="text-red-400">NOT NULL</span> <span class="text-purple-400">PRIMARY KEY</span> <span class="text-white">AUTO_INCREMENT,</span>
+    <span class="text-green-400">nome</span> <span class="text-yellow-400">VARCHAR(100)</span> <span class="text-red-400">NOT NULL</span><span class="text-white">,</span>
+    <span class="text-green-400">email</span> <span class="text-yellow-400">VARCHAR(100)</span> <span class="text-red-400">UNIQUE</span><span class="text-white">,</span>
+    <span class="text-green-400">data_cadastro</span> <span class="text-yellow-400">DATE</span>
+<span class="text-white">);</span>
+                </div>
+
+                <p class="mt-6 p-3 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg text-lg">
+                    <span class="font-bold">Atenção:</span> <span class="font-mono">AUTO_INCREMENT</span> só funciona em colunas de chave.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Slide 28: Comando SHOW e DESCRIBE -->
+        <div id="slide-28" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Exemplo Prático 3: Visualizando a Estrutura</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">SQL: SHOW TABLES e DESCRIBE</h3>
+                
+                <p class="text-lg mb-4">Comandos de utilidade (DDL) para verificar o conteúdo do BD e a estrutura da tabela, respectivamente.</p>
+
+                <p class="text-2xl font-semibold mb-3 text-primary-blue">Visualizar Tabelas (Dentro do BD atual):</p>
+                <div class="code-block mt-2">
+<span class="text-cyan-400">SHOW TABLES</span><span class="text-white">;</span>
+<span class="text-yellow-400">-- Resultado: | Tables_in_meu_primeiro_bd |</span>
+<span class="text-yellow-400">--            | clientes                  |</span>
+                </div>
+
+                <p class="text-2xl font-semibold mt-6 mb-3 text-primary-blue">Descrever Estrutura (Metadados):</p>
+                <div class="code-block mt-2">
+<span class="text-cyan-400">DESCRIBE</span> <span class="text-orange-400">clientes</span><span class="text-white">;</span>
+<span class="text-yellow-400">-- Resultado mostra: Field, Type, Null (NO/YES), Key (PRI), Default, Extra (auto_increment)</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 29: Comando INSERT (DML) -->
+        <div id="slide-29" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Exemplo Prático 4: Inserindo Dados</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">DML: INSERT INTO (Adicionando Registros)</h3>
+                
+                <p class="text-lg mb-4">O primeiro comando DML. Insere novos registros (linhas/tuplas) na tabela. Note a omissão do `id_cliente` (é auto-incrementado).</p>
+
+                <div class="code-block mt-4">
+<span class="text-yellow-400">-- Inserindo um novo cliente na tabela 'clientes'</span>
+<span class="text-cyan-400">INSERT INTO</span> <span class="text-orange-400">clientes</span> <span class="text-white">(nome, email, data_cadastro)</span>
+<span class="text-cyan-400">VALUES</span> <span class="text-white">(</span>
+    <span class="text-orange-400">'Joao Silva'</span>, 
+    <span class="text-orange-400">'joao.silva@exemplo.com'</span>, 
+    <span class="text-orange-400">'2025-01-10'</span>
+<span class="text-white">);</span>
+                </div>
+
+                <p class="mt-6 p-3 bg-green-50 border-l-4 border-green-500 rounded-r-lg text-lg">
+                    <span class="font-bold">Próxima Prática:</span> Insira mais 2 ou 3 registros para testar!
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 30: Comando DROP (DDL) -->
+        <div id="slide-30" class="slide-container">
+            <div class="slide-content">
+                <h2 class="slide-title text-4xl mb-4 border-b pb-2 border-accent-yellow">Exemplo Prático 5: Excluindo Estruturas</h2>
+                <h3 class="slide-subtitle text-3xl mb-6">DDL: DROP TABLE / DATABASE (Cuidado!)</h3>
+                
+                <p class="text-lg mb-4 text-red-600 font-bold">Use estes comandos com extrema cautela, pois eles removem a estrutura e todos os dados de forma permanente!</p>
+
+                <p class="text-2xl font-semibold mb-3 text-primary-blue">Remover uma Tabela (DDL):</p>
+                <div class="code-block mt-2">
+<span class="text-cyan-400">DROP TABLE</span> <span class="text-green-400">IF EXISTS</span> <span class="text-orange-400">clientes</span><span class="text-white">;</span>
+                </div>
+
+                <p class="text-2xl font-semibold mt-6 mb-3 text-primary-blue">Remover o Banco de Dados (DDL):</p>
+                <div class="code-block mt-2">
+<span class="text-cyan-400">DROP DATABASE</span> <span class="text-green-400">IF EXISTS</span> <span class="text-orange-400">meu_primeiro_bd</span><span class="text-white">;</span>
+                </div>
+            </div>
+        </div>
+
+    </div>  
+
+    <!-- Navegação e Indicador de Slide -->
+    <div class="fixed bottom-0 left-0 right-0 p-2 bg-gray-800/80 text-white flex justify-between items-center z-10 rounded-t-lg shadow-md">
+        <button id="prev-slide" class="nav-button bg-primary-blue/80 hover:bg-blue-800 text-white text-sm py-1 px-3 rounded disabled:opacity-50" disabled>
+            &larr; Anterior
+        </button>
+        <div id="slide-indicator" class="text-sm">
+            Slide 1 de 30
+        </div>
+        <button id="next-slide" class="nav-button bg-primary-blue/80 hover:bg-blue-800 text-white text-sm py-1 px-3 rounded disabled:opacity-50"></button>
+            Próximo &rarr;
+        </button>
+    </div>
+
+    <script>
+        // Lógica de Navegação dos Slides
+        const totalSlides = 30; // ATUALIZADO DE 25 PARA 30
+        let currentSlide = 1;
+
+        const presentationArea = document.getElementById('presentation-area');
+        const indicator = document.getElementById('slide-indicator');
+        const prevButton = document.getElementById('prev-slide');
+        const nextButton = document.getElementById('next-slide');
+
+        // Função para mostrar o slide atual e esconder os outros
+        function updateSlideDisplay() {
+            // Esconde todos
+            document.querySelectorAll('.slide-container').forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            // Mostra o slide atual
+            const activeSlide = document.getElementById(`slide-${currentSlide}`);
+            if (activeSlide) {
+                activeSlide.classList.add('active');
+                presentationArea.style.height = activeSlide.offsetHeight + 'px'; // Ajusta a altura
+            }
+
+            // Atualiza o indicador
+            indicator.textContent = `Slide ${currentSlide} de ${totalSlides}`;
+
+            // Controla os botões de navegação
+            prevButton.disabled = currentSlide === 1;
+            nextButton.disabled = currentSlide === totalSlides;
+        }
+
+        // Event Listeners para os botões
+        nextButton.addEventListener('click', () => {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateSlideDisplay();
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlideDisplay();
+            }
+        });
+
+        // Navegação por teclado (setas)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentSlide < totalSlides) {
+                nextButton.click();
+            } else if (e.key === 'ArrowLeft' && currentSlide > 1) {
+                prevButton.click();
+            }
+        });
+
+        // Inicializa a exibição
+        window.addEventListener('load', updateSlideDisplay);
+        window.addEventListener('resize', updateSlideDisplay);
+    </script>
+</body>
+</html>

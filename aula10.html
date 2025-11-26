@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL DML: UPDATE e DELETE</title>
+    <!-- Carregando Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos customizados para a apresentação */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        /* Estilo base para cada slide (oculto por padrão) */
+        .slide {
+            display: none;
+            padding: 4rem 8rem; /* Mais espaçamento lateral para desktop */
+            min-height: calc(100vh - 8rem); /* Altura da tela menos o rodapé/margens */
+            animation: fadeIn 0.5s ease-out;
+            max-width: 100%;
+        }
+        
+        /* Estilos de Tipografia e Blocos */
+        .slide-content h1 {
+            font-size: 3rem !important;
+            font-weight: 800;
+            color: #fcd34d; /* Amarelo-Ouro para Títulos */
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid #374151; /* Cinza escuro para separação */
+            padding-bottom: 0.5rem;
+        }
+        .slide-content h2 {
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700;
+            color: #4ade80; /* Verde vibrante para subtítulos/tópicos */
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .slide-content p {
+            font-size: 1.125rem;
+            line-height: 1.75rem;
+            margin-bottom: 1rem;
+        }
+        .slide-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .slide-content li {
+            font-size: 1.125rem;
+            margin-bottom: 0.75rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .slide-content li::before {
+            content: "•";
+            color: #4ade80;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1.5em;
+        }
+
+        /* Estilos Específicos para Código */
+        pre {
+            background-color: #1f2937; /* Gray-800 */
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            color: #d1d5db; /* Gray-300 */
+            font-family: monospace;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            font-size: 1.0rem;
+        }
+        /* Destaque de Sintaxe Simples (via JS) */
+        .sql-keyword { color: #f87171; font-weight: bold; } /* Red-400 */
+        .sql-comment { color: #6ee7b7; font-style: italic; } /* Emerald-300 */
+        .sql-string { color: #93c5fd; } /* Blue-300 */
+        .sql-number { color: #f97316; } /* Orange-500 */
+
+        /* Estilos de Tabela */
+        table {
+            width: 90%;
+            margin: 2rem auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 2px solid #374151;
+            padding: 1rem;
+            text-align: left;
+        }
+        th {
+            background-color: #374151;
+            color: #fcd34d;
+            font-size: 1.125rem;
+        }
+        
+        /* Slide Ativo e Animação */
+        .slide.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 2rem 1.5rem;
+            }
+            .slide-content h1 {
+                font-size: 2rem;
+            }
+            .slide-content h2 {
+                font-size: 1.5rem;
+            }
+            .slide-content p, .slide-content li {
+                font-size: 1rem;
+            }
+            .slide-content pre {
+                padding: 1rem;
+                font-size: 0.875rem;
+            }
+        }
+
+        h1, h2 {
+            font-size: 32px !important;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <div id="presentation" class="max-w-7xl mx-auto pt-8 pb-20">
+
+        <!-- Slide 1: Título e Objetivos -->
+        <div class="slide" id="slide-1">
+            <h1 class="text-center">SQL DML: Alterando Dados (UPDATE e DELETE)</h1>
+            <div class="slide-content mt-12">
+                
+                <h2>Objetivo Central</h2>
+                <ul class="list-none mt-4">
+                    <li>Compreender, aplicar e usar com segurança os comandos <code class="bg-gray-700 p-1">UPDATE</code> e <code class="bg-gray-700 p-1">DELETE</code>.</li>
+                    <li>Destacar a função crítica da cláusula <code class="bg-gray-700 p-1">WHERE</code> como integridade dos dados.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 2: Revisão DML -->
+        <div class="slide" id="slide-2">
+            <h1>DML: Onde Estamos?</h1>
+            <div class="slide-content">
+                <h2>Linguagem de Manipulação de Dados (DML)</h2>
+                <ul class="mt-4">
+                    <li><code class="bg-gray-700 p-1">SELECT</code>: LER (Consultar) dados.</li>
+                    <li><code class="bg-gray-700 p-1">INSERT</code>: CRIAR (Inserir) novos dados.</li>
+                    <li>Hoje: Focaremos nas operações que alteram o estado do banco:
+                        <ul>
+                            <li><code class="bg-gray-700 p-1">UPDATE</code>: Modificar dados existentes (linhas).</li>
+                            <li><code class="bg-gray-700 p-1">DELETE</code>: Remover linhas (registros) inteiras.</li>
+                        </ul>
+                    </li>
+                </ul>
+                <p class="mt-8 text-2xl font-bold text-red-500">⚠️ Aviso: Estes comandos são PERMANENTES e exigem cautela extrema.</p>
+            </div>
+        </div>
+
+        <!-- Slide 3: Poder e Perigo -->
+        <div class="slide" id="slide-3">
+            <h1>O Poder da Modificação</h1>
+            <div class="slide-content">
+                <p>O <code class="bg-gray-700 p-1">UPDATE</code> permite corrigir erros, atualizar informações e realizar manutenções essenciais.</p>
+                <p>O <code class="bg-gray-700 p-1">DELETE</code> permite limpar o banco de dados de dados obsoletos ou inválidos, mantendo a performance.</p>
+                
+                <h2 class="text-red-500">O Perigo</h2>
+                <p class="text-red-300 font-semibold">Um comando mal escrito pode apagar ou alterar todos os dados de uma tabela. Pense em alterar todos os salários para R$1!</p>
+                
+                <h2 class="text-yellow-400">A Solução</h2>
+                <p>A cláusula WHERE, o nosso guardião da precisão.</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: A Cláusula WHERE - Essencial -->
+        <div class="slide" id="slide-4">
+            <h1>WHERE: O Filtro de Precisão</h1>
+            <div class="slide-content">
+                <p>A cláusula <code class="bg-gray-700 p-1">WHERE</code> especifica as condições que determinam quais linhas serão afetadas.</p>
+                
+                <h2 class="text-green-400">Com WHERE</h2>
+                <p>O comando será executado apenas nas linhas que satisfazem a condição.</p>
+                
+                <h2 class="text-red-400">Sem WHERE</h2>
+                <p>O comando será executado em TODAS as linhas da tabela. <span class="text-yellow-400 font-bold">Nunca faça isso em produção!</span></p>
+
+                <div class="mt-8 p-4 bg-gray-700 rounded-lg text-center text-5xl">
+                    <span class="text-yellow-400">🔒</span> <!-- Icone de Segurança -->
+                    <p class="text-sm mt-2 text-gray-400">Guardando a integridade do seu banco de dados.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Mnemônico de Segurança -->
+        <div class="slide" id="slide-5">
+            <h1>Mnemônico: "NÃO ESQUEÇA O W!"</h1>
+            <div class="slide-content">
+                <h2 class="text-yellow-400">W-H-E-R-E</h2>
+                <ul class="mt-4">
+                    <li><strong class="text-yellow-400">W</strong>arning (Aviso)</li>
+                    <li><strong class="text-yellow-400">W</strong>hich Rows (Quais Linhas)</li>
+                </ul>
+                
+                <h2 class="text-green-400">Regra de Ouro (O Teste do SELECT)</h2>
+                <p>Antes de executar qualquer <code class="bg-gray-700 p-1">UPDATE</code> ou <code class="bg-gray-700 p-1">DELETE</code>, execute o <code class="bg-gray-700 p-1">SELECT</code> correspondente para verificar as linhas.</p>
+
+                <pre class="mt-4"><code class="sql-code">-- 1. Teste o filtro com SELECT:
+<span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> Tabela <span class="sql-keyword">WHERE</span> status = 'Inativo';
+
+-- 2. Se o SELECT retornar as linhas corretas, execute o DELETE:
+<span class="sql-keyword">DELETE</span> <span class="sql-keyword">FROM</span> Tabela <span class="sql-keyword">WHERE</span> status = 'Inativo';
+</code></pre>
+            </div>
+        </div>
+
+        <!-- Slide 6: Sintaxe e Operadores -->
+        <div class="slide" id="slide-6">
+            <h1>WHERE: Sintaxe e Lógica</h1>
+            <div class="slide-content">
+                <h2>Operadores de Comparação</h2>
+                <ul class="grid grid-cols-2 gap-4 mt-4">
+                    <li><code class="bg-gray-700 p-1">=</code> (Igual), <code class="bg-gray-700 p-1">!=</code> ou <code class="bg-gray-700 p-1"><></code> (Diferente)</li>
+                    <li><code class="bg-gray-700 p-1">></code> (Maior que), <code class="bg-gray-700 p-1"><</code> (Menor que)</li>
+                    <li><code class="bg-gray-700 p-1">>=</code> (Maior ou igual), <code class="bg-gray-700 p-1"><=</code> (Menor ou igual)</li>
+                    <li><code class="bg-gray-700 p-1">IN</code>, <code class="bg-gray-700 p-1">BETWEEN</code>, <code class="bg-gray-700 p-1">IS NULL</code></li>
+                    <li><code class="bg-gray-700 p-1">LIKE</code> (Padrão de texto, ex: <code class="bg-gray-700 p-1">'A%'</code>)</li>
+                </ul>
+                
+                <h2>Operadores Lógicos (Combinação)</h2>
+                <ul class="mt-4">
+                    <li><code class="bg-gray-700 p-1">AND</code>: Ambas as condições devem ser verdadeiras.</li>
+                    <li><code class="bg-gray-700 p-1">OR</code>: Pelo menos uma condição deve ser verdadeira.</li>
+                    <li><code class="bg-gray-700 p-1">NOT</code>: Nega a condição.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 7: Exemplo Prático do WHERE -->
+        <div class="slide" id="slide-7">
+            <h1>WHERE: Filtrando Funcionários</h1>
+            <div class="slide-content">
+                <p>Vamos usar a tabela <code class="bg-gray-700 p-1">Funcionarios(id, nome, cargo, salario, departamento)</code>.</p>
+                <p class="text-lg mt-4 font-semibold text-green-300">Cenário: Encontrar Analistas de Vendas com salário superior a R$5000.</p>
+
+                <pre class="mt-4"><code class="sql-code">-- O SELECT é o primeiro passo para validar o filtro!
+<span class="sql-keyword">SELECT</span> *
+<span class="sql-keyword">FROM</span> Funcionarios
+<span class="sql-keyword">WHERE</span> cargo = <span class="sql-string">'Analista'</span>
+  <span class="sql-keyword">AND</span> departamento = <span class="sql-string">'Vendas'</span>
+  <span class="sql-keyword">AND</span> salario > <span class="sql-number">5000</span>;
+</code></pre>
+
+                <p class="mt-4">Ação: Apenas as linhas que atenderem todas as 3 condições serão selecionadas/afetadas.</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: UPDATE - Visão Geral -->
+        <div class="slide" id="slide-8">
+            <h1>UPDATE: Modificando Dados</h1>
+            <div class="slide-content">
+                <p>O comando <code class="bg-gray-700 p-1">UPDATE</code> é usado para alterar valores em colunas de linhas existentes.</p>
+                
+                <h2>O que você define?</h2>
+                <ol class="list-decimal ml-6 mt-4">
+                    <li>Qual Tabela? (O alvo da alteração)</li>
+                    <li>Quais Colunas serão alteradas? (O que muda)</li>
+                    <li>Quais Linhas serão afetadas? (A condição <code class="bg-gray-700 p-1">WHERE</code>)</li>
+                </ol>
+
+                <div class="mt-8 p-4 bg-yellow-900/50 border-l-4 border-yellow-400 rounded-lg">
+                    <p class="font-bold text-yellow-400">Lembrete:</p>
+                    <p>Você não altera o número de linhas, apenas o conteúdo delas.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Sintaxe do UPDATE -->
+        <div class="slide" id="slide-9">
+            <h1>UPDATE: A Estrutura</h1>
+            <div class="slide-content">
+                <pre class="mt-4"><code class="sql-code">
+<span class="sql-keyword">UPDATE</span> nome_da_tabela
+<span class="sql-keyword">SET</span> coluna1 = novo_valor1,
+    coluna2 = novo_valor2,
+    ... -- Múltiplas colunas separadas por vírgula
+<span class="sql-keyword">WHERE</span> condicao_para_filtrar_as_linhas; -- CRÍTICO!
+</code></pre>
+
+                <p class="mt-8 text-xl font-bold text-red-400">Obrigatório:</p>
+                <ul class="mt-2">
+                    <li><code class="bg-gray-700 p-1">UPDATE</code> e <code class="bg-gray-700 p-1">SET</code> são obrigatórios.</li>
+                    <li><code class="bg-gray-700 p-1">WHERE</code> é opcional, mas <strong class="text-red-400">ESSENCIAL PARA SEGURANÇA</strong>.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 10: UPDATE - Passo 1: O Alvo -->
+        <div class="slide" id="slide-10">
+            <h1>UPDATE - Passo 1: O Alvo</h1>
+            <div class="slide-content">
+                <h2>Definir a Tabela</h2>
+                <p>Identifica a tabela que você deseja modificar.</p>
+
+                <pre class="mt-4"><code class="sql-code">
+<span class="sql-keyword">UPDATE</span> Funcionarios -- Esta é a tabela que será atualizada
+<span class="sql-keyword">SET</span>...
+</code></pre>
+                
+                <p class="mt-6 text-yellow-400 font-semibold">Dica:</p>
+                <p>Certifique-se de que a tabela está correta, especialmente em ambientes com muitos schemas!</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: UPDATE - Passo 2: O SET -->
+        <div class="slide" id="slide-11">
+            <h1>UPDATE - Passo 2: O que Mudar (SET)</h1>
+            <div class="slide-content">
+                <h2>Definir Colunas e Novos Valores</h2>
+                <p>O <code class="bg-gray-700 p-1">SET</code> atribui novos valores às colunas.</p>
+
+                <pre class="mt-4"><code class="sql-code">
+<span class="sql-keyword">UPDATE</span> Funcionarios
+<span class="sql-keyword">SET</span> salario = <span class="sql-number">6000.00</span>,  -- Novo valor fixo
+    status = <span class="sql-string">'Ativo'</span>,   -- Novo valor de texto
+    data_atualizacao = <span class="sql-keyword">NOW</span>(); -- Uso de funções do SGBD (ex: data/hora atual)
+</code></pre>
+                
+                <p class="mt-6">Importante: Múltiplas colunas são sempre separadas por vírgula.</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: UPDATE - Passo 3: O WHERE -->
+        <div class="slide" id="slide-12">
+            <h1>UPDATE - Passo 3: Quem Mudar (WHERE)</h1>
+            <div class="slide-content">
+                <h2>Filtrando as Linhas Corretas</h2>
+                <p>Use a cláusula <code class="bg-gray-700 p-1">WHERE</code> para mirar o alvo exato da modificação.</p>
+
+                <pre class="mt-4"><code class="sql-code">
+<span class="sql-keyword">UPDATE</span> Funcionarios
+<span class="sql-keyword">SET</span> salario = <span class="sql-number">6000.00</span>
+<span class="sql-keyword">WHERE</span> id_funcionario = <span class="sql-number">42</span>; <span class="sql-comment">-- Apenas o funcionário com ID 42 é afetado.</span>
+</code></pre>
+                
+                <h2 class="text-red-400">Melhor Prática:</h2>
+                <p>Se for mudar apenas um registro, use sempre a Chave Primária (PK) no <code class="bg-gray-700 p-1">WHERE</code> para garantir precisão absoluta.</p>
+            </div>
+        </div>
+
+        <!-- Slide 13: Exemplo 1: Aumento Percentual -->
+        <div class="slide" id="slide-13">
+            <h1>Exemplo Prático: Aumento Salarial</h1>
+            <div class="slide-content">
+                <h2>Cenário de Negócio</h2>
+                <p>A equipe de RH decidiu dar um aumento de 10% para todos os funcionários do departamento de "TI" que estão com o status "Ativo".</p>
+
+                <p class="mt-6">Operação: O novo valor do salário depende do valor atual. O SQL permite usar a própria coluna na expressão de cálculo.</p>
+                <div class="text-3xl text-center mt-8 p-4 bg-green-900/50 border-4 border-green-500 rounded-lg">
+                    <code>Novo Salário = Salário Atual * 1.10</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Código do Exemplo 1 -->
+        <div class="slide" id="slide-14">
+            <h1>Código do Exemplo: Aumento Percentual</h1>
+            <div class="slide-content">
+                <h2>O Comando Final</h2>
+                <pre class="mt-4"><code class="sql-code">
+<span class="sql-comment">-- Antes de executar, rodar: SELECT * FROM Funcionarios WHERE departamento = 'TI' AND status = 'Ativo';</span>
+<span class="sql-keyword">UPDATE</span> Funcionarios
+<span class="sql-keyword">SET</span> salario = salario * <span class="sql-number">1.10</span> <span class="sql-comment">-- Aplica a multiplicação (10% de aumento)</span>
+<span class="sql-keyword">WHERE</span> departamento = <span class="sql-string">'TI'</span>
+  <span class="sql-keyword">AND</span> status = <span class="sql-string">'Ativo'</span>;      <span class="sql-comment">-- Filtra apenas os ativos da TI</span>
+</code></pre>
+                
+                <h2 class="text-yellow-400">Resultado</h2>
+                <p>O salário de CADA funcionário da TI será atualizado individualmente com base no seu valor original.</p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Exemplo 2: Múltiplas Colunas -->
+        <div class="slide" id="slide-15">
+            <h1>Exemplo Prático: Correção de Dados</h1>
+            <div class="slide-content">
+                <h2>Cenário: Atualização Cadastral</h2>
+                <p>O funcionário de <code class="bg-gray-700 p-1">id_funcionario = 25</code> mudou de nome (casamento/registro) e seu email precisa ser corrigido simultaneamente.</p>
+
+                <pre class="mt-4"><code class="sql-code">
+<span class="sql-keyword">UPDATE</span> Funcionarios
+<span class="sql-keyword">SET</span> nome = <span class="sql-string">'Maria Oliveira'</span>,
+    email = <span class="sql-string">'maria.oliveira@empresa.com'</span> <span class="sql-comment">-- Atualiza duas colunas na mesma linha</span>
+<span class="sql-keyword">WHERE</span> id_funcionario = <span class="sql-number">25</span>; <span class="sql-comment">-- Uso da PK para máxima segurança</span>
+</code></pre>
+
+                <p class="mt-6">Lembre-se: A vírgula é usada apenas para separar os pares <code class="bg-gray-700 p-1">coluna = valor</code> dentro da cláusula <code class="bg-gray-700 p-1">SET</code>.</p>
+            </div>
+        </div>
+
+        <!-- Slide 16: O Perigo Extremo (Sem WHERE) -->
+        <div class="slide" id="slide-16">
+            <h1>🚨 Cuidado: O UPDATE sem WHERE</h1>
+            <div class="slide-content">
+                <h2>O ERRO Clássico (e Caro)</h2>
+                <p>Esquecer a cláusula <code class="bg-gray-700 p-1">WHERE</code> ao executar um <code class="bg-gray-700 p-1">UPDATE</code>.</p>
+
+                <pre class="mt-4"><code class="sql-code">
+<span class="sql-comment">-- ATENÇÃO: ISSO É PERIGOSO E VAI MUDAR TUDO!</span>
+<span class="sql-keyword">UPDATE</span> Produtos
+<span class="sql-keyword">SET</span> preco = <span class="sql-number">0</span>; <span class="sql-comment">-- O preço de TODOS os produtos será zero!</span>
+</code></pre>
+
+                <div class="mt-8 p-4 bg-red-900/50 border-l-4 border-red-500 rounded-lg flex items-center">
+                    <span class="text-4xl mr-4">🔥</span>
+                    <p class="font-bold text-red-300">Lição: SEMPRE comece a escrever um <code class="bg-gray-700 p-1">UPDATE</code> pela cláusula <code class="bg-gray-700 p-1">WHERE</code> e a condição. Use o mnemônico "NÃO ESQUEÇA O W!"</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17: Dica de Segurança -->
+        <div class="slide" id="slide-17">
+            <h1>Dica de Segurança: Transações</h1>
+            <div class="slide-content">
+                <p>Em ambientes de produção, use Transações (se seu SGBD suportar) para criar um "ponto de retorno".</p>
+                
+                <h2>Fluxo de Transação (Teste e Confirmação)</h2>
+                <ol class="list-decimal ml-6 mt-4">
+                    <li>Iniciar: <code class="bg-gray-700 p-1">START TRANSACTION;</code> (ou <code class="bg-gray-700 p-1">BEGIN TRANSACTION;</code>)</li>
+                    <li>Executar: <code class="bg-gray-700 p-1">UPDATE Tabela SET...</code></li>
+                    <li>Verificar: Execute um <code class="bg-gray-700 p-1">SELECT</code> para ver o resultado (e o número de linhas afetadas).</li>
+                    <li>Correto? <code class="bg-gray-700 p-1">COMMIT;</code> (Torna a mudança permanente).</li>
+                    <li>Errado? <code class="bg-gray-700 p-1">ROLLBACK;</code> (Desfaz a mudança e volta ao estado inicial).</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 18: DELETE - Visão Geral -->
+        <div class="slide" id="slide-18">
+            <h1>DELETE: Removendo Registros</h1>
+            <div class="slide-content">
+                <p>O comando <code class="bg-gray-700 p-1">DELETE</code> remove linhas inteiras da tabela.</p>
+                
+                <h2 class="text-yellow-400">Natureza da Operação</h2>
+                <ul class="mt-4">
+                    <li>Ele não afeta colunas; a linha inteira (registro) simplesmente deixa de existir.</li>
+                    <li>É uma operação permanente (a menos que usada dentro de uma transação e revertida).</li>
+                </ul>
+                <div class="mt-8 p-4 bg-red-900/50 border-l-4 border-red-500 rounded-lg">
+                    <p class="font-bold text-red-300">Diferente de UPDATE:</p>
+                    <p>Você não define <code class="bg-gray-700 p-1">SET</code>, apenas a tabela e a condição <code class="bg-gray-700 p-1">WHERE</code>.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 19: Sintaxe do DELETE -->
+        <div class="slide" id="slide-19">
+            <h1>DELETE: A Estrutura</h1>
+            <div class="slide-content">
+                <pre class="mt-4"><code class="sql-code">
+<span class="sql-keyword">DELETE FROM</span> nome_da_tabela
+<span class="sql-keyword">WHERE</span> condicao_para_filtrar_as_linhas; <span class="sql-comment">-- Condição CRÍTICA!</span>
+</code></pre>
+
+                <p class="mt-8">Nota: A palavra-chave <code class="bg-gray-700 p-1">FROM</code> é opcional em alguns SGBDs (ex: MySQL), mas é boa prática utilizá-la para clareza: <code class="bg-gray-700 p-1">DELETE FROM Tabela</code>.</p>
+            </div>
+        </div>
+
+        <!-- Slide 20: DELETE - Passo 1: O Alvo -->
+        <div class="slide" id="slide-20">
+            <h1>DELETE - Passo 1: O Alvo</h1>
+            <div class="slide-content">
+                <h2>Definir a Tabela</h2>
+                <p>Identifica a tabela de onde as linhas serão removidas.</p>
+
+                <pre class="mt-4"><code class="sql-code">
+<span class="sql-keyword">DELETE FROM</span> Clientes <span class="sql-comment">-- Qual tabela terá linhas removidas</span>
+<span class="sql-keyword">WHERE</span>...
+</code></pre>
+
+                <p class="mt-6">Lembre-se: O <code class="bg-gray-700 p-1">DELETE</code> atua sempre sobre a tabela especificada, removendo as linhas que atenderem à condição.</p>
+            </div>
+        </div>
+
+        <!-- Slide 21: DELETE - Passo 2: O WHERE -->
+        <div class="slide" id="slide-21">
+            <h1>DELETE - Passo 2: Quem Deletar (WHERE)</h1>
+            <div class="slide-content">
+                <h2>O Filtro de Exclusão</h2>
+                <p>O filtro é obrigatório para um uso seguro!</p>
+                
+                <p class="mt-4 font-semibold text-green-300">Exemplo: Deletar clientes inativos há mais de 5 anos.</p>
+
+                <pre class="mt-4"><code class="sql-code">
+<span class="sql-keyword">DELETE FROM</span> Clientes
+<span class="sql-keyword">WHERE</span> status = <span class="sql-string">'Inativo'</span>
+  <span class="sql-keyword">AND</span> data_ultimo_acesso < <span class="sql-string">'2019-01-01'</span>; <span class="sql-comment">-- Supondo que a data é tratada como string ou tipo DATE.</span>
+</code></pre>
+            </div>
+        </div>
+
+        <!-- Slide 22: Exemplo Prático: Limpeza de Dados -->
+        <div class="slide" id="slide-22">
+            <h1>Exemplo Prático: Limpeza de Estoque</h1>
+            <div class="slide-content">
+                <h2>Cenário: Descarte de Itens</h2>
+                <p>Precisamos remover da tabela <code class="bg-gray-700 p-1">Produtos</code> todos os itens que:</p>
+                <ul class="mt-4">
+                    <li>Estão com <code class="bg-gray-700 p-1">estoque = 0</code>.</li>
+                    <li>Foram marcados como <code class="bg-gray-700 p-1">status = 'Descontinuado'</code>.</li>
+                </ul>
+                <p class="mt-6 text-yellow-400 font-semibold">Usaremos o operador lógico <code class="bg-gray-700 p-1">AND</code> para garantir que ambas as condições sejam satisfeitas.</p>
+            </div>
+        </div>
+
+        <!-- Slide 23: Código do Exemplo -->
+        <div class="slide" id="slide-23">
+            <h1>Código do Exemplo: Produtos</h1>
+            <div class="slide-content">
+                <h2>O Comando Final</h2>
+                <pre class="mt-4"><code class="sql-code">
+<span class="sql-comment">-- Teste antes: SELECT * FROM Produtos WHERE estoque = 0 AND status = 'Descontinuado';</span>
+<span class="sql-keyword">DELETE FROM</span> Produtos
+<span class="sql-keyword">WHERE</span> estoque = <span class="sql-number">0</span>
+  <span class="sql-keyword">AND</span> status = <span class="sql-string">'Descontinuado'</span>;
+</code></pre>
+
+                <p class="mt-6">Resultado: Apenas os registros que correspondem a essas duas condições serão permanentemente removidos. Itens com estoque 0, mas status 'Ativo', permanecem!</p>
+            </div>
+        </div>
+
+        <!-- Slide 24: O Perigo Extremo (Sem WHERE) -->
+        <div class="slide" id="slide-24">
+            <h1>🚨 Cuidado: O DELETE sem WHERE</h1>
+            <div class="slide-content">
+                <h2>O Vazio no Banco de Dados</h2>
+                <p>Executar um <code class="bg-gray-700 p-1">DELETE</code> sem a cláusula <code class="bg-gray-700 p-1">WHERE</code> resulta na exclusão de TODAS as linhas.</p>
+
+                <pre class="mt-4"><code class="sql-code">
+<span class="sql-comment">-- ATENÇÃO: ISSO É PERIGOSO E VAI APAGAR TUDO!</span>
+<span class="sql-keyword">DELETE FROM</span> Funcionarios; <span class="sql-comment">-- TODA a tabela Funcionarios será esvaziada!</span>
+</code></pre>
+
+                <div class="mt-8 p-4 bg-red-900/50 border-l-4 border-red-500 rounded-lg flex items-center">
+                    <span class="text-4xl mr-4">🗑️</span>
+                    <p class="font-bold text-red-300">Lição: Se você quer remover todos os dados, considere usar <code class="bg-gray-700 p-1">TRUNCATE</code> (próximo slide) ou use <code class="bg-gray-700 p-1">DELETE</code> dentro de uma transação.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 25: TRUNCATE vs. DELETE -->
+        <div class="slide" id="slide-25">
+            <h1>TRUNCATE x DELETE</h1>
+            <div class="slide-content">
+                <p>Qual a diferença entre esvaziar a tabela com <code class="bg-gray-700 p-1">DELETE FROM Tabela</code> e <code class="bg-gray-700 p-1">TRUNCATE TABLE Tabela</code>?</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Recurso</th>
+                            <th>DELETE</th>
+                            <th>TRUNCATE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>WHERE</td>
+                            <td>Suportado (Remove linhas específicas)</td>
+                            <td>Não Suportado (Remove tudo)</td>
+                        </tr>
+                        <tr>
+                            <td>Velocidade</td>
+                            <td>Lento (Grava log de cada linha)</td>
+                            <td>Rápido (Libera espaço total de uma vez)</td>
+                        </tr>
+                        <tr>
+                            <td>Transações</td>
+                            <td>Sim (Pode ser revertido com `ROLLBACK`)</td>
+                            <td>Depende do SGBD (Geralmente não é reversível)</td>
+                        </tr>
+                        <tr>
+                            <td>Contador (PK)</td>
+                            <td>Mantém o contador na última linha</td>
+                            <td>Reseta o contador para 1 (ou 0)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="mt-4">Uso: <code class="bg-gray-700 p-1">DELETE</code> para subconjuntos de dados. <code class="bg-gray-700 p-1">TRUNCATE</code> para esvaziar a tabela inteira rapidamente.</p>
+            </div>
+        </div>
+
+        <!-- Slide 26: Mnemônico para DELETE -->
+        <div class="slide" id="slide-26">
+            <h1>Mnemônico: "D-W-C" (DELETE Flow)</h1>
+            <div class="slide-content">
+                <h2>Ordem Lógica para Lembrar</h2>
+                <ul class="mt-4">
+                    <li><strong class="text-yellow-400">D:</strong> DELETE FROM Tabela</li>
+                    <li><strong class="text-yellow-400">W:</strong> WHERE</li>
+                    <li><strong class="text-yellow-400">C:</strong> CONDIÇÃO</li>
+                </ul>
+                
+                <div class="mt-8 p-4 bg-green-900/50 border-l-4 border-green-500 rounded-lg">
+                    <p class="font-bold text-green-300">Prática:</p>
+                    <p>Ao começar a digitar, digite <code class="bg-gray-700 p-1">DELETE FROM Tabela WHERE</code> antes de pensar na condição para evitar o erro fatal.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 27: Chaves Estrangeiras (FK) -->
+        <div class="slide" id="slide-27">
+            <h1>DELETE e Restrições de Integridade</h1>
+            <div class="slide-content">
+                <p>Deletar uma linha pode afetar outras tabelas que a referenciam via Chaves Estrangeiras (<code class="bg-gray-700 p-1">FK</code>).</p>
+                
+                <h2>Ações Comuns em Chaves Estrangeiras</h2>
+                <ul class="mt-4">
+                    <li><strong class="text-red-400">RESTRICT (Padrão):</strong> Impede o <code class="bg-gray-700 p-1">DELETE</code>. (Erro: "Referência violada").</li>
+                    <li><strong class="text-yellow-400">CASCADE:</strong> Deleta a linha-mãe E todas as linhas-filhas relacionadas. (Muito Perigoso!)</li>
+                    <li><strong class="text-green-400">SET NULL:</strong> Deleta a linha-mãe e define as colunas FK nas linhas-filhas como <code class="bg-gray-700 p-1">NULL</code>.</li>
+                </ul>
+                
+                <p class="mt-6">Conclusão: Sempre verifique as dependências antes de um <code class="bg-gray-700 p-1">DELETE</code> em tabelas relacionadas.</p>
+            </div>
+        </div>
+
+        <!-- Slide 28: Resumo UPDATE -->
+        <div class="slide" id="slide-28">
+            <h1>Recapitulando: UPDATE</h1>
+            <div class="slide-content">
+                <h2>Sintaxe e Foco</h2>
+                <p class="font-mono text-lg p-2 bg-gray-800 rounded-lg shadow-md">
+                    <span class="sql-keyword">UPDATE</span> Tabela <span class="sql-keyword">SET</span> Coluna = Valor <span class="sql-keyword">WHERE</span> Condição;
+                </p>
+                
+                <ul class="mt-6">
+                    <li>Propósito: Alterar valores em colunas de linhas existentes.</li>
+                    <li>Foco Principal: A cláusula <strong class="text-yellow-400">SET</strong> define as mudanças.</li>
+                    <li>O Guardião: A cláusula <strong class="text-red-400">WHERE</strong> define o escopo exato da ação.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 29: Resumo DELETE -->
+        <div class="slide" id="slide-29">
+            <h1>Recapitulando: DELETE</h1>
+            <div class="slide-content">
+                <h2>Sintaxe e Foco</h2>
+                <p class="font-mono text-lg p-2 bg-gray-800 rounded-lg shadow-md">
+                    <span class="sql-keyword">DELETE FROM</span> Tabela <span class="sql-keyword">WHERE</span> Condição;
+                </p>
+                
+                <ul class="mt-6">
+                    <li>Propósito: Remover linhas (registros) inteiras.</li>
+                    <li>Foco Principal: O comando remove a linha inteira.</li>
+                    <li>O Guardião: O <strong class="text-red-400">WHERE</strong> deve ser usado para evitar o esvaziamento total da tabela.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 30: Conclusão -->
+        <div class="slide" id="slide-30">
+            <h1>Próximos Passos e Dúvidas</h1>
+            <div class="slide-content">
+                <h2>O que vem a seguir?</h2>
+                <ul class="mt-4">
+                    <li>Próxima Aula (DDL): Introdução ao Data Definition Language (<code class="bg-gray-700 p-1">CREATE</code>, <code class="bg-gray-700 p-1">ALTER</code>, <code class="bg-gray-700 p-1">DROP</code>).</li>
+                    <li>Prática: Experimente os comandos <code class="bg-gray-700 p-1">SELECT</code>, <code class="bg-gray-700 p-1">UPDATE</code> e <code class="bg-gray-700 p-1">DELETE</code> em um ambiente sandbox.</li>
+                </ul>
+                
+                <div class="mt-12 p-6 bg-red-900/50 border-4 border-red-500 rounded-xl text-center shadow-2xl">
+                    <p class="text-2xl font-bold text-yellow-300">Lembrete de Segurança Final:</p>
+                    <p class="text-4xl font-extrabold mt-2">Antes de executar, sempre pergunte: "Onde está o W?"</p>
+                </div>
+                
+                <h2 class="text-center mt-12">Perguntas?</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navegação e Rodapé -->
+    <div class="opacity-70 fixed bottom-0 left-0 right-0 bg-gray-800 p-4 shadow-2xl flex justify-between items-center z-10">
+        <button id="prevBtn" class="px-6 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition disabled:opacity-30 disabled:cursor-not-allowed font-semibold text-lg">
+            &larr; Anterior
+        </button>
+        <span id="slideCounter" class="text-lg font-mono text-gray-300">1 / 30</span>
+        <button id="nextBtn" class="px-6 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg transition disabled:opacity-30 disabled:cursor-not-allowed font-semibold text-lg">
+            Próximo &rarr;
+        </button>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+
+        // Função de realce de sintaxe SQL (simples)
+        function highlightSql(codeElement) {
+            let code = codeElement.innerHTML;
+            
+            // 1. Keywords (UPDATE, DELETE, FROM, WHERE, SELECT, SET, AND, OR, NOT, NOW, TRANSACTION, COMMIT, ROLLBACK)
+            const keywords = /\b(UPDATE|DELETE|FROM|WHERE|SELECT|SET|AND|OR|NOT|NOW|BEGIN|COMMIT|ROLLBACK|START|TRUNCATE|TABLE)\b/gi;
+            code = code.replace(keywords, '<span class="sql-keyword">$&</span>');
+
+            // 2. Comments
+            const comments = /(--.*)/g;
+            code = code.replace(comments, '<span class="sql-comment">$&</span>');
+
+            // 3. Strings
+            const strings = /'([^']*)'/g;
+            code = code.replace(strings, '<span class="sql-string">\'$1\'</span>');
+
+            // 4. Numbers
+            const numbers = /\b(\d+(\.\d+)?)\b/g;
+            code = code.replace(numbers, '<span class="sql-number">$&</span>');
+
+            codeElement.innerHTML = code;
+        }
+
+        // Função para mostrar o slide
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
+                }
+            });
+            document.getElementById('slideCounter').textContent = `${index + 1} / ${slides.length}`;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === slides.length - 1;
+        }
+
+        // Navegação
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicialização
+        window.onload = () => {
+            // Aplicar realce de sintaxe a todos os blocos de código
+            document.querySelectorAll('.sql-code').forEach(highlightSql);
+            // Mostrar o primeiro slide
+            showSlide(currentSlide);
+        };
+    </script>
+</body>
+</html>
